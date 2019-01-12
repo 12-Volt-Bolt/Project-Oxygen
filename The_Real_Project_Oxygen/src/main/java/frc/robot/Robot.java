@@ -5,8 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-// Please Yah, let this work!
-// It's working
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
