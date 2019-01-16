@@ -28,10 +28,10 @@ public class RobotMap {
   public static final int CONTROLLER_TWO_ID = 1;
   
   // These are the wheel motor controller IDs
-  public static final int FRONT_LEFT_MOTOR_ID = 1;
-  public static final int FRONT_RIGHT_MOTOR_ID = 2;
-  public static final int REAR_LEFT_MOTOR_ID = 3;
-  public static final int REAR_RIGHT_MOTOR_ID = 4;
+  public static final int FRONT_LEFT_MOTOR_ID = 2;
+  public static final int FRONT_RIGHT_MOTOR_ID = 1;
+  public static final int REAR_LEFT_MOTOR_ID = 4;
+  public static final int REAR_RIGHT_MOTOR_ID = 3;
 
   // Solenoid IDs
   public static final int TOP_SOLENOID_ID = 0;

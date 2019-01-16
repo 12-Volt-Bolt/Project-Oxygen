@@ -134,5 +134,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+
+SmartDashboard.putData("Mecanum Drive System", DriveSub.mecDrive);
+
+
   }
 }
