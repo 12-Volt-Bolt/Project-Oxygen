@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import frc.robot.OI;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 
 /**
@@ -27,7 +28,8 @@ WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
 WPI_TalonSRX rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
 WPI_TalonSRX rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
 
-public MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+// Remember that you switched the front wheels
+public MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
@@ -35,22 +37,17 @@ public MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearLeft, frontRight,
   }
 
   public void executeMecanumDrive() {
-    mecDrive.setSafetyEnabled(true);
-    // Look at this and fix it!!!!!!!!!!!!!!!
-  mecDrive.driveCartesian(OI.zeroSlotController.getX(Hand.kLeft),
-        OI.zeroSlotController.getY(Hand.kRight),
-        -OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
-
-        mecDrive.driveCartesian(OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kRight));
-} 
+    mecDrive.setSafetyEnabled(false);
+     mecDrive.driveCartesian(-OI.zeroSlotController.getX(Hand.kLeft),OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
+    } 
 
   public void CorrectMotorDirectionForMecanumDrive() {
     // Please do not edit this unless you know the purpose of it.
 
-   //  frontRight.setInverted(true);
-    // frontLeft.setInverted(true);
-    // rearLeft.setInverted(true);
-   // rearRight.setInverted(true);
+    // frontRight.setInverted(true);
+     //frontLeft.setInverted(true);
+     //rearLeft.setInverted(true);
+    // rearRight.setInverted(true);
 
 
 }
