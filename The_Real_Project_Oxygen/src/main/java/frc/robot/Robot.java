@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -35,6 +38,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
+    UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
+    usbCamera0.setResolution(320, 240);
+    usbCamera0.setFPS(10);
+    CvSink cvSink0 = CameraServer.getInstance().getVideo();
+    // Camera 1
+
+    UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
+    usbCamera1.setResolution(320, 240);
+    usbCamera1.setFPS(10);
+    CvSink cvSink1 = CameraServer.getInstance().getVideo();
+    // Camera 2
+
     m_oi = new OI();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
