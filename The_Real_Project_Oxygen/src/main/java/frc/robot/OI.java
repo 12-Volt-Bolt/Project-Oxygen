@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -15,8 +17,9 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public class OI {
 
-  public static XboxController xJoy = new XboxController(RobotMap.MAIN_X_JOY_ID);
-  public static XboxController coXJoy = new XboxController(RobotMap.CO_X_JOY_ID);
+  public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
+  public static XboxController coXJoy = new XboxController(RobotMap.CONTROLLER_TWO_ID);
+
   
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
