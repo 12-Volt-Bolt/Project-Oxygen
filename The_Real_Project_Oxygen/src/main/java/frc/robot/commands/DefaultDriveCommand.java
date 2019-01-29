@@ -7,7 +7,13 @@
 
 package frc.robot.commands;
 
+import java.sql.Time;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.HIDType;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.OI;
 import frc.robot.Robot;
 
 public class DefaultDriveCommand extends Command {
@@ -25,7 +31,9 @@ public class DefaultDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.DriveSub.executeMecanumDrive();
+    //Robot.DriveSub.executeMecanumDrive(-OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
+   //Robot.DriveSub.xMecanum(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
+   Robot.DriveSub.executeMecanumDrive();
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -37,12 +45,13 @@ public class DefaultDriveCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //Robot.DriveSub.StopThePresses();
+    Robot.DriveSub.StopThePresses();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.DriveSub.StopThePresses();
   }
 }

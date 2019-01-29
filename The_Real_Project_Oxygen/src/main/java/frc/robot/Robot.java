@@ -62,6 +62,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    ///
+    Robot.DriveSub.CorrectMotorDirectionForMecanumDrive();
+    ///
     UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
     usbCamera0.setResolution(320, 240);
     usbCamera0.setFPS(10);
@@ -185,15 +188,23 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
+    
+    SmartDashboard.putData(DriveSub.turnController);
+    SmartDashboard.putData(DriveSub.frontLeft);
+    SmartDashboard.putData(DriveSub.frontRight);
+    SmartDashboard.putData(DriveSub.rearLeft);
+    SmartDashboard.putData(DriveSub.rearRight);
 
     SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
     SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
+   
     if(OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
                  navXGyro.zeroYaw();
                  navXGyro.reset();
     }
 
     new DefaultDriveCommand().start();
+
     SmartDashboard.putData("Mecanum Drive System", DriveSub.mecDrive);
 
   }

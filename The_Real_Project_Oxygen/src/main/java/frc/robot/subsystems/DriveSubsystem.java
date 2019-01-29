@@ -32,11 +32,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-private static WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotMap.FRONT_LEFT_MOTOR_ID);
-private static WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
-private static WPI_TalonSRX rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
-private static WPI_TalonSRX rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
-public static AHRS driveGyroNavX;
+  public static WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotMap.FRONT_LEFT_MOTOR_ID);
+  public static WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
+  public static WPI_TalonSRX rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
+  public static WPI_TalonSRX rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
 public static PIDController turnController;
 public static double rotateToAngleRate;
 
@@ -63,7 +62,6 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
     setDefaultCommand(new DefaultDriveCommand());
-    driveGyroNavX = new AHRS(Port.kUSB);
       turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
       turnController.setInputRange(-180.0f,  180.0f);
       turnController.setOutputRange(-1.0, 1.0);
@@ -71,10 +69,10 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
       turnController.setContinuous(true);
 
       // Motor ramping
-      rearRight.configClosedloopRamp(0.5);
-      rearLeft.configClosedloopRamp(0.5);
-      frontRight.configClosedloopRamp(0.5);
-      frontLeft.configClosedloopRamp(0.5);
+   //   rearRight.configClosedloopRamp(0.5);
+    //  rearLeft.configClosedloopRamp(0.5);
+   //   frontRight.configClosedloopRamp(0.5);
+    //  frontLeft.configClosedloopRamp(0.5);
   }
 
   public void executeMecanumDrive() {
@@ -129,6 +127,8 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 
 
     } 
+
+
 // We may make our own mecamum method someday 
     public void homeBrewMecanumMethod() {
 
@@ -136,11 +136,10 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 
   public void CorrectMotorDirectionForMecanumDrive() {
     // Please do not edit this unless you know the purpose of it.
-
-    // frontRight.setInverted(true);
-     //frontLeft.setInverted(true);
-     //rearLeft.setInverted(true);
-    // rearRight.setInverted(true);
+     frontRight.setInverted(true);
+     frontLeft.setInverted(true);
+     rearLeft.setInverted(true);
+     rearRight.setInverted(true);
 
 
 }
