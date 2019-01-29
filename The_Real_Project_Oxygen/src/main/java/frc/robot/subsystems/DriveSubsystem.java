@@ -36,10 +36,23 @@ public MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  public void executeMecanumDrive() {
+  public void executeMecanumDrive(double ySpeed, double xSpeed, double rotation) {
     mecDrive.setSafetyEnabled(false);
-     mecDrive.driveCartesian(-OI.zeroSlotController.getX(Hand.kLeft),OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
+     mecDrive.driveCartesian(ySpeed, xSpeed, rotation);
     } 
+
+    public void executeMecanumDrive(double ySpeed, double xSpeed, double rotation, double gyroAngle ) {
+      mecDrive.setSafetyEnabled(false);
+       mecDrive.driveCartesian(-OI.zeroSlotController.getX(Hand.kLeft),OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
+      } 
+
+      public void xMecanum(double ySpeed, double xSpeed, double rotation) {
+          mecDrive.driveCartesian(-ySpeed, xSpeed, -rotation); 
+        }
+
+        public void xMecanum(double ySpeed, double xSpeed, double rotation, double gyroAngle) {
+          mecDrive.driveCartesian(-ySpeed, xSpeed, -rotation, gyroAngle);
+        }
 
   public void CorrectMotorDirectionForMecanumDrive() {
     // Please do not edit this unless you know the purpose of it.
