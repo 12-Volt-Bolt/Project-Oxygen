@@ -41,8 +41,9 @@ public class RobotMap {
   public final static int MOTOR_OFF = 0;
 
   public static int fillIn = 0;
-
-	
+ 
+  // The PDP
+  public static final int PDP_ID = 0;	
 	// The below would the IDs for buttons on any HID controller (basically any USB controller)
   // If using 
   

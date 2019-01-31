@@ -9,16 +9,22 @@ package frc.robot;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import org.opencv.core.Mat;
+
 import edu.wpi.first.wpilibj.Compressor;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -50,6 +56,8 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static AHRS navXGyro;
+ // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
+ // The the above at some point please. It keeps throwing an error
 
   // Stuff we don't need TODO
   public static Compressor Comp0= new Compressor(0);
@@ -63,7 +71,28 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     ///
-    Robot.DriveSub.CorrectMotorDirectionForMecanumDrive();
+   
+    
+    UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
+    MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1181", 1181);
+   
+
+    
+    visionTapeMJpeg.setSource(visionTapeCamera);
+
+
+    CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
+    VisionTapeCvSink.setSource(visionTapeCamera);
+    
+   CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
+   MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
+    theSecondMJepServer.setSource(outputStreamVisionTape);
+   
+    SmartDashboard.putNumber("port Number", visionTapeMJpeg.getPort());
+    SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
+    SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
+
+/*
     ///
     UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
     usbCamera0.setResolution(320, 240);
@@ -79,8 +108,24 @@ public class Robot extends TimedRobot {
 
     // Camera 2
 
+    ////////////
+   MjpegServer visionTapeSense = new MjpegServer("THE_VISION_TAPE", 1181);
+   visionTapeSense.setSource(usbCamera0);
+
+   
+    Mat visionTarget = new Mat();
+
+    cvSink0.grabFrame(visionTarget);
+
+    cvSink.Jpeg
+    ////////////
+
+  */
+
   
-    DriveSub.CorrectMotorDirectionForMecanumDrive();
+
+
+
 
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
@@ -107,7 +152,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
+   
+    
   }
 
   /**
@@ -139,8 +185,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_chooser.getSelected();
+   
 
+    SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
+    SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
      * switch(autoSelected) { case "My Auto": autonomousCommand = new
@@ -188,24 +236,10 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
-    
-    SmartDashboard.putData(DriveSub.turnController);
-    SmartDashboard.putData(DriveSub.frontLeft);
-    SmartDashboard.putData(DriveSub.frontRight);
-    SmartDashboard.putData(DriveSub.rearLeft);
-    SmartDashboard.putData(DriveSub.rearRight);
+    m_autonomousCommand = m_chooser.getSelected();
 
-    SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
-    SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
+
    
-    if(OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
-                 navXGyro.zeroYaw();
-                 navXGyro.reset();
-    }
-
-    new DefaultDriveCommand().start();
-
-    SmartDashboard.putData("Mecanum Drive System", DriveSub.mecDrive);
 
   }
 }

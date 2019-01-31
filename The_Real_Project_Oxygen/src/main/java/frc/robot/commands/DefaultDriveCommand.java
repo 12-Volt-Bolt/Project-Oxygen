@@ -31,8 +31,6 @@ public class DefaultDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    //Robot.DriveSub.executeMecanumDrive(-OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
-   //Robot.DriveSub.xMecanum(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
    Robot.DriveSub.executeMecanumDrive();
   }
 
@@ -52,6 +50,5 @@ public class DefaultDriveCommand extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.DriveSub.StopThePresses();
   }
 }

@@ -11,4 +11,9 @@ package frc.robot;
  * Add your docs here.
  */
 public class Constants_And_Equations {
+
+    public static double deadzone(double d, double deadzone){
+        return Math.abs(d) > Math.abs(deadzone) ? d : 0;
+    }
+
 }

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants_And_Equations;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -69,36 +70,37 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
       turnController.setContinuous(true);
 
       // Motor ramping
-   //   rearRight.configClosedloopRamp(0.5);
-    //  rearLeft.configClosedloopRamp(0.5);
-   //   frontRight.configClosedloopRamp(0.5);
-    //  frontLeft.configClosedloopRamp(0.5);
+      frontLeft.configOpenloopRamp(0.15);
+      rearRight.configOpenloopRamp(0.15);
+      rearLeft.configOpenloopRamp(0.15);
+      frontRight.configOpenloopRamp(0.15);
   }
 
   public void executeMecanumDrive() {
     mecDrive.setSafetyEnabled(false);
      
     
+    
     boolean rotateToAngle = false;
           
    SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
           if ( OI.zeroSlotController.getPOV() == 0) {
-              turnController.setSetpoint(179.9f);
+              turnController.setSetpoint( 0.0f);
               rotateToAngle = true;
           } 
           
           else if ( OI.zeroSlotController.getPOV() == 90) {
-              turnController.setSetpoint(-90.0f);
+              turnController.setSetpoint(90.0f);
               rotateToAngle = true;
           } 
           
           else if ( OI.zeroSlotController.getPOV() == 180) {
-              turnController.setSetpoint(0.0f);
+              turnController.setSetpoint(179.9f);
               rotateToAngle = true;
           } 
           
           else if ( OI.zeroSlotController.getPOV() == 270) {
-              turnController.setSetpoint(90.0f);
+              turnController.setSetpoint(-90.0f);
               rotateToAngle = true;
           }
         
@@ -111,19 +113,26 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               turnController.disable();
               // I don't know why getX has to be negitive, but let's just go with it
               if(Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.05) {
-                currentRotationRate = -OI.zeroSlotController.getX(Hand.kRight);
+                currentRotationRate = Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1);
               }
               else {
                 currentRotationRate = 0;
               }
-          }
+                  
+              
+
+            }
               /* Use the joystick X axis for lateral movement,          */
               /* Y axis for forward movement, and the current           */
               /* calculated rotation rate (or joystick Z axis),         */
               /* depending upon whether "rotate to angle" is active.    */
     
-    mecDrive.driveCartesian(-OI.zeroSlotController.getX(Hand.kLeft),OI.zeroSlotController.getY(Hand.kLeft),currentRotationRate, -Robot.navXGyro.getAngle());
-     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
+              mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
+              SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
+         
+     /////
+     
+     ////
 
 
     } 
@@ -150,4 +159,15 @@ public void StopThePresses() {
 public void pidWrite(double output) {
   rotateToAngleRate = output;
 }
+
+/////////
+// Please make it so motor speed will "ramp" if the Cantalon motor controller speed is less than 15%
+// Please make it so 
+//       fron./tLeft.configOpenloopRamp(0.15);
+//  
+////////
+
+
+
+
 }
