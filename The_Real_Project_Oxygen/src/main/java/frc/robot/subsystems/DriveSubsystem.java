@@ -118,6 +118,15 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
             turnController.setSetpoint(315.0f);
             rotateToAngle = true;
           }
+          else if(OI.zeroSlotController.getYButtonPressed() == true) {
+           setAllMotors(0.5);
+
+           if(Robot.navXGyro.getAngle() != 0 ){
+             turnController.setSetpoint(0f);
+             rotateToAngle = true;
+           }
+          
+          }
           double currentRotationRate;
         
           if ( rotateToAngle ) {
@@ -168,6 +177,14 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 }
 public void StopThePresses() {
   mecDrive.driveCartesian(RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF);
+}
+
+public void setAllMotors(double speed) {
+frontRight.set(speed);
+frontLeft.set(speed);
+rearRight.set(speed);
+rearLeft.set(speed);
+
 }
 
 public void pidWrite(double output) {
