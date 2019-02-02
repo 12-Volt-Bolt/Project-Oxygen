@@ -33,9 +33,6 @@ public Client(String address, int port) throws IOException
             socket0 = new Socket(address, port); 
             SmartDashboard.putString("Did Socket Open?", " Socket Has Connected! Yay!"); 
   
-            // takes input from terminal 
-            input  = new DataInputStream(System.in); 
-  
             // sends output to the socket 
             out    = new DataOutputStream(socket0.getOutputStream()); 
         } 
@@ -49,21 +46,9 @@ public Client(String address, int port) throws IOException
         } 
   
      // string to read message from input 
-     String line = ""; 
      
      // keep reading until "Over" is input 
-     while (!line.equals("Over")) 
-     { 
-         try
-         { 
-             line = input.readLine(); 
-             out.writeUTF(line); 
-         } 
-         catch(IOException i) 
-         { 
-             System.out.println(i); 
-         } 
-     } 
+   
 
      // close the connection 
      try

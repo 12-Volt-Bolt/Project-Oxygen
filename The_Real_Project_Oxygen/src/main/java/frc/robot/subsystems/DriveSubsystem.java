@@ -133,7 +133,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               turnController.disable();
               // I don't know why getX has to be negitive, but let's just go with it
               if(Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.05) {
-                currentRotationRate = Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1);
+                currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
               }
               else {
                 currentRotationRate = 0;
@@ -147,7 +147,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               /* calculated rotation rate (or joystick Z axis),         */
               /* depending upon whether "rotate to angle" is active.    */
     
-              mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
+              mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
               SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
          
      /////
@@ -156,7 +156,15 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 
 
     } 
+ 
+    public static void turnToAngle(double angle) {
+      turnController.setSetpoint(angle);
+      turnController.enable();
+      double currentRotationRate;
+      currentRotationRate = rotateToAngleRate;
+      mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
 
+    }
 
 // We may make our own mecamum method someday 
     public void homeBrewMecanumMethod() {

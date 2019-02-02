@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,6 +22,8 @@ public class OI {
   public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
   public static XboxController coXJoy = new XboxController(RobotMap.CONTROLLER_TWO_ID);
 
+  JoystickButton xJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID);
+  
   
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
@@ -48,4 +52,5 @@ public class OI {
   // Start the command when the button is released and let it run the command
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
+
 }

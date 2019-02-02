@@ -84,19 +84,25 @@ public class Robot extends TimedRobot {
     
     UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
     MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1181", 1181);
-   
+    CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
+    VisionTapeCvSink.setSource(visionTapeCamera);
+    CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
+
+    VisionTapeCvSink.setSource(visionTapeCamera);
 
     
     visionTapeMJpeg.setSource(visionTapeCamera);
 
 
-    CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
-    VisionTapeCvSink.setSource(visionTapeCamera);
+   
     
-   CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
    MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
     theSecondMJepServer.setSource(outputStreamVisionTape);
    
+    CameraServer.getInstance().addCamera(visionTapeCamera);
+    CameraServer.getInstance().startAutomaticCapture();
+    CameraServer.getInstance().getVideo(visionTapeCamera);
+    CameraServer.getInstance().putVideo("Vision-Tape", 480, 640);
     SmartDashboard.putNumber("port Number", visionTapeMJpeg.getPort());
     SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
     SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
@@ -244,6 +250,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
     new DefaultDriveCommand().start();
+
+    SmartDashboard.putData("Mecamum Drive", DriveSub.mecDrive);
   }
 
   /**
