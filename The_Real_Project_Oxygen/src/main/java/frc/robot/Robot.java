@@ -12,6 +12,8 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 
+import java.io.IOException;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import org.opencv.core.Mat;
@@ -24,6 +26,7 @@ import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -56,6 +59,10 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static AHRS navXGyro;
+  ////// Encoder
+ // public static Encoder enc0 = new Encoder(0, 1); 
+ // TODO: this is dead
+  ////// Encoder Stuff
  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
  // The the above at some point please. It keeps throwing an error
 
@@ -71,7 +78,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     ///
-   
+    
+    // TODO TEST!!
+    //
     
     UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
     MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1181", 1181);
@@ -91,6 +100,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("port Number", visionTapeMJpeg.getPort());
     SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
     SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
+    SmartDashboard.putString("get Listen Description", visionTapeMJpeg.getDescription());
+
 
 /*
     ///
@@ -186,7 +197,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
    
-
+    try {
+      Client client = new Client("127.0.0.1", 5000);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
     SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
     /*
@@ -236,6 +252,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
+    
     m_autonomousCommand = m_chooser.getSelected();
 
 
