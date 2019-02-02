@@ -8,7 +8,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,10 +22,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class OI {
 
   public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
-  public static XboxController coXJoy = new XboxController(RobotMap.CONTROLLER_TWO_ID);
-
-  JoystickButton xJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID);
+  public static XboxController coXJoy = new XboxController(RobotMap.CONTROLLER_TWO_ID);  
   
+  JoystickButton xJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
+                 xJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
+                 xJoyAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
+                 xJoyXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
+                 xJoyRBButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_BUMPER_ID),
+                 xJoyRTButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
+                 xJoyLBButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_BUMPER_ID),
+                 xJoyLTButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
+                 xJoyLeftStickButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_STICK_ID),
+                 xJoyRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
+                 xJoyMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
+                 xJoyStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
+                 
+
   
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
@@ -53,4 +67,18 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
 
+} 
+
+public static void leftRumbleMethod(double power) {
+  zeroSlotController.setRumble(RumbleType.kLeftRumble, power);
+
+}
+
+public static void rightRumbleMethod(double power) {
+  zeroSlotController.setRumble(RumbleType.kRightRumble, power);
+}
+
+public static void doubleRumbleMethod( double leftPower, double rightPower) {
+leftRumbleMethod(leftPower);
+rightRumbleMethod(rightPower);
 }
