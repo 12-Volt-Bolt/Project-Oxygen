@@ -88,22 +88,36 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               turnController.setSetpoint( 0.0f);
               rotateToAngle = true;
           } 
+          else if ( OI.zeroSlotController.getPOV() == 45) {
+            turnController.setSetpoint(45.0f);
+            rotateToAngle = true;
+          }
           
           else if ( OI.zeroSlotController.getPOV() == 90) {
               turnController.setSetpoint(90.0f);
               rotateToAngle = true;
           } 
+          else if ( OI.zeroSlotController.getPOV() == 135) {
+            turnController.setSetpoint(135.0f);
+            rotateToAngle = true;
+          }
           
           else if ( OI.zeroSlotController.getPOV() == 180) {
               turnController.setSetpoint(179.9f);
               rotateToAngle = true;
           } 
-          
+          else if ( OI.zeroSlotController.getPOV() == 225) {
+            turnController.setSetpoint(225.0f);
+            rotateToAngle = true;
+          }
           else if ( OI.zeroSlotController.getPOV() == 270) {
-              turnController.setSetpoint(-90.0f);
+              turnController.setSetpoint(270.0f);
               rotateToAngle = true;
           }
-        
+          else if ( OI.zeroSlotController.getPOV() == 315) {
+            turnController.setSetpoint(315.0f);
+            rotateToAngle = true;
+          }
           double currentRotationRate;
         
           if ( rotateToAngle ) {
