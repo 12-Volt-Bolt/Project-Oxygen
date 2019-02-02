@@ -70,10 +70,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
       turnController.setContinuous(true);
 
       // Motor ramping
-      frontLeft.configOpenloopRamp(0.15);
-      rearRight.configOpenloopRamp(0.15);
-      rearLeft.configOpenloopRamp(0.15);
-      frontRight.configOpenloopRamp(0.15);
+      
   }
 
   public void executeMecanumDrive() {
