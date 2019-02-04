@@ -71,11 +71,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    ///
-    
-    // TODO TEST!!
-    //
-    
+  
+  UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+  MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+  mjpegServer1.setSource(usbCamera); CvSink cvSink = new CvSink("opencv_USB Camera 0");
+  cvSink.setSource(usbCamera);
+  CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
+  MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
+  mjpegServer2.setSource(outputStream);
+
+
+
+/* Test Test Test TODO
     UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
     MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1181", 1181);
     CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
@@ -87,10 +94,10 @@ public class Robot extends TimedRobot {
     
     visionTapeMJpeg.setSource(visionTapeCamera);
 
-
+   Test Test Test TODO
    
     
-   MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
+    MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
     theSecondMJepServer.setSource(outputStreamVisionTape);
    
     CameraServer.getInstance().addCamera(visionTapeCamera);
@@ -102,36 +109,28 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
     SmartDashboard.putString("get Listen Description", visionTapeMJpeg.getDescription());
 
+    */
+
 
 /*
-    ///
+    /// Camera 1
+
     UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
     usbCamera0.setResolution(320, 240);
     usbCamera0.setFPS(10);
     CvSink cvSink0 = CameraServer.getInstance().getVideo();
 
-    // Camera 1
+    /// Camera 1
+
+    /// Camera 2
 
     UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
     usbCamera1.setResolution(320, 240);
     usbCamera1.setFPS(10);
     CvSink cvSink1 = CameraServer.getInstance().getVideo();
 
-    // Camera 2
+    /// Camera 2
 
-    ////////////
-   MjpegServer visionTapeSense = new MjpegServer("THE_VISION_TAPE", 1181);
-   visionTapeSense.setSource(usbCamera0);
-
-   
-    Mat visionTarget = new Mat();
-
-    cvSink0.grabFrame(visionTarget);
-
-    cvSink.Jpeg
-    ////////////
-
-  */
 
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
