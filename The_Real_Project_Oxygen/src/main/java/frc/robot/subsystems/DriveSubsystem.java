@@ -37,8 +37,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public static WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
   public static WPI_TalonSRX rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
   public static WPI_TalonSRX rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
-public static PIDController turnController;
-public static double rotateToAngleRate;
+  
+  //PID, YAY!!!
+  public static PIDController turnController;
+  public static double rotateToAngleRate;
 
   static final double kP = 0.03;
   static final double kI = 0.00;
@@ -50,9 +52,7 @@ public static double rotateToAngleRate;
 
 static final double kToleranceDegrees = 2.0f;
 
-// Remember that you switched the front wheels
 public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
-//public static MecanumDrive fsdaf = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor)
   
  public DriveSubsystem() {
     super();
@@ -62,25 +62,20 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    setDefaultCommand(new DefaultDriveCommand());
+      setDefaultCommand(new DefaultDriveCommand());
       turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
       turnController.setInputRange(-180.0f,  180.0f);
       turnController.setOutputRange(-1.0, 1.0);
       turnController.setAbsoluteTolerance(kToleranceDegrees);
       turnController.setContinuous(true);
-
-      // Motor ramping
       
   }
 
   public void executeMecanumDrive() {
     mecDrive.setSafetyEnabled(false);
      
-    
-    
     boolean rotateToAngle = false;
           
-   SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
           if ( OI.zeroSlotController.getPOV() == 0) {
               turnController.setSetpoint( 0.0f);
               rotateToAngle = true;
@@ -115,15 +110,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
             turnController.setSetpoint(315.0f);
             rotateToAngle = true;
           }
-          else if(OI.zeroSlotController.getYButtonPressed() == true) {
-           setAllMotors(0.5);
-
-           if(Robot.navXGyro.getAngle() != 0 ){
-             turnController.setSetpoint(0f);
-             rotateToAngle = true;
-           }
           
-          }
           double currentRotationRate;
         
           if ( rotateToAngle ) {
@@ -131,16 +118,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               currentRotationRate = rotateToAngleRate;
           } else {
               turnController.disable();
-              // I don't know why getX has to be negitive, but let's just go with it
-              if(Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.05) {
-                currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
-              }
-              else {
-                currentRotationRate = 0;
-              }
-                  
-              
-
+              currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
             }
               /* Use the joystick X axis for lateral movement,          */
               /* Y axis for forward movement, and the current           */
@@ -149,12 +127,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
     
               mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
               SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
-         
-     /////
-     
-     ////
-
-
+   
     } 
  
     public static void turnToAngle(double angle) {
@@ -195,15 +168,5 @@ rearLeft.set(speed);
 public void pidWrite(double output) {
   rotateToAngleRate = output;
 }
-
-/////////
-// Please make it so motor speed will "ramp" if the Cantalon motor controller speed is less than 15%
-// Please make it so 
-//       fron./tLeft.configOpenloopRamp(0.15);
-//  
-////////
-
-
-
 
 }

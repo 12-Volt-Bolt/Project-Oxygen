@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -67,18 +68,35 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
 
-} 
 
 public static void leftRumbleMethod(double power) {
   zeroSlotController.setRumble(RumbleType.kLeftRumble, power);
-
+}
+public static void leftRumbleMethod(double power, double delay) {
+  leftRumbleMethod(power);
+  Timer.delay(delay);
+  leftRumbleMethod(0);
 }
 
 public static void rightRumbleMethod(double power) {
   zeroSlotController.setRumble(RumbleType.kRightRumble, power);
 }
 
+public static void rightRumbleMethod(double power, double delay) {
+  rightRumbleMethod(power);
+  Timer.delay(delay);
+  rightRumbleMethod(0);
+}
+
+
 public static void doubleRumbleMethod( double leftPower, double rightPower) {
 leftRumbleMethod(leftPower);
 rightRumbleMethod(rightPower);
+}
+
+public static void doubleRumbleMethod( double leftPower, double leftDelay, double rightPower, double rightDelay) {
+  leftRumbleMethod(leftPower, leftDelay);
+  rightRumbleMethod(rightPower, rightDelay);
+  }
+
 }

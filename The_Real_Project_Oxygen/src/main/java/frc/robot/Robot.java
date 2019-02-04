@@ -59,16 +59,10 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static AHRS navXGyro;
-  ////// Encoder
- // public static Encoder enc0 = new Encoder(0, 1); 
- // TODO: this is dead
-  ////// Encoder Stuff
+ 
  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
- // The the above at some point please. It keeps throwing an error
-
-  // Stuff we don't need TODO
-  public static Compressor Comp0= new Compressor(0);
-
+ // implement the above at some point please. It keeps throwing an error
+ // TODO
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -139,11 +133,6 @@ public class Robot extends TimedRobot {
 
   */
 
-  
-
-
-
-
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
 
@@ -169,7 +158,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-   
+              SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
+              SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
+
     
   }
 
