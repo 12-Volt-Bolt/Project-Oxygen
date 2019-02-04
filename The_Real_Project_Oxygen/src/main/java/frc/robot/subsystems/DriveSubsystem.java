@@ -126,7 +126,6 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               /* depending upon whether "rotate to angle" is active.    */
     
               mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
-              SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
    
     } 
  
