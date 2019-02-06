@@ -129,6 +129,10 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
    
     } 
+
+    public void driveRamp(){
+      mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)), currentRotationRate, -Robot.navXGyro.getAngle());
+    }
  
     public static void turnToAngle(double angle) {
       turnController.setSetpoint(angle);

@@ -193,7 +193,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-   
+   ////// The Jamie G test site
+    DriveSub.turnToAngle(90);
+
+   //////
     try {
       Client client = new Client("127.0.0.1", 5000);
     } catch (IOException e) {
