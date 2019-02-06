@@ -28,11 +28,11 @@ private DataOutputStream out = null;
 public Client(String address, int port) throws IOException 
 { 
 
+    while (true) {
         try
         { 
             socket0 = new Socket(address, port); 
-            SmartDashboard.putString("Did Socket Open?", " Socket Has Connected! Yay!"); 
-  
+             
             // sends output to the socket 
             out    = new DataOutputStream(socket0.getOutputStream()); 
         } 
@@ -44,24 +44,14 @@ public Client(String address, int port) throws IOException
         { 
             System.out.println(i); 
         } 
-  
+    }
      // string to read message from input 
      
      // keep reading until "Over" is input 
    
 
      // close the connection 
-     try
-     { 
-         input.close(); 
-         out.close(); 
-         socket0.close(); 
-     } 
-     catch(IOException i) 
-     { 
-         System.out.println(i); 
-     } 
- } 
+}
 
 
 }

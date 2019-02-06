@@ -16,4 +16,9 @@ public class Constants_And_Equations {
         return Math.abs(d) > Math.abs(deadzone) ? d : 0;
     }
 
+    public static double parabola(double d){
+        double dten = d*10;
+        return Math.pow(dten, 2);
+    }
+
 }

@@ -12,6 +12,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.navx.frc.AHRS.SerialDataType;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SPI;
@@ -37,12 +38,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public static WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
   public static WPI_TalonSRX rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
   public static WPI_TalonSRX rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
-public static PIDController turnController;
-  /**
-   *
-   */
-
-public static double rotateToAngleRate;
+  
+  //PID, YAY!!!
+  public static PIDController turnController;
+  public static double rotateToAngleRate;
 
   static final double kP = 0.03;
   static final double kI = 0.00;
@@ -54,9 +53,7 @@ public static double rotateToAngleRate;
 
 static final double kToleranceDegrees = 2.0f;
 
-// Remember that you switched the front wheels
 public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
-//public static MecanumDrive fsdaf = new MecanumDrive(frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor)
   
  public DriveSubsystem() {
     super();
@@ -66,26 +63,24 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    setDefaultCommand(new DefaultDriveCommand());
+      setDefaultCommand(new DefaultDriveCommand());
       turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
       turnController.setInputRange(-180.0f,  180.0f);
       turnController.setOutputRange(-1.0, 1.0);
       turnController.setAbsoluteTolerance(kToleranceDegrees);
       turnController.setContinuous(true);
-
-      // Motor ramping
       
   }
 
   public void executeMecanumDrive() {
     mecDrive.setSafetyEnabled(false);
-     
-    
+         
 
     boolean rotateToAngle = false;
           
-   SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
-          if (OI.zeroSlotController.getPOV() == 0) {
+
+          
+          if ( OI.zeroSlotController.getPOV() == 0) {
               turnController.setSetpoint( 0.0f);
               rotateToAngle = true;
           } 
@@ -128,7 +123,8 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
            }
 
           }
-          double currentRotationRate;
+        
+                    double currentRotationRate;
 
           if ( rotateToAngle ) {
             turnController.enable();
@@ -145,6 +141,9 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
                   
               
 
+
+              turnController.disable();
+              currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
             }
               /* Use the joystick X axis for lateral movement,          */
               /* Y axis for forward movement, and the current           */
@@ -152,14 +151,12 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               /* depending upon whether "rotate to angle" is active.    */
     
               mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
-              SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
-         
-     /////
-     
-     ////
-
-
+   
     } 
+
+    public void driveRamp(double twist){
+      mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)), twist, -Robot.navXGyro.getAngle());
+    }
  
     public static void turnToAngle(double angle) {
       turnController.setSetpoint(angle);
@@ -183,11 +180,11 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 
 
 }
-public void StopThePresses() {
+public static void StopThePresses() {
   mecDrive.driveCartesian(RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF);
 }
 
-public void setAllMotors(double speed) {
+public static void setAllMotors(double speed) {
 frontRight.set(speed);
 frontLeft.set(speed);
 rearRight.set(speed);
@@ -199,14 +196,76 @@ public void pidWrite(double output) {
   rotateToAngleRate = output;
 }
 
-/////////
-// Please make it so motor speed will "ramp" if the Cantalon motor controller speed is less than 15%
-// Please make it so 
-//       fron./tLeft.configOpenloopRamp(0.15);
-//  
-////////
+/// Encoder methods should go here. Please make sure to have an encoder object as a parameter.
+// Wheels have an 8 in diameter
+// Methods we need: Drive "x" distance, zero encoder each encoder, zero both enocoders
 
+// Reset one encoder
+public static void EncoderReset(Encoder encoder) 
+{
+  encoder.reset();
+}
 
+// Reset both encoders
+public static void EncoderReset(Encoder encoder1, Encoder encoder2)
+{
+  encoder1.reset();
+  encoder2.reset();
+}
 
+// Read encoder and calculate distance turned in Centimeters
+public static int EncoderReadCm(Encoder encoder)
+{
+  return (int) Math.round(encoder.get() * 63.84);
+}
+
+// Read encoder and calculate distance turned in inches
+public static int EncoderReadIn(Encoder encoder)
+{
+  return (int) Math.round(encoder.get() * 25.13);
+
+}
+
+// Turn specified wheel, specified distance, specified speed, in centimeters
+public static void TurnWheelDistanceCm(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
+{
+  encoder.reset();
+  esc.set(speed);
+  while(Math.abs(EncoderReadCm(encoder)) < Math.abs(distance)){
+  }
+  esc.set(RobotMap.MOTOR_OFF);
+}
+
+// Turn specified wheel, specified distance, specified speed, in inches
+public static void TurnWheelDistanceIn(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
+{
+  encoder.reset();
+  esc.set(speed);
+  while(Math.abs(EncoderReadIn(encoder)) < Math.abs(distance)){
+  }
+  esc.set(RobotMap.MOTOR_OFF);
+}
+
+// Move entire robot Specified distance, specified speed, in centimeters
+public static void MoveDistanceCm(Encoder encoder, int distance, double speed)
+{
+  EncoderReset(encoder);
+  setAllMotors(speed);
+  while(Math.abs(EncoderReadCm(encoder)) < Math.abs(distance)){
+  }
+  StopThePresses();
+}
+
+// Move entire robot Specified distance, specified speed, in inches
+public static void MoveDistanceIn(Encoder encoder, int distance, double speed)
+{
+  EncoderReset(encoder);
+  setAllMotors(speed);
+  while(Math.abs(EncoderReadIn(encoder)) < Math.abs(distance)){
+  }
+  StopThePresses();
+}
+
+///
 
 }

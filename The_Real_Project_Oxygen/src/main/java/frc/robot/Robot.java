@@ -64,16 +64,16 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static AHRS navXGyro;
-  ////// Encoder
- // public static Encoder enc0 = new Encoder(0, 1); 
- // TODO: this is dead
-  ////// Encoder Stuff
+ 
  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
  // The the above at some point please. It keeps throwing an error
 
   // Stuff we don't need TODO
   public static Compressor Comp0 = new Compressor(0);
 
+
+ // implement the above at some point please. It keeps throwing an error
+ // TODO
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -102,6 +102,20 @@ public class Robot extends TimedRobot {
     // TODO TEST!!
     //
     /*
+=======
+  
+  UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+  MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+  mjpegServer1.setSource(usbCamera); CvSink cvSink = new CvSink("opencv_USB Camera 0");
+  cvSink.setSource(usbCamera);
+  CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
+  MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
+  mjpegServer2.setSource(outputStream);
+
+
+
+/* Test Test Test TODO
+>>>>>>> 087ab63f0f1a94b07ff512af8a060d8ef8c0c7a4
     UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
     MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1182", 1182);
     CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
@@ -112,6 +126,16 @@ public class Robot extends TimedRobot {
 
      
 
+=======
+   Test Test Test TODO
+   
+    
+    MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
+    theSecondMJepServer.setSource(outputStreamVisionTape);
+   
+    CameraServer.getInstance().addCamera(visionTapeCamera);
+    CameraServer.getInstance().startAutomaticCapture();
+    CameraServer.getInstance().getVideo(visionTapeCamera);
     CameraServer.getInstance().putVideo("Vision-Tape", 480, 640);
     SmartDashboard.putNumber("port Number", visionTapeMJpeg.getPort());
     SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
@@ -119,14 +143,19 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("get Listen Description", visionTapeMJpeg.getDescription());
 */
 
+
+
 /*
-    ///
+    /// Camera 1
+
     UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
     usbCamera0.setResolution(320, 240);
     usbCamera0.setFPS(10);
     CvSink cvSink0 = CameraServer.getInstance().getVideo();
 
-    // Camera 1
+    /// Camera 1
+
+    /// Camera 2
 
     UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
     usbCamera1.setResolution(320, 240);
@@ -156,6 +185,8 @@ public class Robot extends TimedRobot {
 //
 
 
+    /// Camera 2
+
 
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
@@ -180,9 +211,12 @@ public class Robot extends TimedRobot {
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and SmartDashboard integrated updating.
    */
+
   @Override
   public void robotPeriodic() {
-   
+              SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
+              SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
+
     
   }
 
@@ -220,6 +254,11 @@ public class Robot extends TimedRobot {
     DriveSub.turnToAngle(90);
     /////
    
+
+   ////// The Jamie G test site
+    DriveSub.turnToAngle(90);
+
+   //////
     try {
       Client client = new Client("127.0.0.1", 5000);
     } catch (IOException e) {
