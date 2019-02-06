@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class DefaultDriveCommand extends Command {
   public DefaultDriveCommand() {
@@ -31,7 +32,12 @@ public class DefaultDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-   Robot.DriveSub.executeMecanumDrive();
+    if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)){
+      Robot.DriveSub.driveRamp(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
+    } 
+    else {
+      Robot.DriveSub.executeMecanumDrive();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
