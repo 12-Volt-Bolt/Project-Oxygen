@@ -38,6 +38,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public static WPI_TalonSRX rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
   public static WPI_TalonSRX rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
 public static PIDController turnController;
+  /**
+   *
+   */
+
 public static double rotateToAngleRate;
 
   static final double kP = 0.03;
@@ -77,11 +81,11 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
     mecDrive.setSafetyEnabled(false);
      
     
-    
+
     boolean rotateToAngle = false;
           
    SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
-          if ( OI.zeroSlotController.getPOV() == 0) {
+          if (OI.zeroSlotController.getPOV() == 0) {
               turnController.setSetpoint( 0.0f);
               rotateToAngle = true;
           } 
@@ -90,7 +94,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
             rotateToAngle = true;
           }
           
-          else if ( OI.zeroSlotController.getPOV() == 90) {
+          else if (OI.zeroSlotController.getPOV() == 90) {
               turnController.setSetpoint(90.0f);
               rotateToAngle = true;
           } 
@@ -99,38 +103,38 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
             rotateToAngle = true;
           }
           
-          else if ( OI.zeroSlotController.getPOV() == 180) {
+          else if (OI.zeroSlotController.getPOV() == 180) {
               turnController.setSetpoint(179.9f);
               rotateToAngle = true;
           } 
-          else if ( OI.zeroSlotController.getPOV() == 225) {
+          else if (OI.zeroSlotController.getPOV() == 225) {
             turnController.setSetpoint(225.0f);
             rotateToAngle = true;
           }
-          else if ( OI.zeroSlotController.getPOV() == 270) {
+          else if (OI.zeroSlotController.getPOV() == 270) {
               turnController.setSetpoint(270.0f);
               rotateToAngle = true;
           }
           else if ( OI.zeroSlotController.getPOV() == 315) {
             turnController.setSetpoint(315.0f);
             rotateToAngle = true;
-          }
+    }
           else if(OI.zeroSlotController.getYButtonPressed() == true) {
            setAllMotors(0.5);
 
            if(Robot.navXGyro.getAngle() != 0 ){
-             turnController.setSetpoint(0f);
+            turnController.setSetpoint(0f);
              rotateToAngle = true;
            }
-          
+
           }
           double currentRotationRate;
-        
+
           if ( rotateToAngle ) {
-              turnController.enable();
+            turnController.enable();
               currentRotationRate = rotateToAngleRate;
           } else {
-              turnController.disable();
+            turnController.disable();
               // I don't know why getX has to be negitive, but let's just go with it
               if(Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.05) {
                 currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
@@ -159,7 +163,6 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
  
     public static void turnToAngle(double angle) {
       turnController.setSetpoint(angle);
-      turnController.enable();
       double currentRotationRate;
       currentRotationRate = rotateToAngleRate;
       mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());

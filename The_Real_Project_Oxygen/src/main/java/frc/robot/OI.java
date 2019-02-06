@@ -67,7 +67,7 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
 
-} 
+
 
 public static void leftRumbleMethod(double power) {
   zeroSlotController.setRumble(RumbleType.kLeftRumble, power);
@@ -81,4 +81,5 @@ public static void rightRumbleMethod(double power) {
 public static void doubleRumbleMethod( double leftPower, double rightPower) {
 leftRumbleMethod(leftPower);
 rightRumbleMethod(rightPower);
+}
 }
