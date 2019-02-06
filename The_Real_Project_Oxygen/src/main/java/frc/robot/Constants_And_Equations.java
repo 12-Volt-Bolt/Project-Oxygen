@@ -18,7 +18,11 @@ public class Constants_And_Equations {
 
     public static double parabola(double d){
         double dten = d*10;
-        return Math.pow(dten, 2);
+        if (dten > 0) {
+            return Math.pow(dten, 2)/10;
+        } else {
+            return (Math.pow(dten, 2)/10)*-1;
+        }
     }
 
 }
