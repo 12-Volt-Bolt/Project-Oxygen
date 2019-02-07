@@ -53,6 +53,11 @@ import frc.robot.subsystems.ExampleSubsystem;
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static DriveSubsystem DriveSub = new DriveSubsystem();
+  /**
+   *
+   */
+
+  private static final DriveSubsystem driveSub = DriveSub;
   public static OI m_oi;
   Solenoid PistonTestOne = new Solenoid(RobotMap.TOP_SOLENOID_ID);
   Solenoid PistonTestTwo = new Solenoid(RobotMap.BOTTOM_SOLENOID_ID);
@@ -61,6 +66,12 @@ public class Robot extends TimedRobot {
   public static AHRS navXGyro;
  
  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
+ // The the above at some point please. It keeps throwing an error
+
+  // Stuff we don't need TODO
+  public static Compressor Comp0 = new Compressor(0);
+
+
  // implement the above at some point please. It keeps throwing an error
  // TODO
   
@@ -71,6 +82,27 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    ///
+    
+
+    UsbCamera camera0 = CameraServer.getInstance().startAutomaticCapture();
+    UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture();
+
+    MjpegServer mServer0 = CameraServer.getInstance().addServer("Another_Server0");
+    MjpegServer mServer1 = CameraServer.getInstance().addServer("Another_Server_1");
+
+   mServer0.setSource(camera0);
+   mServer1.setSource(camera1);
+
+   
+
+// NT: server: client CONNECTED: 10.15.57.180 port 61914
+
+
+    // TODO TEST!!
+    //
+    /*
+=======
   
   UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
   MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
@@ -83,17 +115,18 @@ public class Robot extends TimedRobot {
 
 
 /* Test Test Test TODO
+>>>>>>> 087ab63f0f1a94b07ff512af8a060d8ef8c0c7a4
     UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
-    MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1181", 1181);
+    MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1182", 1182);
     CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
-    VisionTapeCvSink.setSource(visionTapeCamera);
-    CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
 
-    VisionTapeCvSink.setSource(visionTapeCamera);
-
-    
+   // VisionTapeCvSink.setSource(visionTapeCamera);
     visionTapeMJpeg.setSource(visionTapeCamera);
+   // CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
 
+     
+
+=======
    Test Test Test TODO
    
     
@@ -108,8 +141,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
     SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
     SmartDashboard.putString("get Listen Description", visionTapeMJpeg.getDescription());
+*/
 
-    */
 
 
 /*
@@ -128,6 +161,29 @@ public class Robot extends TimedRobot {
     usbCamera1.setResolution(320, 240);
     usbCamera1.setFPS(10);
     CvSink cvSink1 = CameraServer.getInstance().getVideo();
+
+    // Camera 2
+
+    ////////////
+   MjpegServer visionTapeSense = new MjpegServer("THE_VISION_TAPE", 1181);
+   visionTapeSense.setSource(usbCamera0);
+
+   
+    Mat visionTarget = new Mat();
+
+    cvSink0.grabFrame(visionTarget);
+
+    cvSink.Jpeg
+    ////////////
+
+  */
+
+  
+// Testing Angles
+
+
+//
+
 
     /// Camera 2
 
@@ -155,7 +211,7 @@ public class Robot extends TimedRobot {
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and SmartDashboard integrated updating.
    */
-}
+
   @Override
   public void robotPeriodic() {
               SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
@@ -193,6 +249,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+    ////// Jamie G testing
+    DriveSub.turnToAngle(90);
+    /////
+   
+
    ////// The Jamie G test site
     DriveSub.turnToAngle(90);
 
@@ -218,6 +280,7 @@ public class Robot extends TimedRobot {
     }
   }
 
+  
   /**
    * This function is called periodically during autonomous.
    */
@@ -245,7 +308,8 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     new DefaultDriveCommand().start();
 
-    SmartDashboard.putData("Mecamum Drive", DriveSub.mecDrive);
+    SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller ", driveSub.turnController);
   }
 
   /**

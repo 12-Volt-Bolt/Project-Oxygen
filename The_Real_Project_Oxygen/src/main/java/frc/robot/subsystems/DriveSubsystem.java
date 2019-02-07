@@ -78,50 +78,62 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 
   public void executeMecanumDrive() {
     mecDrive.setSafetyEnabled(false);
-     
-    boolean rotateToAngle = false;
-          
-          if ( OI.zeroSlotController.getPOV() == 0) {
-              turnController.setSetpoint( 0.0f);
-              rotateToAngle = true;
-          } 
-          else if ( OI.zeroSlotController.getPOV() == 45) {
-            turnController.setSetpoint(45.0f);
-            rotateToAngle = true;
-          }
-          
-          else if ( OI.zeroSlotController.getPOV() == 90) {
-              turnController.setSetpoint(90.0f);
-              rotateToAngle = true;
-          } 
-          else if ( OI.zeroSlotController.getPOV() == 135) {
-            turnController.setSetpoint(135.0f);
-            rotateToAngle = true;
-          }
-          
-          else if ( OI.zeroSlotController.getPOV() == 180) {
-              turnController.setSetpoint(179.9f);
-              rotateToAngle = true;
-          } 
-          else if ( OI.zeroSlotController.getPOV() == 225) {
-            turnController.setSetpoint(225.0f);
-            rotateToAngle = true;
-          }
-          else if ( OI.zeroSlotController.getPOV() == 270) {
-              turnController.setSetpoint(270.0f);
-              rotateToAngle = true;
-          }
-          else if ( OI.zeroSlotController.getPOV() == 315) {
-            turnController.setSetpoint(315.0f);
-            rotateToAngle = true;
-          }
-          
-          double currentRotationRate;
-        
+         
+
+    boolean rotateToAngle = false;          
+    double currentRotationRate;
+    
+    switch(OI.zeroSlotController.getPOV()){
+      case 0:
+      SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
+        turnController.setSetpoint(0.0f);
+        rotateToAngle = true;
+      break; 
+      case 45:
+        turnController.setSetpoint(45.0f);
+        rotateToAngle = true;
+      break;
+      case 90:
+        turnController.setSetpoint(90.0f);
+        rotateToAngle = true;
+      break; 
+      case 135:
+        turnController.setSetpoint(135.0f);
+        rotateToAngle = true;
+      break;
+      case 180:
+        turnController.setSetpoint(179.9f);
+        rotateToAngle = true;
+      break;
+      case 225:
+        turnController.setSetpoint(225.0f);
+        rotateToAngle = true;
+      break;
+      case 270:
+        turnController.setSetpoint(270.0f);
+        rotateToAngle = true;
+      break;
+      case 315:
+        turnController.setSetpoint(315.0f);
+        rotateToAngle = true;
+      break;         
+    }    
           if ( rotateToAngle ) {
-              turnController.enable();
+            turnController.enable();
               currentRotationRate = rotateToAngleRate;
           } else {
+            turnController.disable();
+              // I don't know why getX has to be negitive, but let's just go with it
+              if(Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.05) {
+                currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
+              }
+              else {
+                currentRotationRate = 0;
+              }
+                  
+              
+
+
               turnController.disable();
               currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
             }
@@ -139,7 +151,6 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
  
     public static void turnToAngle(double angle) {
       turnController.setSetpoint(angle);
-      turnController.enable();
       double currentRotationRate;
       currentRotationRate = rotateToAngleRate;
       mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
@@ -247,6 +258,7 @@ public static void MoveDistanceIn(Encoder encoder, int distance, double speed)
   StopThePresses();
 }
 
+<<<<<<< HEAD
 // Move robot forward/backwards without rotation drifting
 // Strafe robot
 // Robot can still turn without inturupting movement
@@ -265,5 +277,7 @@ public static void MoveMecanumStraight()
 }
 
 ///
+=======
+>>>>>>> d557d652bb1468f4640173cb337d55d378bc833d
 
 }
