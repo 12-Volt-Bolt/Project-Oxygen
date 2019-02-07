@@ -48,6 +48,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   static final double kD = 0.00;
   static final double kF = 0.00;
 
+  // variables for tank driving
+  private static double newZero = 0.00;
+  private static boolean newNewZero = true;
+
   /* This tuning parameter indicates how close to "on target" the    */
 /* PID Controller will attempt to get.                             */
 
@@ -127,7 +131,6 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
               /* depending upon whether "rotate to angle" is active.    */
     
               mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
-   
     } 
 
     public void driveRamp(double twist){
@@ -159,6 +162,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 }
 public static void StopThePresses() {
   mecDrive.driveCartesian(RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF);
+  mecDrive.setSafetyEnabled(true);
 }
 
 public static void setAllMotors(double speed) {
@@ -204,7 +208,7 @@ public static int EncoderReadIn(Encoder encoder)
 }
 
 // Turn specified wheel, specified distance, specified speed, in centimeters
-public static void TurnWheelDistanceCm(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
+public static void MoveWheelDistanceCm(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
 {
   encoder.reset();
   esc.set(speed);
@@ -214,7 +218,7 @@ public static void TurnWheelDistanceCm(WPI_TalonSRX esc, Encoder encoder, int di
 }
 
 // Turn specified wheel, specified distance, specified speed, in inches
-public static void TurnWheelDistanceIn(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
+public static void MoveWheelDistanceIn(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
 {
   encoder.reset();
   esc.set(speed);
@@ -241,6 +245,23 @@ public static void MoveDistanceIn(Encoder encoder, int distance, double speed)
   while(Math.abs(EncoderReadIn(encoder)) < Math.abs(distance)){
   }
   StopThePresses();
+}
+
+// Move robot forward/backwards without rotation drifting
+// Strafe robot
+// Robot can still turn without inturupting movement
+// Relies on newZero to work
+public static void MoveMecanumStraight()
+{
+  mecDrive.setSafetyEnabled(false);
+
+  //if turning, reset newZero
+  if (Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)) != 0)
+  {
+    newZero = Robot.navXGyro.getAngle();
+  }
+  // drive forward based on leftJoyX, Strafe based on LeftJoyY, turn based on AmountDrifted+RightJoyX
+  mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)), Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)), Math.round(Robot.navXGyro.getAngle() - newZero) + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
 }
 
 ///
