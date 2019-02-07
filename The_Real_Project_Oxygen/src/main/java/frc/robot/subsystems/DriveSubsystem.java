@@ -76,56 +76,43 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
     mecDrive.setSafetyEnabled(false);
          
 
-    boolean rotateToAngle = false;
-          
+    boolean rotateToAngle = false;          
+    double currentRotationRate;
 
-          
-          if ( OI.zeroSlotController.getPOV() == 0) {
-              turnController.setSetpoint( 0.0f);
-              rotateToAngle = true;
-          } 
-          else if ( OI.zeroSlotController.getPOV() == 45) {
-            turnController.setSetpoint(45.0f);
-            rotateToAngle = true;
-          }
-          
-          else if (OI.zeroSlotController.getPOV() == 90) {
-              turnController.setSetpoint(90.0f);
-              rotateToAngle = true;
-          } 
-          else if ( OI.zeroSlotController.getPOV() == 135) {
-            turnController.setSetpoint(135.0f);
-            rotateToAngle = true;
-          }
-          
-          else if (OI.zeroSlotController.getPOV() == 180) {
-              turnController.setSetpoint(179.9f);
-              rotateToAngle = true;
-          } 
-          else if (OI.zeroSlotController.getPOV() == 225) {
-            turnController.setSetpoint(225.0f);
-            rotateToAngle = true;
-          }
-          else if (OI.zeroSlotController.getPOV() == 270) {
-              turnController.setSetpoint(270.0f);
-              rotateToAngle = true;
-          }
-          else if ( OI.zeroSlotController.getPOV() == 315) {
-            turnController.setSetpoint(315.0f);
-            rotateToAngle = true;
-    }
-          else if(OI.zeroSlotController.getYButtonPressed() == true) {
-           setAllMotors(0.5);
-
-           if(Robot.navXGyro.getAngle() != 0 ){
-            turnController.setSetpoint(0f);
-             rotateToAngle = true;
-           }
-
-          }
-        
-                    double currentRotationRate;
-
+    switch(OI.zeroSlotController.getPOV()){
+      case 0:
+        turnController.setSetpoint(0.0f);
+        rotateToAngle = true;
+      break; 
+      case 45:
+        turnController.setSetpoint(45.0f);
+        rotateToAngle = true;
+      break;
+      case 90:
+        turnController.setSetpoint(90.0f);
+        rotateToAngle = true;
+      break; 
+      case 135:
+        turnController.setSetpoint(135.0f);
+        rotateToAngle = true;
+      break;
+      case 180:
+        turnController.setSetpoint(179.9f);
+        rotateToAngle = true;
+      break;
+      case 225:
+        turnController.setSetpoint(225.0f);
+        rotateToAngle = true;
+      break;
+      case 270:
+        turnController.setSetpoint(270.0f);
+        rotateToAngle = true;
+      break;
+      case 315:
+        turnController.setSetpoint(315.0f);
+        rotateToAngle = true;
+      break;         
+    }    
           if ( rotateToAngle ) {
             turnController.enable();
               currentRotationRate = rotateToAngleRate;
@@ -266,6 +253,5 @@ public static void MoveDistanceIn(Encoder encoder, int distance, double speed)
   StopThePresses();
 }
 
-///
 
 }
