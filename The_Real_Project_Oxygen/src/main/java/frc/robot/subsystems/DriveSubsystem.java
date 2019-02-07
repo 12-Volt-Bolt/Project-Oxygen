@@ -78,9 +78,10 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
 
     boolean rotateToAngle = false;          
     double currentRotationRate;
-
+    
     switch(OI.zeroSlotController.getPOV()){
       case 0:
+      SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
         turnController.setSetpoint(0.0f);
         rotateToAngle = true;
       break; 
