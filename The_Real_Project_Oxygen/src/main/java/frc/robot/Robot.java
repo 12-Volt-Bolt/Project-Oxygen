@@ -308,6 +308,12 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     new DefaultDriveCommand().start();
 
+    SmartDashboard.putData(DriveSub.frontRight);
+    SmartDashboard.putData(DriveSub.rearLeft);
+    SmartDashboard.putData(DriveSub.frontLeft);
+    SmartDashboard.putData(DriveSub.rearRight);
+
+
     SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller ", driveSub.turnController);
   }
@@ -320,6 +326,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     
     m_autonomousCommand = m_chooser.getSelected();
+
 
 
    
