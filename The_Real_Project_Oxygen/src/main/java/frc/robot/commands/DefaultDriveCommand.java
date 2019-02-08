@@ -7,13 +7,20 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.HIDType;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class DefaultDriveCommand extends Command {
+
   public DefaultDriveCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.DriveSub);
   }
 
   // Called just before this Command runs the first time
@@ -24,7 +31,12 @@ public class DefaultDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.DriveSub.executeMecanumDrive();
+    if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)){
+      Robot.DriveSub.driveRamp(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
+    } 
+    else {
+      Robot.DriveSub.executeMecanumDrive();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -36,7 +48,7 @@ public class DefaultDriveCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //Robot.DriveSub.StopThePresses();
+    Robot.DriveSub.StopThePresses();
   }
 
   // Called when another command which requires one or more of the same

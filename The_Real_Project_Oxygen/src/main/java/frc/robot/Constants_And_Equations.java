@@ -11,4 +11,20 @@ package frc.robot;
  * Add your docs here.
  */
 public class Constants_And_Equations {
+
+    public static double deadzone(double d, double deadzone){
+        return Math.abs(d) > Math.abs(deadzone) ? d : 0;
+    }
+
+    public static double parabola(double d){
+        double dten = d*10;
+        if (dten > 0) {
+            return Math.pow(dten, 2)/10;
+        } else {
+            return (Math.pow(dten, 2)/10)*-1;
+        }
+    }
+
+
+
 }

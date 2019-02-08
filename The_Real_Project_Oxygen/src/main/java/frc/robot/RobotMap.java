@@ -34,15 +34,16 @@ public class RobotMap {
   public static final int REAR_RIGHT_MOTOR_ID = 3;
 
   // Solenoid IDs
-  public static final int TOP_SOLENOID_ID = 0;
-  public static final int BOTTOM_SOLENOID_ID = 1;
+  public static final int TOP_SOLENOID_ID = 1;
+  public static final int BOTTOM_SOLENOID_ID = 2;
 
   // MAGIC NUMBERS
   public final static int MOTOR_OFF = 0;
 
   public static int fillIn = 0;
-
-	
+ 
+  // The PDP
+  public static final int PDP_ID = 0;	
 	// The below would the IDs for buttons on any HID controller (basically any USB controller)
   // If using 
   
@@ -60,5 +61,52 @@ public class RobotMap {
 	public static int X_BUTTON_ID = 3; 
 	public static int Y_BUTTON_ID = 4;
 	public static int LEFT_BUMPER_ID = 5;
-	public static int RIGHT_BUMPER_ID = 6; 
+  public static int RIGHT_BUMPER_ID = 6; 
+  public static int MENU_BUTTON_ID = 7;
+  public static int START_BUTTON_ID = 8;
+
+  public static int LEFT_STICK_ID = 9;
+  public static int RIGHT_STICK_ID = 10;
+
+  // DIO PORT ID'S
+  public static int DIO_PORT_ID_0 = 0;
+  public static int DIO_PORT_ID_1 = 1;
+  public static int DIO_PORT_ID_2 = 2;
+  public static int DIO_PORT_ID_3 = 3;
+  public static int DIO_PORT_ID_4 = 4;
+  public static int DIO_PORT_ID_5 = 5;
+  public static int DIO_PORT_ID_6 = 6;
+  public static int DIO_PORT_ID_7 = 7;
+  public static int DIO_PORT_ID_8 = 8;
+  public static int DIO_PORT_ID_9 = 9; 
+
+  // PWM PORT ID's
+
+  public static int PWM_PORT_ID_0 = 0;
+  public static int PWM_PORT_ID_1 = 1;
+  public static int PWM_PORT_ID_2 = 2;
+  public static int PWM_PORT_ID_3 = 3;
+  public static int PWM_PORT_ID_4 = 4;
+  public static int PWM_PORT_ID_5 = 5;
+  public static int PWM_PORT_ID_6 = 6;
+  public static int PWM_PORT_ID_7 = 7;
+  public static int PWM_PORT_ID_8 = 8;
+  public static int PWM_PORT_ID_9 = 9;
+  public static int PWM_PORT_ID_10 = 10;
+
+  // ANALOG PORT ID's
+
+  public static int ANALOG_PORT_ID_0 = 0;
+  public static int ANALOG_PORT_ID_1 = 1;
+  public static int ANALOG_PORT_ID_2 = 2;
+  public static int ANALOG_PORT_ID_3 = 3;
+  public static int ANALOG_PORT_ID_4 = 4;
+
+  // RELAY PORT ID's
+  public static int RELAY_PORT_ID_0 = 0;
+  public static int RELAY_PORT_ID_1 = 1;
+  public static int RELAY_PORT_ID_2 = 2;
+  public static int RELAY_PORT_ID_3 = 3;
+
+
 }
