@@ -113,7 +113,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
         turnController.setSetpoint(270.0f);
         rotateToAngle = true;
       break;
-      case 315:
+      case 315:  
         turnController.setSetpoint(315.0f);
         rotateToAngle = true;
       break;         
@@ -124,24 +124,9 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
           } else {
             turnController.disable();
               // I don't know why getX has to be negitive, but let's just go with it
-              if(Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.05) {
-                currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
-              }
-              else {
-                currentRotationRate = 0;
-              }
-                  
-              
-
-
+              currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getRawAxis(3), 0.1);
               turnController.disable();
-              currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
             }
-              /* Use the joystick X axis for lateral movement,          */
-              /* Y axis for forward movement, and the current           */
-              /* calculated rotation rate (or joystick Z axis),         */
-              /* depending upon whether "rotate to angle" is active.    */
-    
               mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
     } 
 
