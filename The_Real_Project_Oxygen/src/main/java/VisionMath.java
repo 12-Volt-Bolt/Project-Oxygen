@@ -8,7 +8,7 @@
 package frc.robot;
 
 /**
- * This class handle all vision processing calculations.
+ * This class handles all vision processing calculations.
  * This class will constantly be updated with variables during the teleop and auto periods
  * Please see the vision processing command to see class utilization
  */
