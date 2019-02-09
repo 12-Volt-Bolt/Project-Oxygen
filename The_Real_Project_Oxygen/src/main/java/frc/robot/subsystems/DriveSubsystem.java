@@ -75,244 +75,250 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   private static double newZero = 0.00;
 
   /* This tuning parameter indicates how close to "on target" the    */
-/* PID Controller will attempt to get.                             */
+  /* PID Controller will attempt to get.                             */
 
-static final double kToleranceDegrees = 2.0f;
+  static final double kToleranceDegrees = 2.0f;
 
-public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
-  
- public DriveSubsystem() {
-    super();
+  public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
 
- }
-@Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-      setDefaultCommand(new DefaultDriveCommand());
-      turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
-      turnController.setInputRange(-180.0f,  180.0f);
-      turnController.setOutputRange(-1.0, 1.0);
-      turnController.setAbsoluteTolerance(kToleranceDegrees);
-      turnController.setContinuous(true);
-      
-  }
+   public DriveSubsystem() {
+      super();
 
-  public void UpdateDriveCartesian(double xLeft, double yLeft, double xRight) {
-    mecDrive.setSafetyEnabled(false);
-         
+   }
+  @Override
+    public void initDefaultCommand() {
+      // Set the default command for a subsystem here.
+      // setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new DefaultDriveCommand());
+        turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
+        turnController.setInputRange(-180.0f,  180.0f);
+        turnController.setOutputRange(-1.0, 1.0);
+        turnController.setAbsoluteTolerance(kToleranceDegrees);
+        turnController.setContinuous(true);
 
-    boolean rotateToAngle = false;          
-    double currentRotationRate;
-    
-    switch(OI.zeroSlotController.getPOV()){
-      case 0:
-      SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
-        turnController.setSetpoint(0.0f);
-        rotateToAngle = true;
-      break; 
-      case 45:
-        turnController.setSetpoint(45.0f);
-        rotateToAngle = true;
-      break;
-      case 90:
-        turnController.setSetpoint(90.0f);
-        rotateToAngle = true;
-      break; 
-      case 135:
-        turnController.setSetpoint(135.0f);
-        rotateToAngle = true;
-      break;
-      case 180:
-        turnController.setSetpoint(179.9f);
-        rotateToAngle = true;
-      break;
-      case 225:
-        turnController.setSetpoint(225.0f);
-        rotateToAngle = true;
-      break;
-      case 270:
-        turnController.setSetpoint(270.0f);
-        rotateToAngle = true;
-      break;
-      case 315:  
-        turnController.setSetpoint(315.0f);
-        rotateToAngle = true;
-      break;         
-    }    
-          if ( rotateToAngle ) {
-            turnController.enable();
-              currentRotationRate = rotateToAngleRate;
-          } else {
-            turnController.disable();
-              // I don't know why getX has to be negitive, but let's just go with it
-              currentRotationRate = Constants_And_Equations.deadzone(-xRight);
-              turnController.disable();
-            }
-              mecDrive.driveCartesian(Constants_And_Equations.deadzone(-xLeft), -Constants_And_Equations.deadzone(-yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
-    } 
-
-    public void UpdateDriveRamp(double twist, double xLeft, double yLeft){
-      mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
     }
-    
-    public static void UpdateDriveTurn_to_angle(double angle, double xLeft, double yLeft) {
-      turnController.setSetpoint(angle);
+
+    public void UpdateDriveCartesian(double xLeft, double yLeft, double xRight) {
+      mecDrive.setSafetyEnabled(false);
+
+
+      boolean rotateToAngle = false;          
       double currentRotationRate;
-      currentRotationRate = rotateToAngleRate;
-      mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), -Constants_And_Equations.deadzone(yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
 
-    }
+      switch(OI.zeroSlotController.getPOV()){
+        case 0:
+        SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
+          turnController.setSetpoint(0.0f);
+          rotateToAngle = true;
+        break; 
+        case 45:
+          turnController.setSetpoint(45.0f);
+          rotateToAngle = true;
+        break;
+        case 90:
+          turnController.setSetpoint(90.0f);
+          rotateToAngle = true;
+        break; 
+        case 135:
+          turnController.setSetpoint(135.0f);
+          rotateToAngle = true;
+        break;
+        case 180:
+          turnController.setSetpoint(179.9f);
+          rotateToAngle = true;
+        break;
+        case 225:
+          turnController.setSetpoint(225.0f);
+          rotateToAngle = true;
+        break;
+        case 270:
+          turnController.setSetpoint(270.0f);
+          rotateToAngle = true;
+        break;
+        case 315:  
+          turnController.setSetpoint(315.0f);
+          rotateToAngle = true;
+        break;         
+      }    
+            if ( rotateToAngle ) {
+              turnController.enable();
+                currentRotationRate = rotateToAngleRate;
+            } else {
+              turnController.disable();
+                // I don't know why getX has to be negitive, but let's just go with it
+                currentRotationRate = Constants_And_Equations.deadzone(-xRight);
+                turnController.disable();
+              }
+                mecDrive.driveCartesian(Constants_And_Equations.deadzone(-xLeft), -Constants_And_Equations.deadzone(-yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
+      } 
 
-// We may make our own mecamum method someday 
-    public void homeBrewMecanumMethod() {
+      public void UpdateDriveRamp(double twist, double xLeft, double yLeft){
+        mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
+      }
 
-    }
+      public static void UpdateDriveTurn_to_angle(double angle, double xLeft, double yLeft) {
+        turnController.setSetpoint(angle);
+        double currentRotationRate;
+        currentRotationRate = rotateToAngleRate;
+        mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), -Constants_And_Equations.deadzone(yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
 
-  public void CorrectMotorDirectionForMecanumDrive() {
-    // Please do not edit this unless you know the purpose of it.
-     frontRight.setInverted(true);
-     frontLeft.setInverted(true);
-     rearLeft.setInverted(true);
-     rearRight.setInverted(true);
+      }
+
+  // We may make our own mecamum method someday 
+      public void homeBrewMecanumMethod() {
+
+      }
+
+    public void CorrectMotorDirectionForMecanumDrive() {
+      // Please do not edit this unless you know the purpose of it.
+       frontRight.setInverted(true);
+       frontLeft.setInverted(true);
+       rearLeft.setInverted(true);
+       rearRight.setInverted(true);
 
 
-}
-// Stops all motors
-public static void StopThePresses() {
-  mecDrive.driveCartesian(RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF);
-  mecDrive.setSafetyEnabled(true);
-}
-
-// Sets all motors to the speed specified in paramaters
-public static void UpdateMoveSet(double speed) {
-frontRight.set(speed);
-frontLeft.set(speed);
-rearRight.set(speed);
-rearLeft.set(speed);
-
-}
-
-//Updates PID rotateToAngleRate to input specified in paramaters
-@Override
-public void pidWrite(double output) {
-	rotateToAngleRate = output;
-}
-
-/*
-//Updates PID rotateToAngleRate to input specified in paramaters
-public void UpdatePidSet(double output) {
-  rotateToAngleRate = output;
-}
-*/
-
-/// Encoder methods should go here. Please make sure to have an encoder object as a parameter.
-// Wheels have an 8 in diameter
-// Methods we need: Drive "x" distance, zero encoder each encoder, zero both enocoders
-
-// Reset one encoder
-public static void UpdateEncoderReset(Encoder encoder) 
-{
-  encoder.reset();
-}
-
-// Overload- Reset both encoders
-public static void UpdateEncoderReset(Encoder encoder1, Encoder encoder2)
-{
-  encoder1.reset();
-  encoder2.reset();
-}
-
-// Read encoder and calculate distance turned in Centimeters
-public static int UpdateEncoderReadCm(Encoder encoder)
-{
-  return (int) Math.round(encoder.get() * 63.84);
-}
-
-// Read encoder and calculate distance turned in inches
-public static int UpdateEncoderReadIn(Encoder encoder)
-{
-  return (int) Math.round(encoder.get() * 25.13);
-
-}
-
-// Turn specified wheel, specified distance, specified speed, in centimeters
-public static void InputTurnCm(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
-{
-  encoder.reset();
-  esc.set(speed);
-  while(Math.abs(UpdateEncoderReadCm(encoder)) < Math.abs(distance)){
   }
-  esc.set(RobotMap.MOTOR_OFF);
-}
-
-// Overload- Turn 2 specified wheels, specified distance, specified speed, in centimeters
-public static void InputTurnCm(WPI_TalonSRX esc, WPI_TalonSRX esc2, Encoder encoder, int distance, double speed)
-{
-  encoder.reset();
-  esc.set(speed);
-  esc2.set(speed);
-  while(Math.abs(UpdateEncoderReadCm(encoder)) < Math.abs(distance)){
+  // Stops all motors
+  public static void StopThePresses() {
+    mecDrive.driveCartesian(RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF, RobotMap.MOTOR_OFF);
+    mecDrive.setSafetyEnabled(true);
   }
-  esc.set(RobotMap.MOTOR_OFF);
-  esc2.set(RobotMap.MOTOR_OFF);
-}
 
-// Turn specified wheel, specified distance, specified speed, in inches
-public static void InputTurnIn(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
-{
-  encoder.reset();
-  esc.set(speed);
-  while(Math.abs(UpdateEncoderReadIn(encoder)) < Math.abs(distance)){
+  // Sets all motors to the speed specified in paramaters
+  public static void UpdateMoveSet(double speed) {
+  frontRight.set(speed);
+  frontLeft.set(speed);
+  rearRight.set(speed);
+  rearLeft.set(speed);
+
   }
-  esc.set(RobotMap.MOTOR_OFF);
-}
 
-// Overload- Turn 2 specified wheels, specified distance, specified speed, in inches
-public static void InputTurnIn(WPI_TalonSRX esc, WPI_TalonSRX esc2, Encoder encoder, int distance, double speed)
-{
-  encoder.reset();
-  esc.set(speed);
-  esc2.set(speed);
-  while(Math.abs(UpdateEncoderReadIn(encoder)) < Math.abs(distance)){
+  //Updates PID rotateToAngleRate to input specified in paramaters
+  @Override
+  public void pidWrite(double output) {
+  	rotateToAngleRate = output;
   }
-  esc.set(RobotMap.MOTOR_OFF);
-  esc2.set(RobotMap.MOTOR_OFF);
-}
 
-// Move entire robot Specified distance, specified speed, in centimeters
-public static void InputMoveCm(Encoder encoder, int distance, double speed)
-{
-  UpdateEncoderReset(encoder);
-  UpdateMoveSet(speed);
-  while(Math.abs(UpdateEncoderReadCm(encoder)) < Math.abs(distance)){
+  /*
+  //Updates PID rotateToAngleRate to input specified in paramaters
+  public void UpdatePidSet(double output) {
+    rotateToAngleRate = output;
   }
-  StopThePresses();
-}
+  */
 
-// Move entire robot Specified distance, specified speed, in inches
-public static void InputMoveIn(Encoder encoder, int distance, double speed)
-{
-  UpdateEncoderReset(encoder);
-  UpdateMoveSet(speed);
-  while(Math.abs(UpdateEncoderReadIn(encoder)) < Math.abs(distance)){
-  }
-  StopThePresses();
-}
+  /// Encoder methods should go here. Please make sure to have an encoder object as a parameter.
+  // Wheels have an 8 in diameter
+  // Methods we need: Drive "x" distance, zero encoder each encoder, zero both enocoders
 
-// Move robot forward/backwards without rotation drifting by asigning a local north and turning towards that
-// Strafe robot
-// Robot can still turn without inturupting movement
-// Relies on newZero to work
-public static void UpdateDriveLocal (double xLeft, double yLeft, double xRight)
-{
-  // Resets local north if turning
-  if (Constants_And_Equations.deadzone(xRight) != 0)
+  // Reset one encoder
+  public static void UpdateEncoderReset(Encoder encoder) 
   {
-    newZero = Robot.navXGyro.getAngle();
+    encoder.reset();
   }
 
-  mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), Math.round(Robot.navXGyro.getAngle() - newZero));
-}
+  // Overload- Reset both encoders
+  public static void UpdateEncoderReset(Encoder encoder1, Encoder encoder2)
+  {
+    encoder1.reset();
+    encoder2.reset();
+  }
 
+  // Read encoder and calculate distance turned in Centimeters
+  public static int UpdateEncoderReadCm(Encoder encoder)
+  {
+    return (int) Math.round(encoder.get() * 63.84);
+  }
+
+  // Read encoder and calculate distance turned in inches
+  public static int UpdateEncoderReadIn(Encoder encoder)
+  {
+    return (int) Math.round(encoder.get() * 25.13);
+
+  }
+
+  // Turn specified wheel, specified distance, specified speed, in centimeters
+  public static void InputTurnCm(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
+  {
+    encoder.reset();
+    esc.set(speed);
+    while(Math.abs(UpdateEncoderReadCm(encoder)) < Math.abs(distance)){
+    }
+    esc.set(RobotMap.MOTOR_OFF);
+  }
+
+  // Overload- Turn 2 specified wheels, specified distance, specified speed, in centimeters
+  public static void InputTurnCm(WPI_TalonSRX esc, WPI_TalonSRX esc2, Encoder encoder, int distance, double speed)
+  {
+    encoder.reset();
+    esc.set(speed);
+    esc2.set(speed);
+    while(Math.abs(UpdateEncoderReadCm(encoder)) < Math.abs(distance)){
+    }
+    esc.set(RobotMap.MOTOR_OFF);
+    esc2.set(RobotMap.MOTOR_OFF);
+  }
+
+  // Turn specified wheel, specified distance, specified speed, in inches
+  public static void InputTurnIn(WPI_TalonSRX esc, Encoder encoder, int distance, double speed)
+  {
+    encoder.reset();
+    esc.set(speed);
+    while(Math.abs(UpdateEncoderReadIn(encoder)) < Math.abs(distance)){
+    }
+    esc.set(RobotMap.MOTOR_OFF);
+  }
+
+  // Overload- Turn 2 specified wheels, specified distance, specified speed, in inches
+  public static void InputTurnIn(WPI_TalonSRX esc, WPI_TalonSRX esc2, Encoder encoder, int distance, double speed)
+  {
+    encoder.reset();
+    esc.set(speed);
+    esc2.set(speed);
+    while(Math.abs(UpdateEncoderReadIn(encoder)) < Math.abs(distance)){
+    }
+    esc.set(RobotMap.MOTOR_OFF);
+    esc2.set(RobotMap.MOTOR_OFF);
+  }
+
+  // Move entire robot Specified distance, specified speed, in centimeters
+  public static void InputMoveCm(Encoder encoder, int distance, double speed)
+  {
+    UpdateEncoderReset(encoder);
+    UpdateMoveSet(speed);
+    while(Math.abs(UpdateEncoderReadCm(encoder)) < Math.abs(distance)){
+    }
+    StopThePresses();
+  }
+
+  // Move entire robot Specified distance, specified speed, in inches
+  public static void InputMoveIn(Encoder encoder, int distance, double speed)
+  {
+    UpdateEncoderReset(encoder);
+    UpdateMoveSet(speed);
+    while(Math.abs(UpdateEncoderReadIn(encoder)) < Math.abs(distance)){
+    }
+    StopThePresses();
+  }
+
+  // Move robot forward/backwards without rotation drifting by asigning a local north and turning towards that
+  // Strafe robot
+  // Robot can still turn without inturupting movement
+  // Relies on newZero to work
+  public static void UpdateDriveLocal (double xLeft, double yLeft, double xRight)
+  {
+    mecDrive.setSafetyEnabled(false);
+    double rotationSpeed;
+    // Resets local north if turning
+    if (Constants_And_Equations.deadzone(xRight) != 0)
+    {
+      newZero = Robot.navXGyro.getAngle();
+      rotationSpeed = xRight;
+    }
+    else
+    {
+      rotationSpeed = Math.max(Math.min((Robot.navXGyro.getAngle() - newZero)/180, -1), 1);
+    }
+
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
+  }
 }
