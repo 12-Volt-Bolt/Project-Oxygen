@@ -72,7 +72,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   static final double kF = 0.00;
 
   // variables for tank driving
-  private static double newZero = 0.00;
+  public static double newZero = 0.00;
+  public static double rotationSpeed = 0.00;
 
   /* This tuning parameter indicates how close to "on target" the    */
   /* PID Controller will attempt to get.                             */
@@ -171,10 +172,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
     public void CorrectMotorDirectionForMecanumDrive() {
       // Please do not edit this unless you know the purpose of it.
-       frontRight.setInverted(true);
-       frontLeft.setInverted(true);
-       rearLeft.setInverted(true);
-       rearRight.setInverted(true);
+      // frontRight.setInverted(true);
+      // frontLeft.setInverted(true);
+      // rearLeft.setInverted(true);
+      // rearRight.setInverted(true);
 
 
   }
@@ -307,7 +308,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public static void UpdateDriveLocal (double xLeft, double yLeft, double xRight)
   {
     mecDrive.setSafetyEnabled(false);
-    double rotationSpeed;
     // Resets local north if turning
     if (Constants_And_Equations.deadzone(xRight) != 0)
     {
@@ -316,9 +316,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     else
     {
-      rotationSpeed = Math.max(Math.min((Robot.navXGyro.getAngle() - newZero)/180, -1), 1);
+      rotationSpeed = Constants_And_Equations.Clamp(-1, 1, (Robot.navXGyro.getAngle() - newZero)/180);
     }
 
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), 0.2);
   }
 }

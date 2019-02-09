@@ -42,6 +42,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.OI;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -93,7 +94,6 @@ public class Robot extends TimedRobot {
 
    mServer0.setSource(camera0);
    mServer1.setSource(camera1);
-
    
 
 // NT: server: client CONNECTED: 10.15.57.180 port 61914
@@ -216,6 +216,11 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
               SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
               SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
+              SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
+              SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
+              SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
+              SmartDashboard.putNumber("NewZero", driveSub.newZero);
+              SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
 
     
   }
@@ -304,8 +309,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+/*
+    if (OI.zeroSlotController.getAButton() == true)
+    {
+      Robot.navXGyro.reset();
+    }
+*/
     Scheduler.getInstance().run();
-    new DefaultDriveCommand().start();
+    //new DefaultDriveCommand().start();
 
     SmartDashboard.putData(DriveSub.frontRight);
     SmartDashboard.putData(DriveSub.rearLeft);
@@ -324,7 +336,8 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     Scheduler.getInstance().run();
     
-    m_autonomousCommand = m_chooser.getSelected();
+    //m_autonomousCommand = m_chooser.getSelected();
+    driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
 
 
 
