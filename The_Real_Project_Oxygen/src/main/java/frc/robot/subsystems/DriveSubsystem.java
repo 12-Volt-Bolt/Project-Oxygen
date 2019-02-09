@@ -98,7 +98,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
       
   }
 
-  public void UpdateDriveCartesian() {
+  public void UpdateDriveCartesian(double xLeft, double yLeft, double xRight) {
     mecDrive.setSafetyEnabled(false);
          
 
@@ -146,21 +146,21 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
           } else {
             turnController.disable();
               // I don't know why getX has to be negitive, but let's just go with it
-              currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getRawAxis(3), 0.1);
+              currentRotationRate = Constants_And_Equations.deadzone(-xRight);
               turnController.disable();
             }
-              mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
+              mecDrive.driveCartesian(Constants_And_Equations.deadzone(-xLeft), -Constants_And_Equations.deadzone(-yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
     } 
 
-    public void UpdateDriveRamp(double twist){
-      mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)), twist, -Robot.navXGyro.getAngle());
+    public void UpdateDriveRamp(double twist, double xLeft, double yLeft){
+      mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
     }
     
-    public static void UpdateDriveTurn_to_angle(double angle) {
+    public static void UpdateDriveTurn_to_angle(double angle, double xLeft, double yLeft) {
       turnController.setSetpoint(angle);
       double currentRotationRate;
       currentRotationRate = rotateToAngleRate;
-      mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
+      mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), -Constants_And_Equations.deadzone(yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
 
     }
 

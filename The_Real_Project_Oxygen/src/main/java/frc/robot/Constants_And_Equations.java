@@ -12,12 +12,13 @@ package frc.robot;
  */
 public class Constants_And_Equations {
 
-    public static double deadzone(double d, double deadzone){
-        return Math.abs(d) > Math.abs(deadzone) ? d : 0;
+    public static double deadzone(double d){
+        return Math.abs(d) > 0.1 ? d : 0;
     }
 
-    public static double deadzone(double d){
-        return Math.abs(d) > Math.abs(0.1) ? d : 0;
+    // Overload- 
+    public static double deadzone(double d, double deadzone){
+        return Math.abs(d) > Math.abs(deadzone) ? d : 0;
     }
 
     public static double parabola(double d){
