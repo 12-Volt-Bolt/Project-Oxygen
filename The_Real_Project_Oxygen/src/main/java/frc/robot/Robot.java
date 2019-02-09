@@ -84,8 +84,27 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     ///
     
+    UsbCamera topCam = new UsbCamera("Top Camera", 0);
+    
+    MjpegServer mJPEGServer0 = CameraServer.getInstance().addServer("Another_Server0", 1181);
 
-    UsbCamera camera0 = CameraServer.getInstance().startAutomaticCapture();
+    CvSink sink0 = new CvSink("Open_0");
+
+    mJPEGServer0.setSource(topCam);
+    sink0.setSource(topCam);
+    CameraServer.getInstance().addCamera(topCam);
+    CameraServer.getInstance().startAutomaticCapture();
+    CameraServer.getInstance().getVideo(topCam);
+    CameraServer.getInstance().putVideo("Top_Cam_PutVideo()_Method", 640, 480);
+
+
+
+
+
+
+/*
+
+
     UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture();
 
     MjpegServer mServer0 = CameraServer.getInstance().addServer("Another_Server0");
@@ -94,6 +113,7 @@ public class Robot extends TimedRobot {
    mServer0.setSource(camera0);
    mServer1.setSource(camera1);
 
+   */
    
 
 // NT: server: client CONNECTED: 10.15.57.180 port 61914

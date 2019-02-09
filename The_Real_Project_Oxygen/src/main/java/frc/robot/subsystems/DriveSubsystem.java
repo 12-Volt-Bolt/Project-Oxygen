@@ -124,7 +124,7 @@ public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, fro
           } else {
             turnController.disable();
               // I don't know why getX has to be negitive, but let's just go with it
-              currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getRawAxis(3), 0.1);
+              currentRotationRate = Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kRight), 0.1);
               turnController.disable();
             }
               mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
@@ -243,7 +243,6 @@ public static void MoveDistanceIn(Encoder encoder, int distance, double speed)
   StopThePresses();
 }
 
-<<<<<<< HEAD
 // Move robot forward/backwards without rotation drifting
 // Strafe robot
 // Robot can still turn without inturupting movement
@@ -262,7 +261,6 @@ public static void MoveMecanumStraight()
 }
 
 ///
-=======
->>>>>>> d557d652bb1468f4640173cb337d55d378bc833d
+
 
 }
