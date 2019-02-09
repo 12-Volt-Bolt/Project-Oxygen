@@ -32,11 +32,17 @@ public class VisionMath {
 
     private double d5;
 
+    private double d6;
+
     private double beta;
 
     private double alpha;
 
-    private double forWardDis;
+    private double Theta;
+
+    private double forwardDis;
+
+    private double lateralOffSet;
     
 
 
@@ -57,26 +63,32 @@ public class VisionMath {
     }
     */
     public void calculateD3() {
-        d3 = (d2) / Math.cos(alpha);
+       // d3 = (d2) / Math.cos(alpha); error, error, error
     }
+
     public void calculateD4() {
-        
+       d4 = d1 * Math.sin(alpha);
     }
     public void calculateD5() {
-        
+        d5 = d1 * Math.cos(alpha);
+    }
+
+    public void calculateD6() {
+        d6 = d2 * (d6 / d2);
     }
 
     public void calcLateralOffSet() {
-
+      lateralOffSet = d4;
     }
 
     public void calcForwardDis() {
-
+       forwardDis = d5;
     }
 
     public void calcAlpha() {
         Alpha = beta - 90;
     }
+
 
     public double getD1() {
        return d1;
@@ -97,10 +109,18 @@ public class VisionMath {
         return d5;
 
     }
-    public double getAlpha() {
+    public double getAlphaRotation() {
         return alpha;
     }
     public double getBeta() {
         return beta;
+    }
+
+    public double getLateralOffSet() {
+        return  lateralOffSet;
+    }
+
+    public double getForwardDis() {
+       return  forwardDis;
     }
 }

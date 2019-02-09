@@ -7,6 +7,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.MjpegServer;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 /**
@@ -25,15 +29,15 @@ public class CameraServerStartInstantCommand extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    UsbCamera topCam = new UsbCamera("Top Camera", 0); 
-    MjpegServer mJPEGServer0 = CameraServer.getInstance().addServer("Another_Server0", 1181);
-    CvSink sink0 = new CvSink("Open_0");
-    mJPEGServer0.setSource(topCam);
-    sink0.setSource(topCam);
-    CameraServer.getInstance().addCamera(topCam);
-    CameraServer.getInstance().startAutomaticCapture();
-    CameraServer.getInstance().getVideo(topCam);
-    CameraServer.getInstance().putVideo("Top_Cam_PutVideo()_Method", 640, 480);
+    UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
+    usbCamera0.setResolution(320, 240);
+    usbCamera0.setFPS(10);
+    CvSink cvSink0 = CameraServer.getInstance().getVideo();
+
+    UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
+    usbCamera1.setResolution(320, 240);
+    usbCamera1.setFPS(10);
+    CvSink cvSink1 = CameraServer.getInstance().getVideo();
   }
 
 }

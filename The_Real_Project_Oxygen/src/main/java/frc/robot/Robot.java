@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -80,122 +81,35 @@ public class Robot extends TimedRobot {
    * for any initialization code.
    */
 
+  public static boolean doesVisionStartNow; 
+
   @Override
   public void robotInit() {
-    ///
+
+    /////////////
+    doesVisionStartNow = false;
+    /////////////
     
-   
-
-
-
-
-
-
-/*
-
-
-    UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture();
-
-    MjpegServer mServer0 = CameraServer.getInstance().addServer("Another_Server0");
-    MjpegServer mServer1 = CameraServer.getInstance().addServer("Another_Server_1");
-
-   mServer0.setSource(camera0);
-   mServer1.setSource(camera1);
-
-   */
-   
-
-// NT: server: client CONNECTED: 10.15.57.180 port 61914
-
-
-    // TODO TEST!!
-    //
-    /*
-=======
-  
-  UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
-  MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-  mjpegServer1.setSource(usbCamera); CvSink cvSink = new CvSink("opencv_USB Camera 0");
-  cvSink.setSource(usbCamera);
-  CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
-  MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
-  mjpegServer2.setSource(outputStream);
-
-
-
-/* Test Test Test TODO
->>>>>>> 087ab63f0f1a94b07ff512af8a060d8ef8c0c7a4
-    UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
-    MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1182", 1182);
-    CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
-
-   // VisionTapeCvSink.setSource(visionTapeCamera);
-    visionTapeMJpeg.setSource(visionTapeCamera);
-   // CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
-
-     
-
-=======
-   Test Test Test TODO
-   
-    
-    MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
-    theSecondMJepServer.setSource(outputStreamVisionTape);
-   
-    CameraServer.getInstance().addCamera(visionTapeCamera);
-    CameraServer.getInstance().startAutomaticCapture();
-    CameraServer.getInstance().getVideo(visionTapeCamera);
-    CameraServer.getInstance().putVideo("Vision-Tape", 480, 640);
-    SmartDashboard.putNumber("port Number", visionTapeMJpeg.getPort());
-    SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
-    SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
-    SmartDashboard.putString("get Listen Description", visionTapeMJpeg.getDescription());
-*/
-
-
-
-/*
-    /// Camera 1
-
-    UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
-    usbCamera0.setResolution(320, 240);
-    usbCamera0.setFPS(10);
+    UsbCamera topCam = CameraServer.getInstance().startAutomaticCapture();
+    topCam.setResolution(640, 480);
+    topCam.setFPS(5);
     CvSink cvSink0 = CameraServer.getInstance().getVideo();
 
-    /// Camera 1
-
-    /// Camera 2
-
-    UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
-    usbCamera1.setResolution(320, 240);
-    usbCamera1.setFPS(10);
+    UsbCamera bottomCam = CameraServer.getInstance().startAutomaticCapture(1);
+    bottomCam.setResolution(640, 480);
+    bottomCam.setFPS(5);
     CvSink cvSink1 = CameraServer.getInstance().getVideo();
+    
+    
+   try{
+      new CameraServerStartInstantCommand().start();
+   }
 
-    // Camera 2
+   catch(Exception e) {
+    DriverStation.reportError("I'm sorry but we are having touble with cameras", true);
 
-    ////////////
-   MjpegServer visionTapeSense = new MjpegServer("THE_VISION_TAPE", 1181);
-   visionTapeSense.setSource(usbCamera0);
-
+   }
    
-    Mat visionTarget = new Mat();
-
-    cvSink0.grabFrame(visionTarget);
-
-    cvSink.Jpeg
-    ////////////
-
-  */
-
-  
-// Testing Angles
-
-
-//
-
-
-    /// Camera 2
-
 
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
@@ -220,11 +134,23 @@ public class Robot extends TimedRobot {
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and SmartDashboard integrated updating.
    */
-
+   
   @Override
   public void robotPeriodic() {
               SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
               SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
+
+              if(OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
+                doesVisionStartNow = true;
+              }
+
+              else {
+                doesVisionStartNow = false;
+              }
+
+              SmartDashboard.putBoolean("Is Vision On?", doesVisionStartNow);
+              
+              
 
     
   }
