@@ -23,12 +23,6 @@ public class VisionSubsystem extends Subsystem {
   // here. Call these from Commands.
  // setDefaultCommand(new MySpecialCommand());
 
- UsbCamera topCam = new UsbCamera("Top Camera", 0);
-    
- MjpegServer mJPEGServer0 = CameraServer.getInstance().addServer("Another_Server0", 1181);
-
- CvSink sink0 = new CvSink("Open_0");
-
 
   @Override
   public void initDefaultCommand() {

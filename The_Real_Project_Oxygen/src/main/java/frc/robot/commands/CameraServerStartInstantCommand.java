@@ -25,6 +25,15 @@ public class CameraServerStartInstantCommand extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
+    UsbCamera topCam = new UsbCamera("Top Camera", 0); 
+    MjpegServer mJPEGServer0 = CameraServer.getInstance().addServer("Another_Server0", 1181);
+    CvSink sink0 = new CvSink("Open_0");
+    mJPEGServer0.setSource(topCam);
+    sink0.setSource(topCam);
+    CameraServer.getInstance().addCamera(topCam);
+    CameraServer.getInstance().startAutomaticCapture();
+    CameraServer.getInstance().getVideo(topCam);
+    CameraServer.getInstance().putVideo("Top_Cam_PutVideo()_Method", 640, 480);
   }
 
 }
