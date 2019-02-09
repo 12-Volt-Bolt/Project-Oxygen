@@ -32,10 +32,10 @@ public class DefaultDriveCommand extends Command {
   @Override
   protected void execute() {
     if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)){
-      Robot.DriveSub.driveRamp(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
+      Robot.DriveSub.UpdateDriveRamp(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
     } 
     else {
-      Robot.DriveSub.executeMecanumDrive();
+      Robot.DriveSub.UpdateDriveCartesian();
     }
   }
 

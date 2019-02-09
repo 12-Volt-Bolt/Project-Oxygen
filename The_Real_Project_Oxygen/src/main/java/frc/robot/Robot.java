@@ -251,12 +251,12 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
 
     ////// Jamie G testing
-    DriveSub.turnToAngle(90);
+    DriveSub.UpdateDriveTurn_to_angle(90);
     /////
    
 
    ////// The Jamie G test site
-    DriveSub.turnToAngle(90);
+    DriveSub.UpdateDriveTurn_to_angle(90);
 
    //////
     try {
