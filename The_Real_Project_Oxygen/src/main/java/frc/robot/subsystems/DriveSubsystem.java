@@ -300,5 +300,19 @@ public static void InputMoveIn(Encoder encoder, int distance, double speed)
   StopThePresses();
 }
 
+// Move robot forward/backwards without rotation drifting by asigning a local north and turning towards that
+// Strafe robot
+// Robot can still turn without inturupting movement
+// Relies on newZero to work
+public static void UpdateDriveLocal (double xLeft, double yLeft, double xRight)
+{
+  // Resets local north if turning
+  if (Constants_And_Equations.deadzone(xRight) != 0)
+  {
+    newZero = Robot.navXGyro.getAngle();
+  }
+
+  mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), Math.round(Robot.navXGyro.getAngle() - newZero));
+}
 
 }
