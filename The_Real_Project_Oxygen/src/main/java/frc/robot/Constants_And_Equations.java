@@ -47,9 +47,9 @@ public class Constants_And_Equations {
         double dten = d*10;
         double temp = Math.pow(dten, pow);
         if (checkValuePositive(dten) == checkValuePositive(temp)){
-            return temp;
+            return temp/10;
         } else {
-            return temp * -1;
+            return temp/10 * -1;
         }
     }
 

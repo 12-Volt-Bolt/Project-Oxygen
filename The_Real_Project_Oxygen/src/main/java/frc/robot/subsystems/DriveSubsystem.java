@@ -316,7 +316,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     else
     {
-      rotationSpeed = Constants_And_Equations.Clamp(-0.5, 0.5, Constants_And_Equations.powNoSignChange((Robot.navXGyro.getAngle() - newZero), 3));
+      rotationSpeed = Constants_And_Equations.Clamp(-0.5, 0.5, Constants_And_Equations.powNoSignChange((Robot.navXGyro.getAngle() - newZero), 2.5));
     }
 
     mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
