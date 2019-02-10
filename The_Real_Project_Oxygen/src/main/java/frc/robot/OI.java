@@ -37,6 +37,8 @@ public class OI {
                  zeroXConRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
                  zeroXConMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
                  zeroXConStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
+
+                 //TODO: create JoystickButtons for the OneSlotController.
                  
 
   
@@ -72,31 +74,25 @@ public static void leftRumbleMethod(XboxController xCon, double power) {
   xCon.setRumble(RumbleType.kLeftRumble, power);
 }
 public static void leftRumbleMethod(XboxController xCon, double power, double delay) {
-  leftRumbleMethod(power);
+  int powerOff = 0;
+  leftRumbleMethod(xCon, power);
   Timer.delay(delay);
-  leftRumbleMethod(0);
+  leftRumbleMethod(xCon, powerOff);
 }
 
-public static void rightRumbleMethod((XboxController xCon, double power) {
+public static void rightRumbleMethod(XboxController xCon, double power) {
   xCon.setRumble(RumbleType.kRightRumble, power);
 }
 
-public static void rightRumbleMethod(double power, double delay) {
-  rightRumbleMethod(power);
+public static void rightRumbleMethod(XboxController xCon, double power, double delay) {
+  rightRumbleMethod(xCon, power);
   Timer.delay(delay);
-  rightRumbleMethod(0);
+  rightRumbleMethod(xCon, 0);
 }
 
 
-public static void doubleRumbleMethod( double leftPower, double rightPower) {
-leftRumbleMethod(leftPower);
-rightRumbleMethod(rightPower);
+public static void doubleRumbleMethod(XboxController xCon,double leftPower, double rightPower) {
+leftRumbleMethod(xCon, leftPower);
+rightRumbleMethod(xCon, rightPower);
 }
-
-
-public static void doubleRumbleMethod( double leftPower, double leftDelay, double rightPower, double rightDelay) {
-  leftRumbleMethod(leftPower, leftDelay);
-  rightRumbleMethod(rightPower, rightDelay);
-  }
-
 }

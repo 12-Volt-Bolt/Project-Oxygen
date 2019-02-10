@@ -7,20 +7,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
  */
-public class CameraServerStartInstantCommand extends InstantCommand {
+public class getTopCamCommand extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public CameraServerStartInstantCommand() {
+  public getTopCamCommand() {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -29,16 +26,7 @@ public class CameraServerStartInstantCommand extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    // TODO: PLEASE EITHER FIX ME OR DELETE ME
-    UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
-    usbCamera0.setResolution(320, 240);
-    usbCamera0.setFPS(10);
-    CvSink cvSink0 = CameraServer.getInstance().getVideo();
-
-    UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
-    usbCamera1.setResolution(320, 240);
-    usbCamera1.setFPS(10);
-    CvSink cvSink1 = CameraServer.getInstance().getVideo();
+    Robot.visionSub.theOnlyCamServer.setSource(Robot.visionSub.topCam);
   }
 
 }

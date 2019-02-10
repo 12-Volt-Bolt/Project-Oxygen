@@ -43,12 +43,17 @@ public class VisionMath {
     private double forwardDis;
 
     private double lateralOffSet;
+
+    private double visionTargerSpan;
     
+    private double xCenterCoordiante;
 
 
-    public void VisionMath(int cameraCenterOffSet, int distanceToCalPlusCalToVT) {
+    public void VisionMath(double cameraCenterOffSet, double xCenterCoordiante, double distanceToCalPlusCalToVT, double visionTargerSpan) {
         d1 = cameraCenterOffSet;
         d2 = distanceToCalPlusCalToVT;
+        this.xCenterCoordiante = xCenterCoordiante;
+        this.visionTargerSpan = visionTargerSpan;
     }
 
 

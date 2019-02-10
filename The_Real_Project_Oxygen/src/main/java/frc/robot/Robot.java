@@ -9,8 +9,11 @@ package frc.robot;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.VideoSource;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 import java.io.IOException;
 
@@ -41,8 +44,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.getBottomCamCommand;
+import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -53,15 +59,17 @@ import frc.robot.subsystems.ExampleSubsystem;
  */
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static DriveSubsystem DriveSub = new DriveSubsystem();
+  public static DriveSubsystem driveSub = new DriveSubsystem();
+  public static VisionSubsystem visionSub = new VisionSubsystem();
+
+
+
+
   /**
    *
    */
 
-  private static final DriveSubsystem driveSub = DriveSub;
   public static OI m_oi;
-  Solenoid PistonTestOne = new Solenoid(RobotMap.TOP_SOLENOID_ID);
-  Solenoid PistonTestTwo = new Solenoid(RobotMap.BOTTOM_SOLENOID_ID);
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static AHRS navXGyro;
@@ -69,13 +77,6 @@ public class Robot extends TimedRobot {
  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
  // The the above at some point please. It keeps throwing an error
 
-  // Stuff we don't need TODO
-  public static Compressor Comp0 = new Compressor(0);
-
-
- // implement the above at some point please. It keeps throwing an error
- // TODO
-  
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -85,27 +86,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-
-    oi = new OI();
-
-    /////////////
-    doesVisionStartNow = false;
-    /////////////
+    m_oi = new OI();
     
-    UsbCamera topCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ZERO_ID);
-    topCam.setResolution(640, 480);
-    topCam.setFPS(10);
-    CvSink cvSink0 = CameraServer.getInstance().getVideo();
-
-    UsbCamera bottomCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ONE_ID);
-    bottomCam.setResolution(640, 480);
-    bottomCam.setFPS(10);
-    CvSink cvSink1 = CameraServer.getInstance().getVideo();
     
-    // The following lines of code will keep the cameras from shutting down, thus decreasing lag
-    // Remember, we just want to stop sending the streams, not shut the cameras down.
-    bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-    topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
     
     /*
    try{
@@ -148,11 +131,11 @@ public class Robot extends TimedRobot {
               SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
 
               if(OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
-                doesVisionStartNow = true;
+                 new getTopCamCommand().start();
               }
 
-              else {
-                doesVisionStartNow = false;
+              if(OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
+                 new getBottomCamCommand().start();
               }
 
               SmartDashboard.putBoolean("Is Vision On?", doesVisionStartNow);
@@ -193,7 +176,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
 
     ////// Jamie G testing
-    DriveSub.turnToAngle(90);
+    //driveSub.turnToAngle(90);
     /////
    
     try {
@@ -245,10 +228,10 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     new DefaultDriveCommand().start();
 
-    SmartDashboard.putData(DriveSub.frontRight);
-    SmartDashboard.putData(DriveSub.rearLeft);
-    SmartDashboard.putData(DriveSub.frontLeft);
-    SmartDashboard.putData(DriveSub.rearRight);
+    SmartDashboard.putData(driveSub.frontRight);
+    SmartDashboard.putData(driveSub.rearLeft);
+    SmartDashboard.putData(driveSub.frontLeft);
+    SmartDashboard.putData(driveSub.rearRight);
 
 
     SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
@@ -263,6 +246,9 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     
     m_autonomousCommand = m_chooser.getSelected();
+    
+    SmartDashboard.putData("TOP CAMERA COMMAND", new getTopCamCommand());
+    SmartDashboard.putData("BOTTOm CAMERA COMMAND", new getTopCamCommand());
 
   }
 }
