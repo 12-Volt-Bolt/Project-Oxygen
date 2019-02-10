@@ -36,10 +36,29 @@ public class Constants_And_Equations {
 
     public static double parabola(double d){
         double dten = d*10;
-        if (dten > 0) {
-            return Math.pow(dten, 2)/10;
+        return dten;
+    }
+
+    public static double powAllPos(double d){
+        return powAllPos(d, 2);
+    }
+
+    public static double powAllPos(double d, double pow){
+        double dten = d*10;
+        double temp = Math.pow(dten, pow);
+        if (checkValuePositive(dten) == checkValuePositive(temp)){
+            return temp;
         } else {
-            return (Math.pow(dten, 2)/10)*-1;
+            return temp * -1;
+        }
+    }
+
+    public static boolean checkValuePositive(double value){
+        if (value > 0){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 

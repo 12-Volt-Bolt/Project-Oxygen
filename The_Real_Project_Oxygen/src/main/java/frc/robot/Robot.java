@@ -309,13 +309,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-/*
+    driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), /*OI.zeroSlotController.getX(Hand.kRight)*/ 0.2);
+
     if (OI.zeroSlotController.getAButton() == true)
     {
       Robot.navXGyro.reset();
     }
-*/
+
     Scheduler.getInstance().run();
     //new DefaultDriveCommand().start();
 
@@ -337,7 +337,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     
     //m_autonomousCommand = m_chooser.getSelected();
-    driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight));
 
 
 
