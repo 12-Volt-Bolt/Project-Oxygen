@@ -36,7 +36,12 @@ public class Constants_And_Equations {
 
     public static double parabola(double d){
         double dten = d*10;
-        return dten;
+        return Math.pow(dten, 2)/10;
+    }
+
+    public static double parabola(double d, double pow){
+        double dten = d*10;
+        return Math.pow(dten, pow)/10;
     }
 
     public static double powNoSignChange(double d){
@@ -44,12 +49,12 @@ public class Constants_And_Equations {
     }
 
     public static double powNoSignChange(double d, double pow){
-        double dten = d*10;
+        double dten = Math.abs(d*10);
         double temp = Math.pow(dten, pow);
-        if (checkValuePositive(dten) == checkValuePositive(temp)){
+        if (checkValuePositive(d) == true){
             return temp/10;
         } else {
-            return temp/10 * -1;
+            return temp/-10;
         }
     }
 
