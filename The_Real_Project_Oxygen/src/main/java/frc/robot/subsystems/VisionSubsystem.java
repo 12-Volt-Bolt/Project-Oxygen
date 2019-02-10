@@ -18,10 +18,20 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 
 public static UsbCamera topCam, bottomCam;
-public static CameraServer camServerTop;
-public static CameraServer camServerBottom;
-public static MjpegServer mjpegServerTop;
-public static MjpegServer mjpegServerBottom;
+public static CameraServer camServerTop, camServerBottom;
+public static MjpegServer mjpegServerTop, mjpegServerBottom;
+
+public static final String TOP_CAM_NAME = "Top Camera";
+public static final String BOTTOM_CAM_NAME = "Bottom Camera";
+
+public static final int TOP_CAM_FPS = 10;
+public static final int BOTTOM_CAM_FPS = 10;
+
+public static final int TOP_CAM_COL_PIXEL_NUM = 480;
+public static final int BOTTOM_CAM_COL_PIXEL_NUM = 480;
+
+public static final int TOP_CAM_ROW_PIXEL_NUM = 640;
+public static final int BOTTOM_CAM_ROW_PIXEL_NUM = 640;
 
 
 
