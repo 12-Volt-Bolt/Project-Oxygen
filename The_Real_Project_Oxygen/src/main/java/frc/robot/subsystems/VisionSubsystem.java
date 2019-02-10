@@ -14,15 +14,24 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
- * Add your docs here.
+ * This class holds all methods and objects related to vision tracking
  */
 
+public static UsbCamera topCam, bottomCam;
+public static CameraServer camServerTop;
+public static CameraServer camServerBottom;
+public static MjpegServer mjpegServerTop;
+public static MjpegServer mjpegServerBottom;
+
+
+
+ 
  
 public class VisionSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
  // setDefaultCommand(new MySpecialCommand());
-
+   
 
   @Override
   public void initDefaultCommand() {

@@ -86,21 +86,28 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
+    oi = new OI();
+
     /////////////
     doesVisionStartNow = false;
     /////////////
     
-    UsbCamera topCam = CameraServer.getInstance().startAutomaticCapture();
+    UsbCamera topCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ZERO_ID);
     topCam.setResolution(640, 480);
-    topCam.setFPS(5);
+    topCam.setFPS(10);
     CvSink cvSink0 = CameraServer.getInstance().getVideo();
 
-    UsbCamera bottomCam = CameraServer.getInstance().startAutomaticCapture(1);
+    UsbCamera bottomCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ONE_ID);
     bottomCam.setResolution(640, 480);
-    bottomCam.setFPS(5);
+    bottomCam.setFPS(10);
     CvSink cvSink1 = CameraServer.getInstance().getVideo();
     
+    // The following lines of code will keep the cameras from shutting down, thus decreasing lag
+    // Remember, we just want to stop sending the streams, not shut the cameras down.
+    bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+    topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
     
+    /*
    try{
       new CameraServerStartInstantCommand().start();
    }
@@ -109,7 +116,7 @@ public class Robot extends TimedRobot {
     DriverStation.reportError("I'm sorry but we are having touble with cameras", true);
 
    }
-   
+   */
 
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
@@ -189,11 +196,6 @@ public class Robot extends TimedRobot {
     DriveSub.turnToAngle(90);
     /////
    
-
-   ////// The Jamie G test site
-    DriveSub.turnToAngle(90);
-
-   //////
     try {
       Client client = new Client("127.0.0.1", 5000);
     } catch (IOException e) {
@@ -261,10 +263,6 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     
     m_autonomousCommand = m_chooser.getSelected();
-
-
-
-   
 
   }
 }
