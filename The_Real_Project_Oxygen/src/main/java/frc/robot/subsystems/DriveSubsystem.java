@@ -154,7 +154,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       } 
 
       public void UpdateDriveRamp(double twist, double xLeft, double yLeft){
-        mecDrive.driveCartesian(Constants_And_Equations.powAllPos(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.powAllPos(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
+        mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
       }
 
       public static void UpdateDriveTurn_to_angle(double angle, double xLeft, double yLeft) {
@@ -316,9 +316,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     else
     {
-      rotationSpeed = Constants_And_Equations.Clamp(-0.5, 0.5, Constants_And_Equations.powAllPos((Robot.navXGyro.getAngle() - newZero), 3));
+      rotationSpeed = Constants_And_Equations.Clamp(-1, 1, (Robot.navXGyro.getAngle() - newZero)/180);
     }
 
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), 0.2);
   }
 }
