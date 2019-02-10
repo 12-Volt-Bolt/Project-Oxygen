@@ -39,11 +39,11 @@ public class Constants_And_Equations {
         return dten;
     }
 
-    public static double powNoSignChange(double d){
-        return powNoSignChange(d, 2);
+    public static double powAllPos(double d){
+        return powAllPos(d, 2);
     }
 
-    public static double powNoSignChange(double d, double pow){
+    public static double powAllPos(double d, double pow){
         double dten = d*10;
         double temp = Math.pow(dten, pow);
         if (checkValuePositive(dten) == checkValuePositive(temp)){
