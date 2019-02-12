@@ -20,7 +20,7 @@ public class DefaultDriveCommand extends Command {
   public DefaultDriveCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.DriveSub);
+    requires(Robot.driveSub);
   }
 
   // Called just before this Command runs the first time
@@ -32,10 +32,10 @@ public class DefaultDriveCommand extends Command {
   @Override
   protected void execute() {
     if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)){
-      Robot.DriveSub.driveRamp(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
+      Robot.driveSub.driveRamp(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
     } 
     else {
-      Robot.DriveSub.executeMecanumDrive();
+      Robot.driveSub.executeMecanumDrive();
     }
   }
 
@@ -48,7 +48,7 @@ public class DefaultDriveCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.DriveSub.StopThePresses();
+    Robot.driveSub.StopThePresses();
   }
 
   // Called when another command which requires one or more of the same

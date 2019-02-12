@@ -12,6 +12,9 @@ package frc.robot;
  */
 public class Constants_And_Equations {
 
+    
+    public static double a_Vision_Variable;
+
     public static double deadzone(double d, double deadzone){
         return Math.abs(d) > Math.abs(deadzone) ? d : 0;
     }
@@ -28,7 +31,5 @@ public class Constants_And_Equations {
             return (Math.pow(dten, 2)/10)*-1;
         }
     }
-
-
 
 }

@@ -24,8 +24,12 @@ public class RobotMap {
   // public static int rangefinderPort = 1;
   // public static int rangefinderModule = 1;
 
-  public static final int CONTROLLER_ONE_ID = 0;
-  public static final int CONTROLLER_TWO_ID = 1;
+  public static final int CONTROLLER_ZERO_ID = 0;
+  public static final int CONTROLLER_ONE_ID = 1;
+
+  // Camera IDs
+  public static final int CAMERA_ZERO_ID = 0;
+  public static final int CAMERA_ONE_ID = 1;
   
   // These are the wheel motor controller IDs
   public static final int FRONT_LEFT_MOTOR_ID = 2;

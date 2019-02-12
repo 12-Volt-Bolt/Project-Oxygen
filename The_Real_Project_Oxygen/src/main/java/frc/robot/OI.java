@@ -22,21 +22,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class OI {
 
-  public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
-  public static XboxController coXJoy = new XboxController(RobotMap.CONTROLLER_TWO_ID);  
+  public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ZERO_ID);
+  public static XboxController OneSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
   
-  JoystickButton xJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
-                 xJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
-                 xJoyAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
-                 xJoyXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
-                 xJoyRBButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_BUMPER_ID),
-                 xJoyRTButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
-                 xJoyLBButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_BUMPER_ID),
-                 xJoyLTButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
-                 xJoyLeftStickButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_STICK_ID),
-                 xJoyRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
-                 xJoyMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
-                 xJoyStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
+  JoystickButton zeroXConJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
+                 zeroXConJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
+                 zeroXConAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
+                 zeroXConXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
+                 zeroXConRBButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_BUMPER_ID),
+                 zeroXConRTButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
+                 zeroXConLBButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_BUMPER_ID),
+                 zeroXConLTButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
+                 zeroXConLeftStickButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_STICK_ID),
+                 zeroXConRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
+                 zeroXConMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
+                 zeroXConStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
+
+                 //TODO: create JoystickButtons for the OneSlotController.
                  
 
   
@@ -68,35 +70,29 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
 
-public static void leftRumbleMethod(double power) {
-  zeroSlotController.setRumble(RumbleType.kLeftRumble, power);
+public static void leftRumbleMethod(XboxController xCon, double power) {
+  xCon.setRumble(RumbleType.kLeftRumble, power);
 }
-public static void leftRumbleMethod(double power, double delay) {
-  leftRumbleMethod(power);
+public static void leftRumbleMethod(XboxController xCon, double power, double delay) {
+  int powerOff = 0;
+  leftRumbleMethod(xCon, power);
   Timer.delay(delay);
-  leftRumbleMethod(0);
+  leftRumbleMethod(xCon, powerOff);
 }
 
-public static void rightRumbleMethod(double power) {
-  zeroSlotController.setRumble(RumbleType.kRightRumble, power);
+public static void rightRumbleMethod(XboxController xCon, double power) {
+  xCon.setRumble(RumbleType.kRightRumble, power);
 }
 
-public static void rightRumbleMethod(double power, double delay) {
-  rightRumbleMethod(power);
+public static void rightRumbleMethod(XboxController xCon, double power, double delay) {
+  rightRumbleMethod(xCon, power);
   Timer.delay(delay);
-  rightRumbleMethod(0);
+  rightRumbleMethod(xCon, 0);
 }
 
 
-public static void doubleRumbleMethod( double leftPower, double rightPower) {
-leftRumbleMethod(leftPower);
-rightRumbleMethod(rightPower);
+public static void doubleRumbleMethod(XboxController xCon,double leftPower, double rightPower) {
+leftRumbleMethod(xCon, leftPower);
+rightRumbleMethod(xCon, rightPower);
 }
-
-
-public static void doubleRumbleMethod( double leftPower, double leftDelay, double rightPower, double rightDelay) {
-  leftRumbleMethod(leftPower, leftDelay);
-  rightRumbleMethod(rightPower, rightDelay);
-  }
-
 }
