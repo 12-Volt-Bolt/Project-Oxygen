@@ -49,6 +49,7 @@ import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.DefaultDriveCommand;
+//import jdk.javadoc.internal.doclets.toolkit.resources.doclets;
 
 /**
  * Add your docs here.
@@ -74,6 +75,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // variables for tank driving
   public static double newZero = 0.00;
   public static double rotationSpeed = 0.00;
+  public static double angleOff = 0.00;
 
   /* This tuning parameter indicates how close to "on target" the    */
   /* PID Controller will attempt to get.                             */
@@ -316,9 +318,21 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     else
     {
-      rotationSpeed = Constants_And_Equations.Clamp(-1, 1, (Robot.navXGyro.getAngle() - newZero)/180);
+      angleOff = Robot.navXGyro.getAngle() - newZero;
+      if (Math.abs(angleOff) < 2){
+        rotationSpeed = 0;
+      }
+      else{
+        if (xLeft == 0){
+          angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.35);
+        }else{
+          angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.2);
+        }
+        rotationSpeed = Constants_And_Equations.Clamp(-1, 1, angleOff);
+      }
     }
 
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), 0.2);
+    //newZero = Robot.navXGyro.getAngle();
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
   }
 }

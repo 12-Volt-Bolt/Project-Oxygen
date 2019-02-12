@@ -221,6 +221,7 @@ public class Robot extends TimedRobot {
               SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
               SmartDashboard.putNumber("NewZero", driveSub.newZero);
               SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
+              SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
 
     
   }
@@ -309,8 +310,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-/*
+    //driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight));
+
+    /*
     if (OI.zeroSlotController.getAButton() == true)
     {
       Robot.navXGyro.reset();
@@ -326,7 +329,7 @@ public class Robot extends TimedRobot {
 
 
     SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
-    SmartDashboard.putData("Turn Controller ", driveSub.turnController);
+    SmartDashboard.putData("Turn Controller", driveSub.turnController);
   }
 
   /**
@@ -337,7 +340,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     
     //m_autonomousCommand = m_chooser.getSelected();
-    driveSub.UpdateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight));
 
 
 
