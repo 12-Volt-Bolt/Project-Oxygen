@@ -33,6 +33,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.navx.frc.AHRS.SerialDataType;
+//import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
+
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.Encoder;
@@ -101,62 +103,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
     }
 
-    public void UpdateDriveCartesian(double xLeft, double yLeft, double xRight) {
+    public void UpdateDriveCartesian(double xLeft, double yLeft, double xRight, Boolean locked) {
       mecDrive.setSafetyEnabled(false);
 
-
-      boolean rotateToAngle = false;          
-      double currentRotationRate;
-
-      switch(OI.zeroSlotController.getPOV()){
-        case 0:
-        SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
-          turnController.setSetpoint(0.0f);
-          rotateToAngle = true;
-        break; 
-        case 45:
-          turnController.setSetpoint(45.0f);
-          rotateToAngle = true;
-        break;
-        case 90:
-          turnController.setSetpoint(90.0f);
-          rotateToAngle = true;
-        break; 
-        case 135:
-          turnController.setSetpoint(135.0f);
-          rotateToAngle = true;
-        break;
-        case 180:
-          turnController.setSetpoint(179.9f);
-          rotateToAngle = true;
-        break;
-        case 225:
-          turnController.setSetpoint(225.0f);
-          rotateToAngle = true;
-        break;
-        case 270:
-          turnController.setSetpoint(270.0f);
-          rotateToAngle = true;
-        break;
-        case 315:  
-          turnController.setSetpoint(315.0f);
-          rotateToAngle = true;
-        break;         
-      }    
-            if ( rotateToAngle ) {
-              turnController.enable();
-                currentRotationRate = rotateToAngleRate;
-            } else {
-              turnController.disable();
-                // I don't know why getX has to be negitive, but let's just go with it
-                currentRotationRate = Constants_And_Equations.deadzone(-xRight);
-                turnController.disable();
-              }
-                mecDrive.driveCartesian(Constants_And_Equations.deadzone(-xLeft), -Constants_And_Equations.deadzone(-yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
-    }
-    
-    public void UpdateDriveCartesianLocked(double xLeft, double yLeft, double xRight) {
-      mecDrive.setSafetyEnabled(false);
 
       boolean rotateToAngle = false;          
       double currentRotationRate;
@@ -200,37 +149,18 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         turnController.enable();
         currentRotationRate = rotateToAngleRate;
       } else {
-        /*
-        turnController.disable();
-        // I don't know why getX has to be negitive, but let's just go with it
-        currentRotationRate = Constants_And_Equations.deadzone(-xRight);
-        turnController.disable();
-        */
-
-        if (Constants_And_Equations.deadzone(xRight) != 0)
-        {
-          newZero = Robot.navXGyro.getAngle();
-          currentRotationRate = -xRight;
-        }
-        else
-        {
-          angleOff = Robot.navXGyro.getAngle() - newZero;
-          if (Math.abs(angleOff) < 2){
-            currentRotationRate = 0;
-          }
-          else{
-            if (xLeft == 0){
-              angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.35);
-            }else{
-              angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.2);
-            }
-            currentRotationRate = Constants_And_Equations.Clamp(-1, 1, angleOff);
-          }
+        if (locked == false){
+          turnController.disable();
+          // I don't know why getX has to be negitive, but let's just go with it
+          currentRotationRate = Constants_And_Equations.deadzone(-xRight);
+          turnController.disable();
+        }else{
+          currentRotationRate = locRotationLock(xLeft, xRight);
         }
       }
       mecDrive.driveCartesian(Constants_And_Equations.deadzone(-xLeft), -Constants_And_Equations.deadzone(-yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
     }
-
+    
     public void UpdateDriveRamp(double twist, double xLeft, double yLeft){
       mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
     }
@@ -387,10 +317,19 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   {
     mecDrive.setSafetyEnabled(false);
     // Resets local north if turning
-    if (Constants_And_Equations.deadzone(xRight) != 0)
+    
+    rotationSpeed = locRotationLock(xLeft, xRight);
+
+    //newZero = Robot.navXGyro.getAngle();
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
+  }
+
+  public static double locRotationLock(double xInput, double zInput)
+  {
+    if (Constants_And_Equations.deadzone(zInput) != 0)
     {
       newZero = Robot.navXGyro.getAngle();
-      rotationSpeed = xRight;
+      rotationSpeed = zInput;
     }
     else
     {
@@ -399,7 +338,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         rotationSpeed = 0;
       }
       else{
-        if (xLeft == 0){
+        if (xInput == 0){
           angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.35);
         }else{
           angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.2);
@@ -408,7 +347,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       }
     }
 
-    //newZero = Robot.navXGyro.getAngle();
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
+    return rotationSpeed;
   }
 }

@@ -311,7 +311,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight));
-    driveSub.UpdateDriveCartesianLocked(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), true);
 
     //Scheduler.getInstance().run();
     //new DefaultDriveCommand().start();
