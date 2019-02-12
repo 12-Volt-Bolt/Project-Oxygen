@@ -153,19 +153,95 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
                 turnController.disable();
               }
                 mecDrive.driveCartesian(Constants_And_Equations.deadzone(-xLeft), -Constants_And_Equations.deadzone(-yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
-      } 
+    }
+    
+    public void UpdateDriveCartesianLocked(double xLeft, double yLeft, double xRight) {
+      mecDrive.setSafetyEnabled(false);
 
-      public void UpdateDriveRamp(double twist, double xLeft, double yLeft){
-        mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
-      }
+      boolean rotateToAngle = false;          
+      double currentRotationRate;
 
-      public static void UpdateDriveTurn_to_angle(double angle, double xLeft, double yLeft) {
-        turnController.setSetpoint(angle);
-        double currentRotationRate;
+      switch(OI.zeroSlotController.getPOV()){
+        case 0:
+        SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
+          turnController.setSetpoint(0.0f);
+          rotateToAngle = true;
+        break; 
+        case 45:
+          turnController.setSetpoint(45.0f);
+          rotateToAngle = true;
+        break;
+        case 90:
+          turnController.setSetpoint(90.0f);
+          rotateToAngle = true;
+        break; 
+        case 135:
+          turnController.setSetpoint(135.0f);
+          rotateToAngle = true;
+        break;
+        case 180:
+          turnController.setSetpoint(179.9f);
+          rotateToAngle = true;
+        break;
+        case 225:
+          turnController.setSetpoint(225.0f);
+          rotateToAngle = true;
+        break;
+        case 270:
+          turnController.setSetpoint(270.0f);
+          rotateToAngle = true;
+        break;
+        case 315:  
+          turnController.setSetpoint(315.0f);
+          rotateToAngle = true;
+        break;         
+      }    
+      if ( rotateToAngle ) {
+        turnController.enable();
         currentRotationRate = rotateToAngleRate;
-        mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), -Constants_And_Equations.deadzone(yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
+      } else {
+        /*
+        turnController.disable();
+        // I don't know why getX has to be negitive, but let's just go with it
+        currentRotationRate = Constants_And_Equations.deadzone(-xRight);
+        turnController.disable();
+        */
 
+        if (Constants_And_Equations.deadzone(xRight) != 0)
+        {
+          newZero = Robot.navXGyro.getAngle();
+          currentRotationRate = -xRight;
+        }
+        else
+        {
+          angleOff = Robot.navXGyro.getAngle() - newZero;
+          if (Math.abs(angleOff) < 2){
+            currentRotationRate = 0;
+          }
+          else{
+            if (xLeft == 0){
+              angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.35);
+            }else{
+              angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff)/180), 0.2);
+            }
+            currentRotationRate = Constants_And_Equations.Clamp(-1, 1, angleOff);
+          }
+        }
       }
+      mecDrive.driveCartesian(Constants_And_Equations.deadzone(-xLeft), -Constants_And_Equations.deadzone(-yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
+    }
+
+    public void UpdateDriveRamp(double twist, double xLeft, double yLeft){
+      mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
+    }
+
+    public static void UpdateDriveTurn_to_angle(double angle, double xLeft, double yLeft) {
+      turnController.setSetpoint(angle);
+      double currentRotationRate;
+      currentRotationRate = rotateToAngleRate;
+      mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), -Constants_And_Equations.deadzone(yLeft), currentRotationRate, -Robot.navXGyro.getAngle());
+
+    }
 
   // We may make our own mecamum method someday 
       public void homeBrewMecanumMethod() {
