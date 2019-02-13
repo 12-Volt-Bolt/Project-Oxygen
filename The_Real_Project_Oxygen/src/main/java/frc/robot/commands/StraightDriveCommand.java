@@ -14,7 +14,7 @@ public class StraightDriveCommand extends Command {
   public StraightDriveCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.DriveSub);
+    requires(Robot.driveSub);
   }
 
   // Called just before this Command runs the first time

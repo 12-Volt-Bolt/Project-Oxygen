@@ -226,22 +226,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-              SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
-              SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
+    SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
+    SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
 
-              if(OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
-                 new getTopCamCommand().start();
-              }
+    if(OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
+      new getTopCamCommand().start();
+    }
 
-              if(OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
-                 new getBottomCamCommand().start();
-              }
+    if(OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
+      new getBottomCamCommand().start();
+    }
 
-              SmartDashboard.putBoolean("Is Vision On?", doesVisionStartNow);
-              
-              
-
-    
+    SmartDashboard.putBoolean("Is Vision On?", doesVisionStartNow);
   }
 
   /**
@@ -282,8 +278,9 @@ public class Robot extends TimedRobot {
       Client client = new Client("127.0.0.1", 5000);
     } catch (IOException e) {
       // TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+		  e.printStackTrace();
+    }
+    
     SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
     SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
     /*
