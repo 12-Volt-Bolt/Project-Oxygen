@@ -7,20 +7,54 @@
 
 package frc.robot;
 
+import java.sql.Time;
+
+//import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.WaitCommand;
+
 /**
  * Add your docs here.
  */
 public class Constants_And_Equations {
-
-    
+ 
     public static double a_Vision_Variable;
 
-    public static double deadzone(double d, double deadzone){
-        return Math.abs(d) > Math.abs(deadzone) ? d : 0;
+    public static double Clamp(double min, double max, double value)
+    {
+        if (value > max){
+            return max;
+        }
+        else if (value < min){
+            return min;
+        }
+        else{
+            return value;
+        }
     }
 
     public static double deadzone(double d){
-        return Math.abs(d) > Math.abs(0.1) ? d : 0;
+        return Math.abs(d) > 0.1 ? d : 0;
+    }
+
+    // Overload- 
+    public static double deadzone(double d, double deadzone){
+        return Math.abs(d) > Math.abs(deadzone) ? d : 0;
+    }
+    
+    public static double deadzoneSet(double d, double deadzone){
+        if (Math.abs(d) > Math.abs(deadzone)){
+            return d;
+        }
+        else{
+            if (d > 0){
+                return deadzone;
+            }
+            else{
+                return -deadzone;
+            }
+        }
     }
 
     public static double parabola(double d){
