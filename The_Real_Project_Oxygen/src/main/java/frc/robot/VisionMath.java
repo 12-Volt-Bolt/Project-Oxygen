@@ -14,118 +14,104 @@ package frc.robot;
  */
 public class VisionMath {
     
-    // Alignment line angle
-    private double Alpha;
-    
-    private double alphaRotate;
-
-    // Distance to Cal Plus Cal to VT
-    private double d1;
-
-    // camera center offset
-    private double d2;
-
-    //Please see method
-    private double d3;
-    
-    private double d4;
-
-    private double d5;
-
-    private double d6;
-
     private double beta;
+    private double theta;
 
+    // The angle of the alignment line relative to the robot
+    // This variable is also equaled to rotation
+    // 90 - Beta = Alpha
     private double alpha;
+    
+    // d1 is equaled to the robot's distance away from the vision targets
+    private double linearDistanceAwayFromVisionTarget;
 
-    private double Theta;
+    // This distance is equaled to d2
+    // d2 is the Camera's center offset
+    private double cameraCenterOffset;
+    
+    //private double d3 is no longer used
 
-    private double forwardDis;
-
+    // This variable is the lateral  offset robot from the center of the vision target 
+    // This distance is equaled to d4
     private double lateralOffSet;
 
-    private double visionTargerSpan;
+    // This variable is equaled to d5
+    // The robot must move a net distance of d5 in order to reach the cargo station for disk placement
+    private double forwardDistance;
     
-    private double xCenterCoordiante;
+    // The following data will be received from the dashboard and are calculated by the LabVIEW vision program
+    private int MeasCenterXInPixels = 0;
+    private int MeasTargetSeparationInPixels = 0;
+    private double MeasAlignmentLineAngleInDegrees = 0;
+
+    //Calibration Data
+    // TODO: these values will be updated when the competition bot is built and ready to be utlized for testing
+    public static final int calCenterXInPixels = 0;
+    public static final int calcDistanceInCm = 0;
+    public static final int calTargetSeparationInPixels = 0;
+    public static final int calAlignmentLineAngleInDegrees = 0;
+    public static final double calLateralOffsetConstant = 20.32;
+    
 
 
-    public void VisionMath(double cameraCenterOffSet, double xCenterCoordiante, double distanceToCalPlusCalToVT, double visionTargerSpan) {
-        d1 = cameraCenterOffSet;
-        d2 = distanceToCalPlusCalToVT;
-        this.xCenterCoordiante = xCenterCoordiante;
-        this.visionTargerSpan = visionTargerSpan;
+    public void VisionMath(int  centerXInPixels, int targetSeparationInPixels, double alignmentLineAngleInDegrees) {
+        this.MeasCenterXInPixels = centerXInPixels;
+        this.MeasTargetSeparationInPixels = targetSeparationInPixels;
+        this.MeasAlignmentLineAngleInDegrees = alignmentLineAngleInDegrees;
     }
 
-
-    /* Do we really need this?
-    public void calculateD1() {
-       
-    }
-   */
-  /* Do we really need this?
-    public void calculateD2() {
-        
-    }
-    */
-    public void calculateD3() {
-       // d3 = (d2) / Math.cos(alpha); error, error, error
-    }
-
-    public void calculateD4() {
-       d4 = d1 * Math.sin(alpha);
-    }
-    public void calculateD5() {
-        d5 = d1 * Math.cos(alpha);
-    }
-
-    public void calculateD6() {
-        d6 = d2 * (d6 / d2);
+    public void calcDistanceFromCamToTarget() {
+        linearDistanceAwayFromVisionTarget = (calTargetSeparationInPixels / MeasTargetSeparationInPixels) * calcDistanceInCm;
     }
 
     public void calcLateralOffSet() {
-      lateralOffSet = d4;
+        lateralOffSet = (calCenterXInPixels - MeasCenterXInPixels) - calcDistanceInCm;
+      }
+
+      public void calcAlpha() {
+        alpha = MeasAlignmentLineAngleInDegrees;
     }
 
-    public void calcForwardDis() {
-       forwardDis = d5;
+    public void calcForwardDistanceCm() {
+        forwardDistance = linearDistanceAwayFromVisionTarget * (Math.cos(alpha));
     }
 
-    public void calcAlpha() {
-        Alpha = beta - 90;
-    }
-
-
-    public double getD1() {
-       return d1;
-    }
-    public double getD2() {
-        return d2;
-
-    }
-    public double getD3() {
-        return d3;
-
-    }
-    public double getD4() {
-        return d4;
-
-    }
-    public double getD5() {
-        return d5;
-
-    }
+    // alpha
     public double getAlphaRotation() {
         return alpha;
     }
+    // beta
     public double getBeta() {
         return beta;
     }
+    
 
+    // theta
+    public double returnTheta() {
+        return theta;
+    }
+
+    // d1
+    public double returnDistanceFromCamToTarget() {
+        return linearDistanceAwayFromVisionTarget;
+    }
+    
+    // d2
+    public double getCameraCenterOffset() {
+        return cameraCenterOffset;
+    }
+
+    // d4
     public double getLateralOffSet() {
         return  lateralOffSet;
     }
+    // d5
+    public double getForwardDistance() {
+       return   forwardDistance;
+    }
 
-    public double getForwardDis() {
-       return  forwardDis;
+    //d6 
+    public double getAngleOffSetInDegrees() {
+        return MeasAlignmentLineAngleInDegrees - calAlignmentLineAngleInDegrees;
     }
 }
