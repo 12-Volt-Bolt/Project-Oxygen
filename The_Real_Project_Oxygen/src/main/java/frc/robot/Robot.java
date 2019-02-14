@@ -63,9 +63,6 @@ public class Robot extends TimedRobot {
   public static DriveSubsystem driveSub = new DriveSubsystem();
   public static VisionSubsystem visionSub = new VisionSubsystem();
 
-
-
-
   /**
    *
    */
@@ -74,16 +71,16 @@ public class Robot extends TimedRobot {
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static AHRS navXGyro;
- 
- // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
- // The the above at some point please. It keeps throwing an error
+
+  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
+  // The the above at some point please. It keeps throwing an error
 
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
 
-  public static boolean doesVisionStartNow; 
+  public static boolean doesVisionStartNow;
 
   @Override
   public void robotInit() {
@@ -95,110 +92,8 @@ public class Robot extends TimedRobot {
     MjpegServer mServer0 = CameraServer.getInstance().addServer("Another_Server0");
     MjpegServer mServer1 = CameraServer.getInstance().addServer("Another_Server_1");
 
-   mServer0.setSource(camera0);
-   mServer1.setSource(camera1);
-   
-
-// NT: server: client CONNECTED: 10.15.57.180 port 61914
-
-
-    // TODO TEST!!
-    //
-    /*
-=======
-  
-  UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
-  MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-  mjpegServer1.setSource(usbCamera); CvSink cvSink = new CvSink("opencv_USB Camera 0");
-  cvSink.setSource(usbCamera);
-  CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
-  MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
-  mjpegServer2.setSource(outputStream);
-
-
-
-/* Test Test Test TODO
->>>>>>> 087ab63f0f1a94b07ff512af8a060d8ef8c0c7a4
-    UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
-    MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1182", 1182);
-    CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
-
-   // VisionTapeCvSink.setSource(visionTapeCamera);
-    visionTapeMJpeg.setSource(visionTapeCamera);
-   // CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
-
-     
-
-=======
-   Test Test Test TODO
-   
-    
-    MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
-    theSecondMJepServer.setSource(outputStreamVisionTape);
-   
-    CameraServer.getInstance().addCamera(visionTapeCamera);
-    CameraServer.getInstance().startAutomaticCapture();
-    CameraServer.getInstance().getVideo(visionTapeCamera);
-    CameraServer.getInstance().putVideo("Vision-Tape", 480, 640);
-    SmartDashboard.putNumber("port Number", visionTapeMJpeg.getPort());
-    SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
-    SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
-    SmartDashboard.putString("get Listen Description", visionTapeMJpeg.getDescription());
-*/
-
-
-
-/*
-    /// Camera 1
-
-    UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
-    usbCamera0.setResolution(320, 240);
-    usbCamera0.setFPS(10);
-    CvSink cvSink0 = CameraServer.getInstance().getVideo();
-
-    /// Camera 1
-
-    /// Camera 2
-
-    UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
-    usbCamera1.setResolution(320, 240);
-    usbCamera1.setFPS(10);
-    CvSink cvSink1 = CameraServer.getInstance().getVideo();
-
-    // Camera 2
-
-    ////////////
-   MjpegServer visionTapeSense = new MjpegServer("THE_VISION_TAPE", 1181);
-   visionTapeSense.setSource(usbCamera0);
-
-   
-    Mat visionTarget = new Mat();
-
-    cvSink0.grabFrame(visionTarget);
-
-    cvSink.Jpeg
-    ////////////
-
-  */
-
-  
-// Testing Angles
-
-
-//
-
-    
-    
-    /*
-   try{
-      new CameraServerStartInstantCommand().start();
-   }
-
-   catch(Exception e) {
-    DriverStation.reportError("I'm sorry but we are having touble with cameras", true);
-
-   }
-   */
+    mServer0.setSource(camera0);
+    mServer1.setSource(camera1);
 
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
@@ -209,8 +104,7 @@ public class Robot extends TimedRobot {
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
-   
-    
+
     // chooser.addOption("My Auto", new MyAutoCommand());
   }
 
@@ -229,11 +123,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
     SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
 
-    if(OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
+    if (OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
       new getTopCamCommand().start();
     }
 
-    if(OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
+    if (OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
       new getBottomCamCommand().start();
     }
 
@@ -270,17 +164,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    ////// Jamie G testing
-    //driveSub.turnToAngle(90);
-    /////
-   
     try {
       Client client = new Client("127.0.0.1", 5000);
     } catch (IOException e) {
       // TODO Auto-generated catch block
-		  e.printStackTrace();
+      e.printStackTrace();
     }
-    
+
     SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
     SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
     /*
@@ -296,7 +186,6 @@ public class Robot extends TimedRobot {
     }
   }
 
-  
   /**
    * This function is called periodically during autonomous.
    */
@@ -321,16 +210,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kRight));
-    driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), true);
+    Scheduler.getInstance().run();
 
-    //Scheduler.getInstance().run();
+    driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft),
+        OI.zeroSlotController.getX(Hand.kRight), true);
 
     SmartDashboard.putData(driveSub.frontRight);
     SmartDashboard.putData(driveSub.rearLeft);
     SmartDashboard.putData(driveSub.frontLeft);
     SmartDashboard.putData(driveSub.rearRight);
-
 
     SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
@@ -342,12 +230,11 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
-    
+
     m_autonomousCommand = m_chooser.getSelected();
-    
+
     SmartDashboard.putData("TOP CAMERA COMMAND", new getTopCamCommand());
     SmartDashboard.putData("BOTTOm CAMERA COMMAND", new getTopCamCommand());
 
   }
 }
-
