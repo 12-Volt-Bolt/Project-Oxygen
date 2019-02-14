@@ -25,7 +25,7 @@ import edu.wpi.cscore.VideoSource;
  
 public class VisionSubsystem extends Subsystem {
 
-  // USB Camera Objects
+// USB Camera Objects
 public static UsbCamera topCam, bottomCam;
 
 // Camera Servers
@@ -56,12 +56,12 @@ public static final int BOTTOM_CAM_ROW_PIXEL_NUM = 640;
    
 public VisionSubsystem() {
   topCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ZERO_ID);
-  topCam = new UsbCamera("TOP_CAM", RobotMap.CAMERA_ZERO_ID);
+ // topCam = new UsbCamera("TOP_CAM", RobotMap.CAMERA_ZERO_ID);
   topCam.setResolution(TOP_CAM_ROW_PIXEL_NUM, TOP_CAM_COL_PIXEL_NUM);
   topCam.setFPS(TOP_CAM_FPS);
 
   bottomCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ONE_ID);
-  bottomCam = new UsbCamera("BOTTOM_CAM", RobotMap.CAMERA_ONE_ID);
+ // bottomCam = new UsbCamera("BOTTOM_CAM", RobotMap.CAMERA_ONE_ID);
   bottomCam.setResolution(BOTTOM_CAM_ROW_PIXEL_NUM, BOTTOM_CAM_COL_PIXEL_NUM);
   bottomCam.setFPS(BOTTOM_CAM_FPS);
 
@@ -71,14 +71,16 @@ public VisionSubsystem() {
   bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
   topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 
+   //theOnlyCamServer = CameraServer.getInstance().getServer();
    theOnlyCamServer = CameraServer.getInstance().getServer();
+
+
 
 }
   @Override
   public void initDefaultCommand() {
 
   }
-
 
 
 }

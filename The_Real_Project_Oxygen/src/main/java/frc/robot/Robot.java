@@ -60,9 +60,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static DriveSubsystem driveSub = new DriveSubsystem();
-  public static VisionSubsystem visionSub = new VisionSubsystem();
-
-
+  public static VisionSubsystem visionSub;
 
 
   /**
@@ -87,20 +85,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
+    visionSub = new VisionSubsystem();
     
     
-    
-    /*
-   try{
-      new CameraServerStartInstantCommand().start();
-   }
-
-   catch(Exception e) {
-    DriverStation.reportError("I'm sorry but we are having touble with cameras", true);
-
-   }
-   */
-
     SmartDashboard.putData("Auto mode", m_chooser);
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
 
@@ -110,7 +97,6 @@ public class Robot extends TimedRobot {
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
-   
     
     // chooser.addOption("My Auto", new MyAutoCommand());
   }
@@ -184,7 +170,8 @@ public class Robot extends TimedRobot {
     } catch (IOException e) {
       // TODO Auto-generated catch block
 		e.printStackTrace();
-	}
+  }
+  
     SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
     SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
     /*
@@ -247,8 +234,9 @@ public class Robot extends TimedRobot {
     
     m_autonomousCommand = m_chooser.getSelected();
     
-    SmartDashboard.putData("TOP CAMERA COMMAND", new getTopCamCommand());
-    SmartDashboard.putData("BOTTOm CAMERA COMMAND", new getTopCamCommand());
+    SmartDashboard.putString("the Only Server get Name method in action", visionSub.theOnlyCamServer.getName());
+    SmartDashboard.putData("TOP COMMAND", new getTopCamCommand());
+    SmartDashboard.putData("BOTTOM CAMMAD", new getTopCamCommand());
 
   }
 }
