@@ -14,6 +14,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import edu.wpi.cscore.VideoSource;
 
@@ -79,7 +80,6 @@ public VisionSubsystem() {
 }
   @Override
   public void initDefaultCommand() {
-
   }
 
 

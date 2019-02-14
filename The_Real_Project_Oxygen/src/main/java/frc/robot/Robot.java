@@ -80,7 +80,21 @@ public class Robot extends TimedRobot {
    * for any initialization code.
    */
 
-  public static boolean doesVisionStartNow; 
+  public static int measCenterPixels;
+  public static int measSeparationPixels;
+  public static int measAngleDegrees;
+  public static boolean isProcessCmdBool;
+
+  public static final String measCenterString = "DB/Slider 0";
+  public static final String measSeparationString= "DB/Slider 1";
+  public static final String measAngleDegreesString = "DB/Slider 2";
+  public static final String isProcessCMDString = "DB/Button 0";
+
+  public static final int NT_Table_Constant = 999;
+
+  public static VisionMath vMath;
+  
+
 
   @Override
   public void robotInit() {
@@ -122,13 +136,25 @@ public class Robot extends TimedRobot {
 
               if(OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
                  new getBottomCamCommand().start();
+              }       
+              
+              if(OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5 && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
+                isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, true);
+           }
+           else {
+             isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, false);
+
+           }
+
+              measCenterPixels = (int) SmartDashboard.getNumber(measCenterString, NT_Table_Constant);
+              measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, NT_Table_Constant);
+              measAngleDegrees = (int) SmartDashboard.getNumber(measAngleDegreesString, NT_Table_Constant);
+
+              if(isProcessCmdBool){
+                vMath = new VisionMath(measCenterPixels, measSeparationPixels, measAngleDegrees);
               }
 
-              SmartDashboard.putBoolean("Is Vision On?", doesVisionStartNow);
-              
-              
-
-    
+             
   }
 
   /**
@@ -160,20 +186,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
-    ////// Jamie G testing
-    //driveSub.turnToAngle(90);
-    /////
+ 
    
-    try {
-      Client client = new Client("127.0.0.1", 5000);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-		e.printStackTrace();
-  }
-  
-    SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
-    SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
+ 
+
+
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
      * switch(autoSelected) { case "My Auto": autonomousCommand = new
@@ -194,6 +211,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+
   }
 
   @Override
@@ -221,7 +239,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(driveSub.rearRight);
 
 
-    SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller ", driveSub.turnController);
   }
 
@@ -236,7 +254,7 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putString("the Only Server get Name method in action", visionSub.theOnlyCamServer.getName());
     SmartDashboard.putData("TOP COMMAND", new getTopCamCommand());
-    SmartDashboard.putData("BOTTOM CAMMAD", new getTopCamCommand());
+    SmartDashboard.putData("BOTTOM COMMAND", new getTopCamCommand());
 
   }
 }
