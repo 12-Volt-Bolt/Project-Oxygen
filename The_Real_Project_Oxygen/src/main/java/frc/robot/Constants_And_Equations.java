@@ -12,23 +12,22 @@ package frc.robot;
  */
 public class Constants_And_Equations {
 
-    
     public static double a_Vision_Variable;
 
-    public static double deadzone(double d, double deadzone){
+    public static double deadzone(double d, double deadzone) {
         return Math.abs(d) > Math.abs(deadzone) ? d : 0;
     }
 
-    public static double deadzone(double d){
+    public static double deadzone(double d) {
         return Math.abs(d) > Math.abs(0.1) ? d : 0;
     }
 
-    public static double parabola(double d){
-        double dten = d*10;
+    public static double parabola(double d) {
+        double dten = d * 10;
         if (dten > 0) {
-            return Math.pow(dten, 2)/10;
+            return Math.pow(dten, 2) / 10;
         } else {
-            return (Math.pow(dten, 2)/10)*-1;
+            return (Math.pow(dten, 2) / 10) * -1;
         }
     }
 

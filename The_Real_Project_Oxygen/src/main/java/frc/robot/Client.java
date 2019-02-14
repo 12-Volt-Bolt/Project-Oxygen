@@ -20,38 +20,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Client {
 
+    private Socket socket0 = null;
+    private DataInputStream input = null;
+    private DataOutputStream out = null;
 
-private Socket socket0 = null;
-private DataInputStream input = null;
-private DataOutputStream out = null;
+    public Client(String address, int port) throws IOException {
 
-public Client(String address, int port) throws IOException 
-{ 
+        while (true) {
+            try {
+                socket0 = new Socket(address, port);
 
-    while (true) {
-        try
-        { 
-            socket0 = new Socket(address, port); 
-             
-            // sends output to the socket 
-            out    = new DataOutputStream(socket0.getOutputStream()); 
-        } 
-        catch(UnknownHostException u) 
-        { 
-            System.out.println(u); 
-        } 
-        catch(IOException i) 
-        { 
-            System.out.println(i); 
-        } 
+                // sends output to the socket
+                out = new DataOutputStream(socket0.getOutputStream());
+            } catch (UnknownHostException u) {
+                System.out.println(u);
+            } catch (IOException i) {
+                System.out.println(i);
+            }
+        }
+        // string to read message from input
+
+        // keep reading until "Over" is input
+
+        // close the connection
     }
-     // string to read message from input 
-     
-     // keep reading until "Over" is input 
-   
-
-     // close the connection 
-}
-
 
 }

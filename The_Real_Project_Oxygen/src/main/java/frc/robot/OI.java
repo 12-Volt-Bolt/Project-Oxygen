@@ -24,77 +24,73 @@ public class OI {
 
   public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ZERO_ID);
   public static XboxController OneSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
-  
+
   JoystickButton zeroXConJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
-                 zeroXConJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
-                 zeroXConAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
-                 zeroXConXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
-                 zeroXConRBButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_BUMPER_ID),
-                 zeroXConRTButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
-                 zeroXConLBButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_BUMPER_ID),
-                 zeroXConLTButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
-                 zeroXConLeftStickButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_STICK_ID),
-                 zeroXConRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
-                 zeroXConMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
-                 zeroXConStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
+      zeroXConJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
+      zeroXConAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
+      zeroXConXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
+      zeroXConRBButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_BUMPER_ID),
+      zeroXConRTButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
+      zeroXConLBButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_BUMPER_ID),
+      zeroXConLTButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
+      zeroXConLeftStickButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_STICK_ID),
+      zeroXConRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
+      zeroXConMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
+      zeroXConStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
 
-                 //TODO: create JoystickButtons for the OneSlotController.
-                 
+  // TODO: create JoystickButtons for the OneSlotController.
 
-  
- 
+  public static void leftRumbleMethod(XboxController xCon, double power) {
+    xCon.setRumble(RumbleType.kLeftRumble, power);
+  }
 
-public static void leftRumbleMethod(XboxController xCon, double power) {
-  xCon.setRumble(RumbleType.kLeftRumble, power);
-}
-public static void leftRumbleMethod(XboxController xCon, double power, double delay) {
-  int powerOff = 0;
-  leftRumbleMethod(xCon, power);
-  Timer.delay(delay);
-  leftRumbleMethod(xCon, powerOff);
-}
+  public static void leftRumbleMethod(XboxController xCon, double power, double delay) {
+    int powerOff = 0;
+    leftRumbleMethod(xCon, power);
+    Timer.delay(delay);
+    leftRumbleMethod(xCon, powerOff);
+  }
 
-public static void rightRumbleMethod(XboxController xCon, double power) {
-  xCon.setRumble(RumbleType.kRightRumble, power);
-}
+  public static void rightRumbleMethod(XboxController xCon, double power) {
+    xCon.setRumble(RumbleType.kRightRumble, power);
+  }
 
-public static void rightRumbleMethod(XboxController xCon, double power, double delay) {
-  rightRumbleMethod(xCon, power);
-  Timer.delay(delay);
-  rightRumbleMethod(xCon, 0);
-}
+  public static void rightRumbleMethod(XboxController xCon, double power, double delay) {
+    rightRumbleMethod(xCon, power);
+    Timer.delay(delay);
+    rightRumbleMethod(xCon, 0);
+  }
 
-
-public static void doubleRumbleMethod(XboxController xCon,double leftPower, double rightPower) {
-leftRumbleMethod(xCon, leftPower);
-rightRumbleMethod(xCon, rightPower);
-}
+  public static void doubleRumbleMethod(XboxController xCon, double leftPower, double rightPower) {
+    leftRumbleMethod(xCon, leftPower);
+    rightRumbleMethod(xCon, rightPower);
+  }
 }
 
- //// CREATING BUTTONS
-  // One type of button is a joystick button which is any button on a
-  //// joystick.
-  // You create one by telling it which joystick it's on and which button
-  // number it is.
-  // Joystick stick = new Joystick(port);
-  // Button button = new JoystickButton(stick, buttonNumber);
+//// CREATING BUTTONS
+// One type of button is a joystick button which is any button on a
+//// joystick.
+// You create one by telling it which joystick it's on and which button
+// number it is.
+// Joystick stick = new Joystick(port);
+// Button button = new JoystickButton(stick, buttonNumber);
 
-  // There are a few additional built in buttons you can use. Additionally,
-  // by subclassing Button you can create custom triggers and bind those to
-  // commands the same as any other Button.
+// There are a few additional built in buttons you can use. Additionally,
+// by subclassing Button you can create custom triggers and bind those to
+// commands the same as any other Button.
 
-  //// TRIGGERING COMMANDS WITH BUTTONS
-  // Once you have a button, it's trivial to bind it to a button in one of
-  // three ways:
+//// TRIGGERING COMMANDS WITH BUTTONS
+// Once you have a button, it's trivial to bind it to a button in one of
+// three ways:
 
-  // Start the command when the button is pressed and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenPressed(new ExampleCommand());
+// Start the command when the button is pressed and let it run the command
+// until it is finished as determined by it's isFinished method.
+// button.whenPressed(new ExampleCommand());
 
-  // Run the command while the button is being held down and interrupt it once
-  // the button is released.
-  // button.whileHeld(new ExampleCommand());
+// Run the command while the button is being held down and interrupt it once
+// the button is released.
+// button.whileHeld(new ExampleCommand());
 
-  // Start the command when the button is released and let it run the command
-  // until it is finished as determined by it's isFinished method.
-  // button.whenReleased(new ExampleCommand());
+// Start the command when the button is released and let it run the command
+// until it is finished as determined by it's isFinished method.
+// button.whenReleased(new ExampleCommand());
