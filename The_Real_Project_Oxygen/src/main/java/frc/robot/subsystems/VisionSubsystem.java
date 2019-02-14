@@ -54,36 +54,8 @@ public static final int BOTTOM_CAM_ROW_PIXEL_NUM = 640;
     topCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ZERO_ID);
     bottomCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ONE_ID);
 
-  
-
-
-/*
-    topCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ZERO_ID);
-    topCam = new UsbCamera("TOP_CAM", RobotMap.CAMERA_ZERO_ID);
-    topCam.setResolution(640, 480);
-    topCam.setFPS(10);
-    This works!
-    */
-
-   /*
-    bottomCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ONE_ID);
-    bottomCam = new UsbCamera("BOTTOM_CAM", RobotMap.CAMERA_ONE_ID);
-    bottomCam.setResolution(640, 480);
-    bottomCam.setFPS(10);
-    This Works
-    */
-    
-
-   // bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-   // topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-
-
     theOnlyCamServer = CameraServer.getInstance().getServer();
 
-
-    // The following lines of code will keep the cameras from shutting down, thus decreasing lag
-    // Remember, we just want to stop sending the streams, not shut the cameras down.
-    
     
   }
 
