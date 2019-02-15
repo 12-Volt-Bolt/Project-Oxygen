@@ -19,48 +19,44 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
  */
 public class Constants_And_Equations {
 
-    public static double Clamp(double min, double max, double value)
-    {
-        if (value > max){
+    public static double Clamp(double min, double max, double value) {
+        if (value > max) {
             return max;
-        }
-        else if (value < min){
+        } else if (value < min) {
             return min;
         }
-        else{
+        else {
             return value;
         }
     }
 
-    public static double deadzone(double d){
+    public static double deadzone(double d) {
         return Math.abs(d) > 0.1 ? d : 0;
     }
 
-    // Overload- 
-    public static double deadzone(double d, double deadzone){
+    // Overload-
+    public static double deadzone(double d, double deadzone) {
         return Math.abs(d) > Math.abs(deadzone) ? d : 0;
     }
 
-    public static double deadzoneSet(double d, double deadzone){
-        if (Math.abs(d) > Math.abs(deadzone)){
+    public static double deadzoneSet(double d, double deadzone) {
+        if (Math.abs(d) > Math.abs(deadzone)) {
             return d;
-        }
-        else{
-            if (d > 0){
+        } else {
+            if (d > 0) {
                 return deadzone;
-            }
-            else{
+            } else {
                 return -deadzone;
             }
         }
     }
 
-    public static double parabola(double d){
-        double dten = d*10;
+    public static double parabola(double d) {
+        double dten = d * 10;
         if (dten > 0) {
-            return Math.pow(dten, 2)/10;
+            return Math.pow(dten, 2) / 10;
         } else {
-            return (Math.pow(dten, 2)/10)*-1;
+            return (Math.pow(dten, 2) / 10) * -1;
         }
     }
 }
