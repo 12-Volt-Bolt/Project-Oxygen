@@ -26,19 +26,30 @@ public class OI {
   public static XboxController OneSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
 
   JoystickButton zeroXConJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
-      zeroXConJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
-      zeroXConAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
-      zeroXConXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
-      zeroXConRBButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_BUMPER_ID),
-      zeroXConRTButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
-      zeroXConLBButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_BUMPER_ID),
-      zeroXConLTButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
-      zeroXConLeftStickButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_STICK_ID),
-      zeroXConRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
-      zeroXConMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
-      zeroXConStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
+      zeroXJoyJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
+      zeroXJoyAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
+      zeroXJoyXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
+      zeroXJoyRBButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_BUMPER_ID),
+      zeroXJoyLBButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_BUMPER_ID),
+      zeroXJoyRTButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
+      zeroXJoyLTButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
+      zeroXJoyLeftStickButton = new JoystickButton(zeroSlotController, RobotMap.LEFT_STICK_ID),
+      zeroXJoyRightStickButton = new JoystickButton(zeroSlotController, RobotMap.RIGHT_STICK_ID),
+      zeroXJoyMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
+      zeroXJoyStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
 
-  // TODO: create JoystickButtons for the OneSlotController.
+  JoystickButton xJoyYButton = new JoystickButton(oneSlotController, RobotMap.Y_BUTTON_ID),
+      oneXJoyBButton = new JoystickButton(oneSlotController, RobotMap.B_BUTTON_ID),
+      oneXJoyAButton = new JoystickButton(oneSlotController, RobotMap.A_BUTTON_ID),
+      oneXJoyXButton = new JoystickButton(oneSlotController, RobotMap.X_BUTTON_ID),
+      oneXJoyRBButton = new JoystickButton(oneSlotController, RobotMap.RIGHT_BUMPER_ID),
+      oneXJoyRTButton = new JoystickButton(oneSlotController, RobotMap.RIGHT_TRIGGER_AXIS_ID),
+      oneXJoyLBButton = new JoystickButton(oneSlotController, RobotMap.LEFT_BUMPER_ID),
+      oneXJoyLTButton = new JoystickButton(oneSlotController, RobotMap.LEFT_TRIGGER_AXIS_ID),
+      oneXJoyLeftStickButton = new JoystickButton(oneSlotController, RobotMap.LEFT_STICK_ID),
+      oneXJoyRightStickButton = new JoystickButton(oneSlotController, RobotMap.RIGHT_STICK_ID),
+      oneXJoyMenuButton = new JoystickButton(oneSlotController, RobotMap.MENU_BUTTON_ID),
+      oneXJoyStartButton = new JoystickButton(oneSlotController, RobotMap.START_BUTTON_ID);
 
   public static void leftRumbleMethod(XboxController xCon, double power) {
     xCon.setRumble(RumbleType.kLeftRumble, power);
@@ -64,7 +75,9 @@ public class OI {
   public static void doubleRumbleMethod(XboxController xCon, double leftPower, double rightPower) {
     leftRumbleMethod(xCon, leftPower);
     rightRumbleMethod(xCon, rightPower);
+
   }
+
 }
 
 //// CREATING BUTTONS

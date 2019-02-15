@@ -49,6 +49,7 @@ import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.OI;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -73,6 +74,15 @@ public class Robot extends TimedRobot {
 
   // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
   // The the above at some point please. It keeps throwing an error
+
+  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
+  // The the above at some point please. It keeps throwing an error
+
+  // Stuff we don't need TODO
+  public static Compressor Comp0 = new Compressor(0);
+
+  // implement the above at some point please. It keeps throwing an error
+  // TODO
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -107,7 +117,6 @@ public class Robot extends TimedRobot {
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
-
 
     // chooser.addOption("My Auto", new MyAutoCommand());
   }
@@ -150,6 +159,12 @@ public class Robot extends TimedRobot {
     if (isProcessCmdBool) {
       vMath = new VisionMath(measCenterPixels, measSeparationPixels, measAngleDegrees);
     }
+    SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
+    SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
+    SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
+    SmartDashboard.putNumber("NewZero", driveSub.newZero);
+    SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
+    SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
 
   }
 
@@ -199,14 +214,15 @@ public class Robot extends TimedRobot {
    * This function is called periodically during autonomous.
    */
 
-   private static int testCount = 0;
-   private static boolean isTheWindBreezing = false;
+  private static int testCount = 0;
+  private static boolean isTheWindBreezing = false;
+
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    
+
     isTheWindBreezing = !isTheWindBreezing;
-//    SmartDashboard.putNumber(measAngleDegreesString, testCount++);
+    // SmartDashboard.putNumber(measAngleDegreesString, testCount++);
     SmartDashboard.putBoolean(isProcessCMDString, isTheWindBreezing);
 
     Timer.delay(1);
@@ -229,16 +245,24 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run();
-    new DefaultDriveCommand().start();
+    // driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft),
+    // -OI.zeroSlotController.getX(Hand.kLeft),
+    // -OI.zeroSlotController.getX(Hand.kRight));
+    driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft),
+        OI.zeroSlotController.getX(Hand.kRight), true);
+    // new DefaultDriveCommand().start();
+
+    // Scheduler.getInstance().run();
+    // new DefaultDriveCommand().start();
 
     SmartDashboard.putData(driveSub.frontRight);
     SmartDashboard.putData(driveSub.rearLeft);
     SmartDashboard.putData(driveSub.frontLeft);
     SmartDashboard.putData(driveSub.rearRight);
-
     SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller ", driveSub.turnController);
+    SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller", driveSub.turnController);
   }
 
   /**
@@ -253,6 +277,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("the Only Server get Name method in action", visionSub.theOnlyCamServer.getName());
     SmartDashboard.putData("TOP COMMAND", new getTopCamCommand());
     SmartDashboard.putData("BOTTOM COMMAND", new getTopCamCommand());
-
+    // m_autonomousCommand = m_chooser.getSelected();
+    driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft),
+        -OI.zeroSlotController.getX(Hand.kRight));
   }
 }

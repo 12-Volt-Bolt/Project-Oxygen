@@ -31,6 +31,7 @@ public class RobotMap {
   public static final int CAMERA_ZERO_ID = 0;
   public static final int CAMERA_ONE_ID = 1;
   
+
   // These are the wheel motor controller IDs
   public static final int FRONT_LEFT_MOTOR_ID = 2;
   public static final int FRONT_RIGHT_MOTOR_ID = 1;
@@ -45,7 +46,7 @@ public class RobotMap {
   public final static int MOTOR_OFF = 0;
 
   public static int fillIn = 0;
- 
+
   // The PDP
   public static final int PDP_ID = 0;	
   
@@ -64,9 +65,11 @@ public class RobotMap {
 	public static int A_BUTTON_ID = 1;
 	public static int B_BUTTON_ID = 2; 
 	public static int X_BUTTON_ID = 3; 
-	public static int Y_BUTTON_ID = 4;
+  public static int Y_BUTTON_ID = 4;
+  
 	public static int LEFT_BUMPER_ID = 5;
   public static int RIGHT_BUMPER_ID = 6; 
+
   public static int MENU_BUTTON_ID = 7;
   public static int START_BUTTON_ID = 8;
 
@@ -83,7 +86,7 @@ public class RobotMap {
   public static int DIO_PORT_ID_6 = 6;
   public static int DIO_PORT_ID_7 = 7;
   public static int DIO_PORT_ID_8 = 8;
-  public static int DIO_PORT_ID_9 = 9; 
+  public static int DIO_PORT_ID_9 = 9;
 
   // PWM PORT ID's
 
@@ -112,6 +115,5 @@ public class RobotMap {
   public static int RELAY_PORT_ID_1 = 1;
   public static int RELAY_PORT_ID_2 = 2;
   public static int RELAY_PORT_ID_3 = 3;
-
 
 }
