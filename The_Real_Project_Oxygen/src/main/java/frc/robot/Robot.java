@@ -108,6 +108,7 @@ public class Robot extends TimedRobot {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
 
+
     // chooser.addOption("My Auto", new MyAutoCommand());
   }
 
@@ -181,7 +182,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
      * switch(autoSelected) { case "My Auto": autonomousCommand = new
@@ -198,9 +198,13 @@ public class Robot extends TimedRobot {
   /**
    * This function is called periodically during autonomous.
    */
+
+   private static int testCount = 0;
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+
+    SmartDashboard.putNumber(measAngleDegreesString, testCount++);
 
   }
 
