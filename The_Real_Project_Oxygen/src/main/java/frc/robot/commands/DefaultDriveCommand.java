@@ -34,7 +34,7 @@ public class DefaultDriveCommand extends Command {
     if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)) {
       Robot.driveSub.driveRamp(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
     } else {
-      Robot.DriveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft),
+      Robot.driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft),
           OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), true);
     }
   }

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class OI {
 
   public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ZERO_ID);
-  public static XboxController OneSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
+  public static XboxController oneSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
 
   JoystickButton zeroXConJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
       zeroXJoyJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),

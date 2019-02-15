@@ -30,7 +30,6 @@ public class RobotMap {
   // Camera IDs
   public static final int CAMERA_ZERO_ID = 0;
   public static final int CAMERA_ONE_ID = 1;
-  
 
   // These are the wheel motor controller IDs
   public static final int FRONT_LEFT_MOTOR_ID = 2;
@@ -48,27 +47,28 @@ public class RobotMap {
   public static int fillIn = 0;
 
   // The PDP
-  public static final int PDP_ID = 0;	
-  
-	// The below would the IDs for buttons on any HID controller (basically any USB controller)
-  // If using 
-  
-	public static int LEFT_X_AXIS_ID = 0;
-	public static int LEFT_Y_AXIS_ID = 1;
+  public static final int PDP_ID = 0;
 
-	public static int LEFT_TRIGGER_AXIS_ID = 2; 
-	public static int RIGHT_TRIGGER_AXIS_ID = 3; 
+  // The below would the IDs for buttons on any HID controller (basically any USB
+  // controller)
+  // If using
 
-	public static int RIGHT_X_AXIS_ID = 4;
-	public static int RIGHT_Y_AXIS_ID = 5;
+  public static int LEFT_X_AXIS_ID = 0;
+  public static int LEFT_Y_AXIS_ID = 1;
 
-	public static int A_BUTTON_ID = 1;
-	public static int B_BUTTON_ID = 2; 
-	public static int X_BUTTON_ID = 3; 
+  public static int LEFT_TRIGGER_AXIS_ID = 2;
+  public static int RIGHT_TRIGGER_AXIS_ID = 3;
+
+  public static int RIGHT_X_AXIS_ID = 4;
+  public static int RIGHT_Y_AXIS_ID = 5;
+
+  public static int A_BUTTON_ID = 1;
+  public static int B_BUTTON_ID = 2;
+  public static int X_BUTTON_ID = 3;
   public static int Y_BUTTON_ID = 4;
-  
-	public static int LEFT_BUMPER_ID = 5;
-  public static int RIGHT_BUMPER_ID = 6; 
+
+  public static int LEFT_BUMPER_ID = 5;
+  public static int RIGHT_BUMPER_ID = 6;
 
   public static int MENU_BUTTON_ID = 7;
   public static int START_BUTTON_ID = 8;
