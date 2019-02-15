@@ -89,7 +89,7 @@ public class Robot extends TimedRobot {
   public static final String measAngleDegreesString = "DB/Slider 2";
   public static final String isProcessCMDString = "DB/Button 0";
 
-  public static final int NT_Table_Constant = 999;
+  public static final int NT_Table_Constant = 999999;
 
   public static VisionMath vMath;
 
@@ -200,11 +200,16 @@ public class Robot extends TimedRobot {
    */
 
    private static int testCount = 0;
+   private static boolean isTheWindBreezing = false;
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+    
+    isTheWindBreezing = !isTheWindBreezing;
+//    SmartDashboard.putNumber(measAngleDegreesString, testCount++);
+    SmartDashboard.putBoolean(isProcessCMDString, isTheWindBreezing);
 
-    SmartDashboard.putNumber(measAngleDegreesString, testCount++);
+    Timer.delay(1);
 
   }
 
