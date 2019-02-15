@@ -16,6 +16,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.VisionMath;
 import edu.wpi.cscore.VideoSource;
 
 /**
@@ -66,21 +67,18 @@ public VisionSubsystem() {
   bottomCam.setResolution(BOTTOM_CAM_ROW_PIXEL_NUM, BOTTOM_CAM_COL_PIXEL_NUM);
   bottomCam.setFPS(BOTTOM_CAM_FPS);
 
-  // The following lines of code will keep the cameras from shutting down, thus decreasing lag
-  // Remember, we just want to stop sending the streams, not shut the cameras down.
-  // kKeepOpen is equaled to 2
   bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
   topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-
-   //theOnlyCamServer = CameraServer.getInstance().getServer();
-   theOnlyCamServer = CameraServer.getInstance().getServer();
-
-
 
 }
   @Override
   public void initDefaultCommand() {
   }
 
+  public void updateVisionObject(VisionMath vMath) {
+
+  }
+  
 
 }
+

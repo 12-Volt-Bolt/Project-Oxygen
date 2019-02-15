@@ -45,35 +45,42 @@ public class VisionMath {
 
     // The following data will be received from the dashboard and are calculated by
     // the LabVIEW vision program
-    private int MeasCenterXInPixels = 0;
-    private int MeasTargetSeparationInPixels = 0;
-    private double MeasAlignmentLineAngleInDegrees = 0;
+    private int measCenterXInPixels;
+    private int measTargetSeparationInPixels;
+    private double measAlignmentLineAngleInDegrees;
 
     // Calibration Data
     // TODO: these values will be updated when the competition bot is built and
     // ready to be utlized for testing
-    public static final int calCenterXInPixels = 0;
-    public static final int calcDistanceInCm = 0;
-    public static final int calTargetSeparationInPixels = 0;
-    public static final int calAlignmentLineAngleInDegrees = 0;
-    public static final double calLateralOffsetConstant = 20.32;
+    public static final int calibCenterXInPixels = 1;
+    public static final int calibDistanceInCm = 1;
+    public static final int calibTargetSeparationInPixels = 1;
+    public static final int calibAlignmentLineAngleInDegrees = 1;
+    public static final double calibLateralOffsetConstant = 20.32;
 
     public VisionMath(int centerXInPixels, int targetSeparationInPixels, int alignmentLineAngleInDegrees) {
-        this.MeasCenterXInPixels = centerXInPixels;
-        this.MeasTargetSeparationInPixels = targetSeparationInPixels;
-        this.MeasAlignmentLineAngleInDegrees = alignmentLineAngleInDegrees;
+        this.measCenterXInPixels = centerXInPixels;
+        this.measTargetSeparationInPixels = targetSeparationInPixels;
+        this.measAlignmentLineAngleInDegrees = alignmentLineAngleInDegrees;
+
+        beta = 0;
+        alpha = 0;
+        linearDistanceAwayFromVisionTarget = 0;
+        cameraCenterOffset = 0;
+        lateralOffSet = 0;
+        forwardDistance = 0;
     }
 
     // d1
     public void calcDistanceFromCamToTarget() {
-        linearDistanceAwayFromVisionTarget = (calTargetSeparationInPixels / MeasTargetSeparationInPixels)
-                * calcDistanceInCm;
+        linearDistanceAwayFromVisionTarget = (calibTargetSeparationInPixels / measTargetSeparationInPixels)
+                * calibDistanceInCm;
     }
 
     // d4
     public void calcLateralOffSet() {
-        lateralOffSet = (calCenterXInPixels / MeasCenterXInPixels)
-                * (calLateralOffsetConstant / MeasTargetSeparationInPixels);
+        lateralOffSet = (calibCenterXInPixels / measCenterXInPixels)
+                * (calibLateralOffsetConstant / measTargetSeparationInPixels);
     }
 
     // d5
@@ -83,7 +90,7 @@ public class VisionMath {
 
     // Alpha
     public void calcAlpha() {
-        alpha = MeasAlignmentLineAngleInDegrees;
+        alpha = measAlignmentLineAngleInDegrees;
     }
 
     // alpha
@@ -123,14 +130,27 @@ public class VisionMath {
 
     // d6
     public double getAngleOffSetInDegrees() {
-        return MeasAlignmentLineAngleInDegrees - calAlignmentLineAngleInDegrees;
+        return measAlignmentLineAngleInDegrees - calibAlignmentLineAngleInDegrees;
     }
 
     /*
      * The calculated Distance from the camera to the Vision Target, in cm:If the
      * driver leaves the robot at a large angle (unknown at this time), then the
-     * above results may need to be corrected: Rotation = Angle Offset = α  Lateral
+     * above results may need to be corrected: Rotation = Angle Offset = α  teral
      * Offset = {(Calculated Distance) * Sin(α)} + {(Calculated Lateral Offset) * 
      * os(α)} Distance = {(Calculated Distance) * Cos(α)} Mike Harvey
      */
+
+    public double getRotationLarge() {
+        return getAngleOffSetInDegrees();
+    }
+
+    public double getLateralOffSetLarge() {
+        return getDistanceFromCamToTarget() * (Math.sin(alpha)) + (getLateralOffSet()) * Math.cos(alpha);
+    }
+
+    public double getDistanceLarge() {
+        return calibDistanceInCm * Math.cos(alpha);
+    }
+
 }
