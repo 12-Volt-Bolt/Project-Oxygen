@@ -69,7 +69,6 @@ public VisionSubsystem() {
 
   bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
   topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-
 }
   @Override
   public void initDefaultCommand() {
