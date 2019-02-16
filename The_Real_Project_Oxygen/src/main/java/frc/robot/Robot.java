@@ -248,6 +248,9 @@ public class Robot extends TimedRobot {
     // driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft),
     // -OI.zeroSlotController.getX(Hand.kLeft),
     // -OI.zeroSlotController.getX(Hand.kRight));
+   // driveSub.collisionDetection();
+    SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
+
     driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft),
         OI.zeroSlotController.getX(Hand.kRight), true);
     // new DefaultDriveCommand().start();
