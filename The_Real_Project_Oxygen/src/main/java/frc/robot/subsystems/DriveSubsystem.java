@@ -84,6 +84,19 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   static final double kToleranceDegrees = 2.0f;
 
+  //Variables for collision detection
+  static double last_world_linear_accel_x;
+  static double last_world_linear_accel_y;
+
+  public static boolean collisionDetected = false;
+
+  // Collision detection threshold
+  final static double kCollisionThreshold_DeltaG = 0.5f;
+
+  
+
+
+
   public static MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
 
   public DriveSubsystem() {
@@ -440,4 +453,29 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
     return rotationSpeed;
   }
+
+public static void collisionDetection() {
+    double curr_world_linear_accel_x = Robot.navXGyro.getWorldLinearAccelX();
+    double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
+    last_world_linear_accel_x = curr_world_linear_accel_x;
+    
+    double curr_world_linear_accel_y = Robot.navXGyro.getWorldLinearAccelY();
+    double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
+    last_world_linear_accel_y = curr_world_linear_accel_y;
+    
+    if ( ( Math.abs(currentJerkX) > kCollisionThreshold_DeltaG ) ||
+         ( Math.abs(currentJerkY) > kCollisionThreshold_DeltaG) ) {
+        collisionDetected = true;
+    }
+    SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
+
+    if (collisionDetected) {
+      Timer.delay(1);
+      collisionDetected = false;
+    }
+
+    
+
+  }
+
 }

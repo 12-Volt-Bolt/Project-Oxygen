@@ -271,7 +271,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
-
+    driveSub.collisionDetection();
+    SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
     m_autonomousCommand = m_chooser.getSelected();
 
     SmartDashboard.putString("the Only Server get Name method in action", visionSub.theOnlyCamServer.getName());
