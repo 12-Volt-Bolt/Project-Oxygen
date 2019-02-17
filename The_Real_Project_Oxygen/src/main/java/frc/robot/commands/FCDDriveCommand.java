@@ -17,6 +17,7 @@ public class FCDDriveCommand extends Command {
   public FCDDriveCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.driveSub);
   }
 
   // Called just before this Command runs the first time
@@ -29,9 +30,15 @@ public class FCDDriveCommand extends Command {
   protected void execute() {
     if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)) {
       Robot.driveSub.driveRampFCD(OI.zeroSlotController.getRawAxis(RobotMap.RIGHT_X_AXIS_ID));
-    } else {
-      Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft),
-          OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), true);
+    } 
+    else if(!Robot.navXGyro.isConnected()) {
+      Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    } 
+    else {
+      Robot.driveSub.updateDriveCartesian(
+          OI.zeroSlotController.getX(Hand.kLeft),
+          OI.zeroSlotController.getY(Hand.kLeft), 
+          OI.zeroSlotController.getX(Hand.kRight), true);
     }
   }
 

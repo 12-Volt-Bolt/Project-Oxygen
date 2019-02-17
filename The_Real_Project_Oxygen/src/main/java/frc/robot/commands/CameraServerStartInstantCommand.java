@@ -32,12 +32,9 @@ public class CameraServerStartInstantCommand extends InstantCommand {
     UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
     usbCamera0.setResolution(320, 240);
     usbCamera0.setFPS(10);
-   // CvSink cvSink0 = CameraServer.getInstance().getVideo();
-
     UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
     usbCamera1.setResolution(320, 240);
     usbCamera1.setFPS(10);
-  //  CvSink cvSink1 = CameraServer.getInstance().getVideo();
   }
 
 }

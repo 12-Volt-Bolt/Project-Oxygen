@@ -82,7 +82,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   /* This tuning parameter indicates how close to "on target" the */
   /* PID Controller will attempt to get. */
 
-   final double kToleranceDegrees = 2.0f;
+   final double kToleranceDegrees = 5.0f;
 
   //Variables for collision detection
    double last_world_linear_accel_x;
@@ -92,9 +92,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   // Collision detection threshold
   final double kCollisionThreshold_DeltaG = 0.5f;
-
-  
-
 
 
   public MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
@@ -115,6 +112,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     turnController.setOutputRange(-1.0, 1.0);
     turnController.setAbsoluteTolerance(kToleranceDegrees);
     turnController.setContinuous(true);
+    turnController.setName("Drive PID Controller");
 
   }
   
@@ -137,7 +135,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
     boolean rotateToAngle = false;
     double currentRotationRate;
-
+    
     switch (OI.zeroSlotController.getPOV()) {
     case 0:
       SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
