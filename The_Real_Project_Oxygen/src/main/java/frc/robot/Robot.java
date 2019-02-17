@@ -44,10 +44,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.OI;
 
@@ -215,17 +217,11 @@ public class Robot extends TimedRobot {
    */
 
   private static int testCount = 0;
-  private static boolean isTheWindBreezing = false;
 
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-
-    isTheWindBreezing = !isTheWindBreezing;
-    // SmartDashboard.putNumber(measAngleDegreesString, testCount++);
-    SmartDashboard.putBoolean(isProcessCMDString, isTheWindBreezing);
-
-    Timer.delay(1);
+   new NonFCDDriveCommand().start();
 
   }
 
@@ -248,7 +244,7 @@ public class Robot extends TimedRobot {
     // driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft),
     // -OI.zeroSlotController.getX(Hand.kLeft),
     // -OI.zeroSlotController.getX(Hand.kRight));
-    driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft),
+    driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft),
         OI.zeroSlotController.getX(Hand.kRight), true);
     // new DefaultDriveCommand().start();
 
@@ -271,15 +267,6 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
-    driveSub.collisionDetection();
-    SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
-    m_autonomousCommand = m_chooser.getSelected();
-
-    SmartDashboard.putString("the Only Server get Name method in action", visionSub.theOnlyCamServer.getName());
-    SmartDashboard.putData("TOP COMMAND", new getTopCamCommand());
-    SmartDashboard.putData("BOTTOM COMMAND", new getTopCamCommand());
-    // m_autonomousCommand = m_chooser.getSelected();
-    driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft),
-        -OI.zeroSlotController.getX(Hand.kRight));
   }
+
 }
