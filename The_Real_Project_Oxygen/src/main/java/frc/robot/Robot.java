@@ -43,11 +43,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.FCDDriveCommand;
+import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.OI;
 
@@ -59,7 +60,6 @@ import frc.robot.OI;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static DriveSubsystem driveSub = new DriveSubsystem();
   public static VisionSubsystem visionSub;
 
@@ -107,9 +107,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_oi = new OI();
     visionSub = new VisionSubsystem();
+    
 
     SmartDashboard.putData("Auto mode", m_chooser);
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+   // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
 
     try {
       navXGyro = new AHRS(SPI.Port.kMXP);
@@ -117,6 +118,9 @@ public class Robot extends TimedRobot {
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
+    // VERY IMPORTANT
+    navXGyro.reset();
+    // VERY IMPORTANT
 
     // chooser.addOption("My Auto", new MyAutoCommand());
   }
@@ -215,17 +219,11 @@ public class Robot extends TimedRobot {
    */
 
   private static int testCount = 0;
-  private static boolean isTheWindBreezing = false;
 
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-
-    isTheWindBreezing = !isTheWindBreezing;
-    // SmartDashboard.putNumber(measAngleDegreesString, testCount++);
-    SmartDashboard.putBoolean(isProcessCMDString, isTheWindBreezing);
-
-    Timer.delay(1);
+   new NonFCDDriveCommand().start();
 
   }
 
@@ -245,18 +243,25 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft),
-    // -OI.zeroSlotController.getX(Hand.kLeft),
-    // -OI.zeroSlotController.getX(Hand.kRight));
-   // driveSub.collisionDetection();
+    Scheduler.getInstance().run();
+
     SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
+    
+    new FCDDriveCommand().start();
+  
+    
+    SmartDashboard.putData(driveSub.turnController);
 
-    driveSub.UpdateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft),
-        OI.zeroSlotController.getX(Hand.kRight), true);
-    // new DefaultDriveCommand().start();
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
+    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
+    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
 
-    // Scheduler.getInstance().run();
-    // new DefaultDriveCommand().start();
+
+
 
     SmartDashboard.putData(driveSub.frontRight);
     SmartDashboard.putData(driveSub.rearLeft);
@@ -266,6 +271,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Turn Controller ", driveSub.turnController);
     SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
+    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+
   }
 
   /**
@@ -274,15 +281,6 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
-    driveSub.collisionDetection();
-    SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
-    m_autonomousCommand = m_chooser.getSelected();
-
-    SmartDashboard.putString("the Only Server get Name method in action", visionSub.theOnlyCamServer.getName());
-    SmartDashboard.putData("TOP COMMAND", new getTopCamCommand());
-    SmartDashboard.putData("BOTTOM COMMAND", new getTopCamCommand());
-    // m_autonomousCommand = m_chooser.getSelected();
-    driveSub.UpdateDriveLocal(OI.zeroSlotController.getY(Hand.kLeft), -OI.zeroSlotController.getX(Hand.kLeft),
-        -OI.zeroSlotController.getX(Hand.kRight));
   }
+
 }

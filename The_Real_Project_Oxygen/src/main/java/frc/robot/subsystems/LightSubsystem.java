@@ -7,38 +7,69 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class LightSubsystem extends Command {
-  public LightSubsystem() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+/**
+ * Add your docs here.
+ */
+public class LightSubsystem extends Subsystem {
+  // Put methods for controlling this subsystem
+  // here. Call these from Commands.
+
+  static Spark spark = new Spark(0);
+  @Override
+  public void initDefaultCommand() {
+    // Set the default command for a subsystem here.
+    // setDefaultCommand(new MySpecialCommand());
   }
 
-  // Called just before this Command runs the first time
-  @Override
-  protected void initialize() {
+  public static void letThereBeLight() {
+    spark.set(0.67);
+    Timer.delay(5);
   }
 
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  protected void execute() {
+  public static void CycleTheColors(){
+    double i;
+    for (i=-0.87; i<0.99; i+=0.02){
+      spark.set(i);
+      Timer.delay(5);
+    }
   }
 
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  protected boolean isFinished() {
-    return false;
+  public static void regularRed(){
+    spark.set(0.61);
+    Timer.delay(5);
   }
 
-  // Called once after isFinished returns true
-  @Override
-  protected void end() {
+  public static void turnEmOff(){
+    spark.set(0);
+    Timer.delay(5);
   }
 
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
+  public static void redStrobe(){
+    spark.set(-0.11);
+    Timer.delay(5);
+  }
+
+  public static void blueStrobe(){
+    spark.set(-0.09);
+    Timer.delay(5);
+  }
+
+  public static void whiteStrobe(){
+    spark.set(-0.05);
+    Timer.delay(5);
+  }
+
+  public static void redHeartbeat(){
+    spark.set(-0.25);
+    Timer.delay(5);
+  }
+
+  public static void redBreath(){
+    spark.set(-0.15);
+    Timer.delay(5);
   }
 }

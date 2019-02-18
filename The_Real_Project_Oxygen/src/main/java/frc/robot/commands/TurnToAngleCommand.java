@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
@@ -16,15 +17,17 @@ public class TurnToAngleCommand extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public TurnToAngleCommand() {
+  double angle;
+  public TurnToAngleCommand(double angle) {
     super();
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
+    requires(Robot.driveSub);
+    this.angle = angle;
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
+    Robot.driveSub.turnToAngle(angle);
   }
 
 }

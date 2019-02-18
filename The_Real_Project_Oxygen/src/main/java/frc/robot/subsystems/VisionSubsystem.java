@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
@@ -61,7 +63,7 @@ public VisionSubsystem() {
   topCam.setResolution(TOP_CAM_ROW_PIXEL_NUM, TOP_CAM_COL_PIXEL_NUM);
   topCam.setFPS(TOP_CAM_FPS);
 
-  bottomCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ONE_ID);
+  bottomCam = CameraServer.getInstance().startAutomaticCapture(BOTTOM_CAM_NAME, RobotMap.CAMERA_ONE_ID);
   bottomCam.setResolution(BOTTOM_CAM_ROW_PIXEL_NUM, BOTTOM_CAM_COL_PIXEL_NUM);
   bottomCam.setFPS(BOTTOM_CAM_FPS);
 

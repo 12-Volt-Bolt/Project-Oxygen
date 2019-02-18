@@ -25,6 +25,7 @@ public class TopRailSubsystem extends Subsystem {
  public TopRailSubsystem() {
   topRailMotor = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
  }
+ 
   @Override
   public void initDefaultCommand() {
    
@@ -34,5 +35,5 @@ public class TopRailSubsystem extends Subsystem {
   // A method that sets the speed of the motor controller with a parameter
   // 3 different  methods that set a LOW, MED, and HIGH speed just by calling
   // A "stop the presses" method
-
+  
 }
