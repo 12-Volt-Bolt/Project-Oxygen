@@ -45,6 +45,7 @@ import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.NonFCDDriveCommand;
+import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -281,6 +282,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
+
+    m_oi.zeroXJoyJoyBButton.whenPressed(new TurnToAngleCommand(90));
   }
 
 }

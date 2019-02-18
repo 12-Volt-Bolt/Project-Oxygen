@@ -46,16 +46,16 @@ public static final String TOP_CAM_NAME = "Top Camera";
 public static final String BOTTOM_CAM_NAME = "Bottom Camera";
 
 // Camera frame rate
-public static final int TOP_CAM_FPS = 10;
-public static final int BOTTOM_CAM_FPS = 10;
+public static final int TOP_CAM_FPS = 5;
+public static final int BOTTOM_CAM_FPS = 5;
 
 // Total number of pixel columns
 public static final int TOP_CAM_COL_PIXEL_NUM = 480;
-public static final int BOTTOM_CAM_COL_PIXEL_NUM = 480;
+public static final int BOTTOM_CAM_COL_PIXEL_NUM = 240;
 
 // Total number of pixel rows
 public static final int TOP_CAM_ROW_PIXEL_NUM = 640;
-public static final int BOTTOM_CAM_ROW_PIXEL_NUM = 640;
+public static final int BOTTOM_CAM_ROW_PIXEL_NUM = 320;
 
    
 public VisionSubsystem() {
