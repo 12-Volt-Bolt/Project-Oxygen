@@ -264,7 +264,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(driveSub.rearRight);
     SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller ", driveSub.turnController);
-    SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
   }
 
