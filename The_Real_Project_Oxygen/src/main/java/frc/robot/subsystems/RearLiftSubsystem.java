@@ -7,7 +7,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 /**
  * Add your docs here.
@@ -15,10 +19,25 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class RearLiftSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
+  
+  public WPI_TalonSRX rearLiftMotor;
+// A method that sets the speed of the motor controller with a parameter
+  // 3 different  methods that set a LOW, MED, and HIGH speed just by calling them
+  // A "stop the presses" method. set motor to zero
+  // frontLifterMotor.configOpenloopRamp(secondsFromNeutralToFull, timeoutMs)
+  // read documentation about the open loop ramp function
+  // The motors can not just go from 0 to 50 in an instant
+  // only power, or .set() motor, "IF" its current is below the motor current limit variable
+  // only "IF" that is true and zero otherwise
+  public RearLiftSubsystem() {
+    WPI_TalonSRX rearLiftMotor= new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
+  }
+// TODO: Implement the following methods:
+  // A method that sets the speed of the motor controller with a parameter
+  // 3 different  methods that set a LOW, MED, and HIGH speed just by calling
+  // A "stop the presses" method
+  
   @Override
   public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
   }
 }

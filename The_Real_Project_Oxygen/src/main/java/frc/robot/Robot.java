@@ -9,8 +9,11 @@ package frc.robot;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.VideoSource;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 import java.io.IOException;
 
@@ -38,10 +41,17 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.FCDDriveCommand;
+import frc.robot.commands.NonFCDDriveCommand;
+import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.commands.getBottomCamCommand;
+import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.OI;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -51,145 +61,57 @@ import frc.robot.subsystems.ExampleSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
-  public static DriveSubsystem DriveSub = new DriveSubsystem();
+  public static DriveSubsystem driveSub = new DriveSubsystem();
+  public static VisionSubsystem visionSub;
+
   /**
    *
    */
 
-  private static final DriveSubsystem driveSub = DriveSub;
   public static OI m_oi;
-  Solenoid PistonTestOne = new Solenoid(RobotMap.TOP_SOLENOID_ID);
-  Solenoid PistonTestTwo = new Solenoid(RobotMap.BOTTOM_SOLENOID_ID);
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static AHRS navXGyro;
- 
- // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
- // The the above at some point please. It keeps throwing an error
+
+  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
+  // The the above at some point please. It keeps throwing an error
+
+  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
+  // The the above at some point please. It keeps throwing an error
 
   // Stuff we don't need TODO
   public static Compressor Comp0 = new Compressor(0);
 
+  // implement the above at some point please. It keeps throwing an error
+  // TODO
 
- // implement the above at some point please. It keeps throwing an error
- // TODO
-  
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
 
+  public static int measCenterPixels;
+  public static int measSeparationPixels;
+  public static int measAngleDegrees;
+  public static boolean isProcessCmdBool;
+
+  public static final String measCenterString = "DB/Slider 0";
+  public static final String measSeparationString = "DB/Slider 1";
+  public static final String measAngleDegreesString = "DB/Slider 2";
+  public static final String isProcessCMDString = "DB/Button 0";
+
+  public static final int NT_Table_Constant = 999999;
+
+  public static VisionMath vMath;
+
   @Override
   public void robotInit() {
-    ///
+    m_oi = new OI();
+    visionSub = new VisionSubsystem();
     
-
-    UsbCamera camera0 = CameraServer.getInstance().startAutomaticCapture();
-    UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture();
-
-    MjpegServer mServer0 = CameraServer.getInstance().addServer("Another_Server0");
-    MjpegServer mServer1 = CameraServer.getInstance().addServer("Another_Server_1");
-
-   mServer0.setSource(camera0);
-   mServer1.setSource(camera1);
-
-   
-
-// NT: server: client CONNECTED: 10.15.57.180 port 61914
-
-
-    // TODO TEST!!
-    //
-    /*
-=======
-  
-  UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
-  MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-  mjpegServer1.setSource(usbCamera); CvSink cvSink = new CvSink("opencv_USB Camera 0");
-  cvSink.setSource(usbCamera);
-  CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 640, 480, 30);
-  MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
-  mjpegServer2.setSource(outputStream);
-
-
-
-/* Test Test Test TODO
->>>>>>> 087ab63f0f1a94b07ff512af8a060d8ef8c0c7a4
-    UsbCamera visionTapeCamera = new UsbCamera("VisionTapeCamera", 0);
-    MjpegServer visionTapeMJpeg = new MjpegServer("THE_VISION_TAPE 1182", 1182);
-    CvSink VisionTapeCvSink = new CvSink("Vision-Tape-Camera-Cv-Sink");
-
-   // VisionTapeCvSink.setSource(visionTapeCamera);
-    visionTapeMJpeg.setSource(visionTapeCamera);
-   // CvSource outputStreamVisionTape = new CvSource("Vision_Tape_Output_Stream_Thing", PixelFormat.kMJPEG, 640, 480, 30);
-
-     
-
-=======
-   Test Test Test TODO
-   
-    
-    MjpegServer theSecondMJepServer = new MjpegServer("Serve_Vision_Tape_Output_Stream_Thing", 1182);
-    theSecondMJepServer.setSource(outputStreamVisionTape);
-   
-    CameraServer.getInstance().addCamera(visionTapeCamera);
-    CameraServer.getInstance().startAutomaticCapture();
-    CameraServer.getInstance().getVideo(visionTapeCamera);
-    CameraServer.getInstance().putVideo("Vision-Tape", 480, 640);
-    SmartDashboard.putNumber("port Number", visionTapeMJpeg.getPort());
-    SmartDashboard.putNumber("Handle Number", visionTapeMJpeg.getHandle());
-    SmartDashboard.putString("get Listen Address", visionTapeMJpeg.getListenAddress());
-    SmartDashboard.putString("get Listen Description", visionTapeMJpeg.getDescription());
-*/
-
-
-
-/*
-    /// Camera 1
-
-    UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
-    usbCamera0.setResolution(320, 240);
-    usbCamera0.setFPS(10);
-    CvSink cvSink0 = CameraServer.getInstance().getVideo();
-
-    /// Camera 1
-
-    /// Camera 2
-
-    UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
-    usbCamera1.setResolution(320, 240);
-    usbCamera1.setFPS(10);
-    CvSink cvSink1 = CameraServer.getInstance().getVideo();
-
-    // Camera 2
-
-    ////////////
-   MjpegServer visionTapeSense = new MjpegServer("THE_VISION_TAPE", 1181);
-   visionTapeSense.setSource(usbCamera0);
-
-   
-    Mat visionTarget = new Mat();
-
-    cvSink0.grabFrame(visionTarget);
-
-    cvSink.Jpeg
-    ////////////
-
-  */
-
-  
-// Testing Angles
-
-
-//
-
-
-    /// Camera 2
-
 
     SmartDashboard.putData("Auto mode", m_chooser);
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+   // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
 
     try {
       navXGyro = new AHRS(SPI.Port.kMXP);
@@ -197,8 +119,10 @@ public class Robot extends TimedRobot {
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
-   
-    
+    // VERY IMPORTANT
+    navXGyro.reset();
+    // VERY IMPORTANT
+
     // chooser.addOption("My Auto", new MyAutoCommand());
   }
 
@@ -214,10 +138,39 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-              SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
-              SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
+    SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
+    SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
 
-    
+    if (OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
+      new getTopCamCommand().start();
+    }
+
+    if (OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
+      new getBottomCamCommand().start();
+    }
+
+    if (OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5
+        && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
+      isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, true);
+    } else {
+      isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, false);
+
+    }
+
+    measCenterPixels = (int) SmartDashboard.getNumber(measCenterString, NT_Table_Constant);
+    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, NT_Table_Constant);
+    measAngleDegrees = (int) SmartDashboard.getNumber(measAngleDegreesString, NT_Table_Constant);
+
+    if (isProcessCmdBool) {
+      vMath = new VisionMath(measCenterPixels, measSeparationPixels, measAngleDegrees);
+    }
+    SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
+    SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
+    SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
+    SmartDashboard.putNumber("NewZero", driveSub.newZero);
+    SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
+    SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
+
   }
 
   /**
@@ -249,24 +202,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
-    ////// Jamie G testing
-    DriveSub.turnToAngle(90);
-    /////
-   
-
-   ////// The Jamie G test site
-    DriveSub.turnToAngle(90);
-
-   //////
-    try {
-      Client client = new Client("127.0.0.1", 5000);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-    SmartDashboard.putNumber("I Am THE GYRO", navXGyro.getAngle());
-    SmartDashboard.putNumber("Gyro Yaw", navXGyro.getYaw());
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
      * switch(autoSelected) { case "My Auto": autonomousCommand = new
@@ -280,13 +215,17 @@ public class Robot extends TimedRobot {
     }
   }
 
-  
   /**
    * This function is called periodically during autonomous.
    */
+
+  private static int testCount = 0;
+
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+   new NonFCDDriveCommand().start();
+
   }
 
   @Override
@@ -306,16 +245,35 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    new DefaultDriveCommand().start();
 
-    SmartDashboard.putData(DriveSub.frontRight);
-    SmartDashboard.putData(DriveSub.rearLeft);
-    SmartDashboard.putData(DriveSub.frontLeft);
-    SmartDashboard.putData(DriveSub.rearRight);
+    SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
+    
+    new FCDDriveCommand().start();
+  
+    
+    SmartDashboard.putData(driveSub.turnController);
+
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
+    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
+    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
 
 
-    SmartDashboard.putData("Mecamum Drive", driveSub.mecDrive);
+
+
+    SmartDashboard.putData(driveSub.frontRight);
+    SmartDashboard.putData(driveSub.rearLeft);
+    SmartDashboard.putData(driveSub.frontLeft);
+    SmartDashboard.putData(driveSub.rearRight);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller ", driveSub.turnController);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller", driveSub.turnController);
+    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+
   }
 
   /**
@@ -324,13 +282,8 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     Scheduler.getInstance().run();
-    
-    m_autonomousCommand = m_chooser.getSelected();
 
-
-
-   
-
+    m_oi.zeroXJoyJoyBButton.whenPressed(new TurnToAngleCommand(90));
   }
-}
 
+}
