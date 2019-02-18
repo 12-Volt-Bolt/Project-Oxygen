@@ -7,7 +7,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.WPI_MotorSafetyImplem;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.RobotMap;
 
 /**
  * Add your docs here.
@@ -15,10 +19,18 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class FrontLiftSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
+  public WPI_TalonSRX frontLifterMotor;
+  
+  public FrontLiftSubsystem() {
+    WPI_TalonSRX frontLifterMotor = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
+  }
+// TODO: Implement the following methods:
+  // A method that sets the speed of the motor controller with a parameter
+  // 3 different  methods that set a LOW, MED, and HIGH speed just by calling
+  // A "stop the presses" method
   @Override
   public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
+    }
+
+
 }
