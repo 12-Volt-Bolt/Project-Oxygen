@@ -24,10 +24,10 @@ public class FrontLiftSubsystem extends Subsystem {
   public static double maxLifterCurrent = 1;
   public static int conCurrentLimit = 88;
   public static double rampTimeInSecs = 0.2;
-  public static double off = 0;;
+  public static double off = 0;
   public static double lowSpeed = 0.1;
   public static double medSpeed = 0.5;
-  public static double highSpeed = 0.8;
+  public static double highSpeed = 0.7;
   private int positionOption;
 
   public FrontLiftSubsystem() {
@@ -56,13 +56,13 @@ public class FrontLiftSubsystem extends Subsystem {
     this.positionOption++;
     switch (this.positionOption) {
     case 1:
-      setSpeed(lowSpeed);
+      setSpeed(highSpeed);
       break;
     case 2:
       setSpeed(off);
       break;
     case 3:
-      setSpeed(-lowSpeed);
+      setSpeed(-highSpeed);
       break;
     default:
       setSpeed(off);

@@ -119,6 +119,16 @@ public class Robot extends TimedRobot {
     rearLiftSub = new RearLiftSubsystem();
     topLiftSub = new TopRailSubsystem();
 
+    try {
+      navXGyro = new AHRS(SPI.Port.kMXP);
+
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
+    }
+    // VERY IMPORTANT
+    navXGyro.reset();
+    // VERY IMPORTANT
+
   /*
     
 
