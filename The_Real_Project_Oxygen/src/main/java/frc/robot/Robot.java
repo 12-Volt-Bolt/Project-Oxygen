@@ -46,10 +46,14 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.LightSubsystem;
+import frc.robot.subsystems.RearLiftSubsystem;
+import frc.robot.subsystems.TopRailSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.OI;
 
@@ -63,6 +67,9 @@ import frc.robot.OI;
 public class Robot extends TimedRobot {
   public static DriveSubsystem driveSub = new DriveSubsystem();
   public static VisionSubsystem visionSub;
+  public static FrontLiftSubsystem frontLifterSub;
+  public static RearLiftSubsystem rearLiftSub;
+  public static TopRailSubsystem topLiftSub;
 
   /**
    *
@@ -108,6 +115,21 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_oi = new OI();
     visionSub = new VisionSubsystem();
+    frontLifterSub = new FrontLiftSubsystem();
+    rearLiftSub = new RearLiftSubsystem();
+    topLiftSub = new TopRailSubsystem();
+
+    try {
+      navXGyro = new AHRS(SPI.Port.kMXP);
+
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
+    }
+    // VERY IMPORTANT
+    navXGyro.reset();
+    // VERY IMPORTANT
+
+  /*
     
 
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -135,6 +157,7 @@ public class Robot extends TimedRobot {
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and SmartDashboard integrated updating.
    */
+ }
 
   @Override
   public void robotPeriodic() {
@@ -274,6 +297,21 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
     SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
 
+    if(OI.zeroSlotController.getXButtonPressed()) {
+      rearLiftSub.liftMethod();
+    }
+
+    if(OI.zeroSlotController.getAButtonPressed()) {
+      topLiftSub.liftMethod();
+
+    }
+
+    if(OI.zeroSlotController.getBButtonPressed()) {
+      frontLifterSub.liftMethod();
+    }
+
+  
+
   }
 
   /**
@@ -281,9 +319,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    Scheduler.getInstance().run();
-
-    m_oi.zeroXJoyJoyBButton.whenPressed(new TurnToAngleCommand(90));
+    
   }
 
 }
