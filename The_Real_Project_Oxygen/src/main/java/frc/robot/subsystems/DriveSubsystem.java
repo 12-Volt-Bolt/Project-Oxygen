@@ -159,15 +159,15 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       rotateToAngle = true;
       break;
     case 225:
-      turnController.setSetpoint(225.0f);
+      turnController.setSetpoint(-135f);
       rotateToAngle = true;
       break;
     case 270:
-      turnController.setSetpoint(270.0f);
+      turnController.setSetpoint(-90f);
       rotateToAngle = true;
       break;
     case 315:
-      turnController.setSetpoint(315.0f);
+      turnController.setSetpoint(-45f);
       rotateToAngle = true;
       break;
     }
