@@ -79,7 +79,7 @@ public class FrontLiftSubsystem extends Subsystem {
   }
 
   // Will move at given speed and use encoder to stay at set position
-  public void liftMethodBreak() {
+  public void liftMethod(double speed, boolean lock) {
 
   }
 

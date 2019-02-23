@@ -301,24 +301,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
     SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
 
-    if(OI.zeroSlotController.getXButtonPressed()) {
-      rearLiftSub.liftMethod();
-    }
-
-    if(OI.zeroSlotController.getAButtonPressed()) {
-      topLiftSub.liftMethod();
-
-    }
-
-    if(OI.zeroSlotController.getBButtonPressed()) {
-      frontLiftSub.liftMethod();
-    }
 
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
     switch (liftSafteyMode) {
       case 1:
-
+        
         break;
     
       default:
