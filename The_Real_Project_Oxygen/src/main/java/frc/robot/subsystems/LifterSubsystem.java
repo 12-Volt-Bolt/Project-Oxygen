@@ -36,14 +36,14 @@ public class LifterSubsystem extends Subsystem {
 
     if (OI.oneSlotController.getBumper(Hand.kLeft) == true && OI.oneSlotController.getBumper(Hand.kRight) == true) {
       if (OI.oneSlotController.getX(Hand.kLeft) > 0.9 && OI.oneSlotController.getX(Hand.kRight) < -0.9) {
-        mode = 1;
+        mode = 1; // manual mode
       } else if (OI.oneSlotController.getX(Hand.kLeft) < -0.9 && OI.oneSlotController.getX(Hand.kRight) > 0.9) {
-        mode = 2;
+        mode = 2; // step mode
       } else if (OI.oneSlotController.getStickButton(Hand.kLeft) == true && OI.oneSlotController.getStickButton(Hand.kRight) == true) {
-        mode = 3;
+        mode = 3; // reset lifter
       }
     } else {
-      mode = 0;
+      mode = 0; // safety off
     }
 
     return mode;

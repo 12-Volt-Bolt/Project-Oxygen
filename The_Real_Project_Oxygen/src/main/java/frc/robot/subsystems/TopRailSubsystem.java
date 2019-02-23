@@ -77,6 +77,10 @@ public void liftMethod() {
 
   }
 
+  public void stopThePresses() {
+    setSpeed(Constants_And_Equations.zero);
+  }
+
   // TODO: Implement the following methods:
   // A method that sets the speed of the motor controller with a parameter
   // 3 different  methods that set a LOW, MED, and HIGH speed just by calling

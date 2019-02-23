@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
  */
 public class Constants_And_Equations {
 
+    public static final int zero = 0;
+
     public static double a_Vision_Variable;
 
     public static double Clamp(double min, double max, double value) {

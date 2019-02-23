@@ -51,6 +51,7 @@ import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
+import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
@@ -310,7 +311,17 @@ public class Robot extends TimedRobot {
       frontLifterSub.liftMethod();
     }
 
-  
+    int safteyMode = LifterSubsystem.checkLiftSaftey();
+
+    switch (safteyMode) {
+      case 1:
+        
+        break;
+    
+      default:
+        // do nothing, saftey on
+        break;
+    }
 
   }
 

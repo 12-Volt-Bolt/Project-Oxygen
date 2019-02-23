@@ -83,6 +83,10 @@ public class FrontLiftSubsystem extends Subsystem {
 
   }
 
+  public void stopThePresses() {
+    setSpeed(Constants_And_Equations.zero);
+  }
+
   @Override
   public void initDefaultCommand() {
 

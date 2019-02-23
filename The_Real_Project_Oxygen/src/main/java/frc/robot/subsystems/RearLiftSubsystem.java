@@ -88,4 +88,8 @@ public class RearLiftSubsystem extends Subsystem {
   public void liftMethodBreak() {
 
   }
+
+  public void stopThePresses() {
+    setSpeed(Constants_And_Equations.zero);
+  }
 }
