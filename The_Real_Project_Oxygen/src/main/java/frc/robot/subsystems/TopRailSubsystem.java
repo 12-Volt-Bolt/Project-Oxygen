@@ -19,12 +19,47 @@ import frc.robot.RobotMap;
 public class TopRailSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
-  public WPI_TalonSRX topRailMotor;
+  private WPI_TalonSRX motor;
+  public static double maxLifterCurrent = 1;
+  public static int conCurrentLimit = 88;
+  public static double rampTimeInSecs = 0.2;
+  public static double off = 0;
+  public static double lowSpeed = 0.1;
+  public static double medSpeed = 0.5;
+  public static double highSpeed = 0.8;
+  private int positionOption;
 
  public TopRailSubsystem() {
-  topRailMotor = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+  motor = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+  motor.configOpenloopRamp(rampTimeInSecs);
+  positionOption = 0;
  }
+
+
+ public void setSpeed(double speed) {
+  motor.set(speed);
+}
+
+public void liftMethod() {
+
+  this.positionOption++;
+  switch (this.positionOption) {
+  case 1:
+    setSpeed(highSpeed);
+    break;
+  case 2:
+    setSpeed(off);
+    break;
+  case 3:
+    setSpeed(-highSpeed);
+    break;
+  default:
+    setSpeed(off);
+    this.positionOption = 0;
+    break;
+  }
+
+}
  
   @Override
   public void initDefaultCommand() {
