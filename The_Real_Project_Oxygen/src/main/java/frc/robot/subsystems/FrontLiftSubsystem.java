@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Constants_And_Equations;
 import frc.robot.RobotMap;
 
 /**
@@ -69,6 +70,16 @@ public class FrontLiftSubsystem extends Subsystem {
       this.positionOption = 0;
       break;
     }
+
+  }
+
+  // moves lifter at speed given in paramaters
+  public void liftMethod(double speed) {
+    setSpeed(Constants_And_Equations.deadzone(speed));
+  }
+
+  // Will move at given speed and use encoder to stay at set position
+  public void liftMethodBreak() {
 
   }
 

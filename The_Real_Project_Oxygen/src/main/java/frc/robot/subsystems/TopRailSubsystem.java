@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Constants_And_Equations;
 import frc.robot.RobotMap;
 
 /**
@@ -64,6 +65,16 @@ public void liftMethod() {
   @Override
   public void initDefaultCommand() {
    
+  }
+  
+  // moves lifter at speed given in paramaters
+  public void liftMethod(double speed) {
+    setSpeed(Constants_And_Equations.deadzone(speed));
+  }
+
+  // Will move at given speed and use encoder to stay at set position
+  public void liftMethodBreak() {
+
   }
 
   // TODO: Implement the following methods:
