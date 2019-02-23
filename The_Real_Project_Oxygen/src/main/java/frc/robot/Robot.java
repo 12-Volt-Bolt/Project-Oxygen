@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
+import frc.robot.commands.ManualLifterCommand;
 import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.frontLifterCommand;
@@ -68,9 +69,10 @@ import frc.robot.OI;
 public class Robot extends TimedRobot {
   public static DriveSubsystem driveSub = new DriveSubsystem();
   public static VisionSubsystem visionSub;
-  public static FrontLiftSubsystem frontLifterSub;
+  public static FrontLiftSubsystem frontLiftSub;
   public static RearLiftSubsystem rearLiftSub;
   public static TopRailSubsystem topLiftSub;
+  public static LifterSubsystem liftSub;
 
   /**
    *
@@ -101,6 +103,7 @@ public class Robot extends TimedRobot {
   public static int measCenterPixels;
   public static int measSeparationPixels;
   public static int measAngleDegrees;
+  public static int liftSafteyMode;
   public static boolean isProcessCmdBool;
 
   public static final String measCenterString = "DB/Slider 0";
@@ -116,7 +119,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_oi = new OI();
     visionSub = new VisionSubsystem();
-    frontLifterSub = new FrontLiftSubsystem();
+    frontLiftSub = new FrontLiftSubsystem();
     rearLiftSub = new RearLiftSubsystem();
     topLiftSub = new TopRailSubsystem();
 
@@ -308,14 +311,14 @@ public class Robot extends TimedRobot {
     }
 
     if(OI.zeroSlotController.getBButtonPressed()) {
-      frontLifterSub.liftMethod();
+      frontLiftSub.liftMethod();
     }
 
-    int safteyMode = LifterSubsystem.checkLiftSaftey();
+    liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
-    switch (safteyMode) {
+    switch (liftSafteyMode) {
       case 1:
-        
+
         break;
     
       default:
