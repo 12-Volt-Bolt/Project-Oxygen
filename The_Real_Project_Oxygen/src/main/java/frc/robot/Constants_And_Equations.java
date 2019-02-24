@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class Constants_And_Equations {
 
     public static double a_Vision_Variable;
+    public static final int NT_Table_Constant = 999999;
+
 
     public static double Clamp(double min, double max, double value) {
         if (value > max) {
