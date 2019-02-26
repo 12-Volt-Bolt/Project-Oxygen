@@ -18,6 +18,7 @@ public class ManualLifterCommand extends Command {
 
   private static LifterSubsystem liftSub;
   private static Constants_And_Equations cAndE;
+  
   public ManualLifterCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);

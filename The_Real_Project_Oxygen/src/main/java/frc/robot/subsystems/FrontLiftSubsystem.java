@@ -35,8 +35,8 @@ public class FrontLiftSubsystem extends Subsystem {
     motor = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
     motor.configOpenloopRamp(rampTimeInSecs);
     positionOption = 0;
-
   }
+
   // TODO: Implement the following methods:
   // A method that sets the speed of the motor controller with a parameter
   // 3 different methods that set a LOW, MED, and HIGH speed just by calling them
@@ -91,5 +91,4 @@ public class FrontLiftSubsystem extends Subsystem {
   public void initDefaultCommand() {
 
   }
-
 }

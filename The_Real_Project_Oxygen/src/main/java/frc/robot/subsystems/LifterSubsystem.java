@@ -65,4 +65,8 @@ public class LifterSubsystem extends Subsystem {
     rearLiftSub.stopThePresses();
     topLiftSub.stopThePresses();
   }
+
+  public static void stopAndStay(boolean hight) {
+    
+  }
 }
