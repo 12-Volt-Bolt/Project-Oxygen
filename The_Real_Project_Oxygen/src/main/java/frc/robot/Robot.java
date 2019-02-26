@@ -276,39 +276,41 @@ public class Robot extends TimedRobot {
     
     SmartDashboard.putData(driveSub.turnController);
 
-    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
-    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
-    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
-    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
-    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
-    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
-    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
+    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+
+    //SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    //SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
+    //SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
+    //SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
+    //SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
+    //SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
+    //SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
 
 
 
 
-    SmartDashboard.putData(driveSub.frontRight);
-    SmartDashboard.putData(driveSub.rearLeft);
-    SmartDashboard.putData(driveSub.frontLeft);
-    SmartDashboard.putData(driveSub.rearRight);
-    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
-    SmartDashboard.putData("Turn Controller ", driveSub.turnController);
-    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
-    SmartDashboard.putData("Turn Controller", driveSub.turnController);
-    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+    //SmartDashboard.putData(driveSub.frontRight);
+    //SmartDashboard.putData(driveSub.rearLeft);
+    //SmartDashboard.putData(driveSub.frontLeft);
+    //SmartDashboard.putData(driveSub.rearRight);
+    //SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    //SmartDashboard.putData("Turn Controller ", driveSub.turnController);
+    //SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    //SmartDashboard.putData("Turn Controller", driveSub.turnController);
+    //SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
 
-    if(OI.zeroSlotController.getXButtonPressed()) {
-      rearLiftSub.liftMethod();
-    }
-
-    if(OI.zeroSlotController.getAButtonPressed()) {
-      topLiftSub.liftMethod();
-
-    }
-
-    if(OI.zeroSlotController.getBButtonPressed()) {
-      frontLifterSub.liftMethod();
-    }
+    //if(OI.zeroSlotController.getXButtonPressed()) {
+    //  rearLiftSub.liftMethod();
+    //}
+    //
+    //if(OI.zeroSlotController.getAButtonPressed()) {
+    //  topLiftSub.liftMethod();
+    //
+    //}
+    //
+    //if(OI.zeroSlotController.getBButtonPressed()) {
+    //  frontLifterSub.liftMethod();
+    //}
 
   
 
