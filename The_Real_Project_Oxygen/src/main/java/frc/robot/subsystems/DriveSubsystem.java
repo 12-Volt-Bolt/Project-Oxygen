@@ -316,8 +316,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     rotationSpeed = locRotationLock(xLeft, xRight);
 
     // newZero = Robot.navXGyro.getAngle();
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft),
-        rotationSpeed);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft), rotationSpeed);
   }
 
   public static double locRotationLock(double xInput, double zInput) {
