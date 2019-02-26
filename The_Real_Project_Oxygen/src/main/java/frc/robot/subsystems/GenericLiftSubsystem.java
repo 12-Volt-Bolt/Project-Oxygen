@@ -19,14 +19,20 @@ public class GenericLiftSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public enum LiftIds {
+  private WPI_TalonSRX frontLift = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
+  private WPI_TalonSRX rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
+  private WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+
+  private int[] liftID = new int[] { 7,6,5 };
+
+  enum LiftId {
     frontLift(7)
     ,rearLift(6)
     ,topLift(5);
 
     private int value;
 
-    private LiftIds(int value) {
+    private void LiftIds(int value) {
       this.value = value;
     }
     public int getValue() {
@@ -34,22 +40,27 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
-  public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
-  public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
-  public int topLift = RobotMap.TOP_RAIL_MOTOR_ID;
+  //public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
+  //public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
+  //public int topLift = RobotMap.TOP_RAIL_MOTOR_ID;
 
-  public void liftMethod(double speed, String lift) {
+  public GenericLiftSubsystem() {
+  }
+
+  public void liftMethod(double speed, String liftID) {
 
   }
 
-  public void liftMotor(int liftID) {
-    
+  public void setMotor(double speed, int liftID) {
+    switch (liftID) {
+      case 7:
+        
+    }
   }
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    liftMethod(1, "frontLift");
   }
 }

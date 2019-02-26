@@ -65,8 +65,10 @@ import frc.robot.OI;
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the build.gradle file in the
  * project.
+ * 
+ * @param <topLiftSub>
  */
-public class Robot extends TimedRobot {
+public class Robot<topLiftSub> extends TimedRobot {
   public static DriveSubsystem driveSub = new DriveSubsystem();
   public static VisionSubsystem visionSub;
   public static FrontLiftSubsystem frontLiftSub;

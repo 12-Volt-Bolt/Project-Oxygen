@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class Constants_And_Equations {
 
     public static final int zero = 0;
+    public static final double rampTimeInSecs = 0.2;
 
     public static double a_Vision_Variable;
 
