@@ -14,6 +14,7 @@ import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,16 +61,62 @@ public class VisionSubsystem extends Subsystem {
   public static final int BOTTOM_CAM_ROW_PIXEL_NUM = 320;
 
   // Smartdashboard variables
-  public static int measCenterPixels;
+  public static int measCenterXPixels;
   public static int measSeparationPixels;
-  public static int measAngleDegrees;
+  public static int measAlAngleDegrees;
+  public static int measAlCenterXPixels;
   public static boolean isProcessCmdBool;
 
   // Smartdashboard Network Table Strings
-  public static final String measCenterString = "DB/Slider 0";
+  public static final String measCenterXString = "DB/Slider 0";
   public static final String measSeparationString = "DB/Slider 1";
-  public static final String measAngleDegreesString = "DB/Slider 2";
+  public static final String measAlCenterXString = "DB/Slider 2";
+  public static final String measAlAngleDegreesString = "DB/Slider 3";
   public static final String isProcessCMDString = "DB/Button 0";
+
+  // Data obtained from LabVIEW vision program
+  public static double targetCenterXInPixels;
+  public static double vtSeparationInPixels;
+  public static double alCenterXinPixels;
+  public static double alAngleInDegrees;
+
+  // Calibration Data:
+   public static final int caliVTDistanceCm = 1;
+   public static final int caliVTCenterInPixels = 1;
+   public static final int caliVTSeparationInPixels = 1;
+   public static final int caliAlCenterInPixels = 1;
+   public static final int caliAlAngleInDegrees = 1;
+
+   // PID Controllers
+  public PIDController rotationController;
+  public PIDController strafeController;
+  public PIDController verticalController;
+
+  //PID Constants
+  private int RotationP = 0;
+  private int RotationI = 0;
+  private int RotationD = 0;
+  private int RotationF = 0;
+
+  //PID Constants
+  private int StrafeP = 0;
+  private int StrafeI = 0;
+  private int StrafeD = 0;
+  private int StrafeF = 0;
+
+  //PID Constants
+  private int verticalP = 0;
+  private int verticalI = 0;
+  private int verticalD = 0;
+  private int verticalF = 0;
+
+
+   // Constants
+   private static final int NO_DATA= -999;
+ 
+
+
+  
 
   public VisionSubsystem() {
     topCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ZERO_ID);
@@ -82,31 +129,63 @@ public class VisionSubsystem extends Subsystem {
 
     bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
     topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+   
+    targetCenterXInPixels = NO_DATA;
+    vtSeparationInPixels = NO_DATA;
+    alCenterXinPixels = NO_DATA;
+    alAngleInDegrees = NO_DATA;
+
+    //rotationController = new PIDController(Kp, Ki, Kd, source, output);
+    //strafeController = new PIDController(Kp, Ki, Kd, source, output);
+    //verticalController = new PIDController(Kp, Ki, Kd, source, output);
+
   }
 
   @Override
   public void initDefaultCommand() {
+
   }
 
-  public void updateVisionObject(VisionMath vMath) {
-    if (OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5
-        && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
+  public int distanceFromCamToTargetInCM() {
+     return ((caliVTSeparationInPixels)/(measSeparationPixels)) * (caliVTDistanceCm);
+  }
+
+  public int lateralOffsetToTarget() {
+    return (int) ((int) (caliVTCenterInPixels / measSeparationPixels) * (20.32 / vtSeparationInPixels));
+  }
+
+  public int aLineCamOffset() {
+    return (int) (((caliAlCenterInPixels) - measCenterXPixels) * (20.32 / vtSeparationInPixels));
+  }
+
+  public int  aLineAngleOffset() {
+   return (measAlAngleDegrees - caliAlAngleInDegrees);
+  }
+
+
+  public void updateVisionObject() {
+    if (OI.visionStartCombo()) {
         SmartDashboard.putBoolean(isProcessCMDString, true);
     } else {
        SmartDashboard.putBoolean(isProcessCMDString, false);
 
     }
 
-    
-    measCenterPixels = (int) SmartDashboard.getNumber(measCenterString, Constants_And_Equations.NT_Table_Constant);
-    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString,
-        Constants_And_Equations.NT_Table_Constant);
-    measAngleDegrees = (int) SmartDashboard.getNumber(measAngleDegreesString,
-        Constants_And_Equations.NT_Table_Constant);
+    measCenterXPixels = (int) SmartDashboard.getNumber(measCenterXString, Constants_And_Equations.NT_Table_Constant);
+    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, Constants_And_Equations.NT_Table_Constant);
+    measAlAngleDegrees = (int) SmartDashboard.getNumber(measAlAngleDegreesString, Constants_And_Equations.NT_Table_Constant);
+    measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, Constants_And_Equations.NT_Table_Constant);
+  }
 
-    if (isProcessCmdBool) {
-      vMath = new VisionMath(measCenterPixels, measSeparationPixels, measAngleDegrees);
-    }
+  public void runRotationController() {
+
+  }
+
+  public void runStrafeController() {
+
+  }
+
+  public void runVerticalController() {
 
   }
 

@@ -137,6 +137,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    // SmartDashboard Data
     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
     SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
     SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
@@ -160,16 +161,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
     SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+    // SmartDashboard Data
 
-     
-    visionSub.updateVisionObject(vMath);
-
-    SmartDashboard.putNumber("Robot Periodic Test Counter", testCount++);
-    SmartDashboard.putNumber("Meas Angle In Degrees",VisionSubsystem.measAngleDegrees);
-    SmartDashboard.putNumber("Meas Center Pixels",VisionSubsystem.measCenterPixels);
-    SmartDashboard.putNumber("Meas Seperation Pixels",VisionSubsystem.measSeparationPixels);
-    SmartDashboard.putBoolean("CMD Bool", VisionSubsystem.isProcessCmdBool);
-
+   visionSub.updateVisionObject();
 
   }
 
