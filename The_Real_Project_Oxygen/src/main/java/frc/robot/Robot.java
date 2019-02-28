@@ -196,9 +196,6 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
     SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
     SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
-    SmartDashboard.putNumber("NewZero", driveSub.newZero);
-    SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
-    SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
 
   }
 

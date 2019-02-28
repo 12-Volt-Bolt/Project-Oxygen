@@ -27,7 +27,7 @@ public class GenericLiftSubsystem extends Subsystem {
   private Constants_And_Equations cAndE;
 
   //private int[] liftID = new int[] { 7,6,5 };
-
+  
   public enum LiftID {
     frontLift(7)
     ,rearLift(6)
