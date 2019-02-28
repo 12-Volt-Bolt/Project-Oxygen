@@ -22,7 +22,8 @@ public class Constants_And_Equations {
 
     public static final int zero = 0;
     public static final double rampTimeInSecs = 0.2;
-
+    public static int rollingCounter = 0;
+    public static double average = 0;
     public static double a_Vision_Variable;
 
     public static double Clamp(double min, double max, double value) {
@@ -78,4 +79,25 @@ public class Constants_And_Equations {
             return 0;
         }
     }
+
+    public static double[] moveAverage(double newNum, double[] array){
+        double[] firstArray = array;
+        double[] secondArray = array;
+        secondArray[0] = newNum;
+        int i; 
+        for (i = 1; i < array.length; i++){
+            secondArray[i] = firstArray[i-1];
+        }
+        return secondArray;
+    }
+
+    public static double makeAverage(double[] array){
+        double total = 0;
+        for(int i = 0; i < array.length; i++){
+            total += array[1];
+        }
+        return total/array.length;
+    }
+
+    
 }

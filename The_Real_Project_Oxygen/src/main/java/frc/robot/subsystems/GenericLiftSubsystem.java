@@ -25,20 +25,20 @@ public class GenericLiftSubsystem extends Subsystem {
 
   private int[] liftID = new int[] { 7,6,5 };
 
-  enum LiftId {
-    frontLift(7)
-    ,rearLift(6)
-    ,topLift(5);
-
-    private int value;
-
-    private void LiftIds(int value) {
-      this.value = value;
-    }
-    public int getValue() {
-      return value;
-    }
-  }
+//  enum LiftId {
+//  frontLift(7)
+//    ,rearLift(6)
+//    ,topLift(5);
+//
+//    private int value;
+//
+//    private void LiftIds(int value) {
+//      this.value = value;
+//    }
+//    public int getValue() {
+//      return value;
+//    }
+//  }
 
   //public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
   //public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
