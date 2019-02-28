@@ -476,7 +476,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     return rotationSpeed;
   }
 
-public void collisionDetection() {
+  public void collisionDetection() {
     double curr_world_linear_accel_x = Robot.navXGyro.getWorldLinearAccelX();
     double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
     last_world_linear_accel_x = curr_world_linear_accel_x;
@@ -490,7 +490,8 @@ public void collisionDetection() {
         collisionDetected = true;
     }
     SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
-
   }
 
+
+  
 }
