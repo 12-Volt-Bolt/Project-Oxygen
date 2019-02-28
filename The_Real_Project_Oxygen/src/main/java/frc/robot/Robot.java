@@ -277,8 +277,8 @@ public class Robot<topLiftSub> extends TimedRobot {
 
     SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
     
-    new FCDDriveCommand().start();
-  
+    //new FCDDriveCommand().start();
+
     
     SmartDashboard.putData(driveSub.turnController);
 
