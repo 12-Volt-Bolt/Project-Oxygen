@@ -315,12 +315,20 @@ public class Robot<topLiftSub> extends TimedRobot {
 
   }
 
+  private double testValue;
+
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-    
+    if (OI.zeroSlotController.getBumper(Hand.kRight) == true) {
+      testValue = Constants_And_Equations.Clamp(-1, 1, testValue + 0.1);
+    } else if (OI.zeroSlotController.getBumper(Hand.kLeft) == true) {
+      testValue = Constants_And_Equations.Clamp(-1, 1, testValue - 0.1);
+    }
+
+    driveSub.frontLeft.set(testValue);
   }
 
 }
