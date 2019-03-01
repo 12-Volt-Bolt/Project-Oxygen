@@ -80,24 +80,7 @@ public class Constants_And_Equations {
         }
     }
 
-    public static double[] moveAverage(double newNum, double[] array){
-        double[] firstArray = array;
-        double[] secondArray = array;
-        secondArray[0] = newNum;
-        int i; 
-        for (i = 1; i < array.length; i++){
-            secondArray[i] = firstArray[i-1];
-        }
-        return secondArray;
-    }
-
-    public static double makeAverage(double[] array){
-        double total = 0;
-        for(int i = 0; i < array.length; i++){
-            total += array[1];
-        }
-        return total/array.length;
-    }
+    
 
     
 }

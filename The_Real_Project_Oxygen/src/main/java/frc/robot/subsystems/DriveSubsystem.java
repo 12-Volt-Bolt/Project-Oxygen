@@ -130,6 +130,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         twist);
   }
 
+
+
   public void executeMecanumDrive(double ySpeed, double xSpeed, double rotation) {
     mecDrive.setSafetyEnabled(false);
      mecDrive.driveCartesian(ySpeed, xSpeed, rotation);
@@ -224,7 +226,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   // We may make our own mecanum method someday
   public void homeBrewMecanumMethod() {
-
+  // RUTH! LOOK:
+   //frontLeft.configClosedLoopPeakOutput(slotIdx, percentOut, timeoutMs)
   }
 
   // This method is used to rectify wheel rotation directions
@@ -471,7 +474,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     return rotationSpeed;
   }
 
-public void collisionDetection() {
+  public void collisionDetection() {
     double curr_world_linear_accel_x = Robot.navXGyro.getWorldLinearAccelX();
     double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
     last_world_linear_accel_x = curr_world_linear_accel_x;
@@ -488,4 +491,8 @@ public void collisionDetection() {
 
   }
 
+
+
 }
+
+
