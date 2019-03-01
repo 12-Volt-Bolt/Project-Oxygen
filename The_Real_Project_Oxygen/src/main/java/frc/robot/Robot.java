@@ -276,6 +276,8 @@ public class Robot<topLiftSub> extends TimedRobot {
     
     //new FCDDriveCommand().start();
 
+    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+
     
     SmartDashboard.putData(driveSub.turnController);
 
