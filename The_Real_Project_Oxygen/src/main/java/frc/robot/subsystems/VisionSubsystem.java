@@ -81,45 +81,40 @@ public class VisionSubsystem extends Subsystem {
   public static double alAngleInDegrees;
 
   // Calibration Data:
-   public static final int caliVTDistanceCm = 1;
-   public static final int caliVTCenterInPixels = 1;
-   public static final int caliVTSeparationInPixels = 1;
-   public static final int caliAlCenterInPixels = 1;
-   public static final int caliAlAngleInDegrees = 1;
+  public static final int caliVTDistanceCm = 1;
+  public static final int caliVTCenterInPixels = 1;
+  public static final int caliVTSeparationInPixels = 1;
+  public static final int caliAlCenterInPixels = 1;
+  public static final int caliAlAngleInDegrees = 1;
 
-   // PID Controllers
+  // PID Controllers
   public PIDController rotationController;
   public PIDController strafeController;
   public PIDController verticalController;
 
-  //PID Constants
-  private int RotationP = 0;
-  private int RotationI = 0;
-  private int RotationD = 0;
-  private int RotationF = 0;
+  // PID Constants
+  private final int RotationP = 0;
+  private final int RotationI = 0;
+  private final int RotationD = 0;
+  private final int RotationF = 0;
 
-  //PID Constants
-  private int StrafeP = 0;
-  private int StrafeI = 0;
-  private int StrafeD = 0;
-  private int StrafeF = 0;
+  // PID Constants
+  private final int StrafeP = 0;
+  private final int StrafeI = 0;
+  private final int StrafeD = 0;
+  private final int StrafeF = 0;
 
-  //PID Constants
-  private int verticalP = 0;
-  private int verticalI = 0;
-  private int verticalD = 0;
-  private int verticalF = 0;
+  // PID Constants
+  private final int verticalP = 0;
+  private final int verticalI = 0;
+  private final int verticalD = 0;
+  private final int verticalF = 0;
 
-
-   // Constants
-   private static final int NO_DATA= -999;
- 
-
-
-  
+  // Constants
+  private static final int NO_DATA = -888;
 
   public VisionSubsystem() {
-    topCam = CameraServer.getInstance().startAutomaticCapture(RobotMap.CAMERA_ZERO_ID);
+    topCam = CameraServer.getInstance().startAutomaticCapture(TOP_CAM_NAME, RobotMap.CAMERA_ZERO_ID);
     topCam.setResolution(TOP_CAM_ROW_PIXEL_NUM, TOP_CAM_COL_PIXEL_NUM);
     topCam.setFPS(TOP_CAM_FPS);
 
@@ -129,15 +124,16 @@ public class VisionSubsystem extends Subsystem {
 
     bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
     topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-   
+
     targetCenterXInPixels = NO_DATA;
     vtSeparationInPixels = NO_DATA;
     alCenterXinPixels = NO_DATA;
     alAngleInDegrees = NO_DATA;
 
-    //rotationController = new PIDController(Kp, Ki, Kd, source, output);
-    //strafeController = new PIDController(Kp, Ki, Kd, source, output);
-    //verticalController = new PIDController(Kp, Ki, Kd, source, output);
+    // rotationController = new PIDController(Kp, Ki, Kd, source, output)
+    // rotationController = new PIDController(Kp, Ki, Kd, source, output);
+    // strafeController = new PIDController(Kp, Ki, Kd, source, output);
+    // verticalController = new PIDController(Kp, Ki, Kd, source, output);
 
   }
 
@@ -147,45 +143,92 @@ public class VisionSubsystem extends Subsystem {
   }
 
   public int distanceFromCamToTargetInCM() {
-     return ((caliVTSeparationInPixels)/(measSeparationPixels)) * (caliVTDistanceCm);
+    return ((caliVTSeparationInPixels) / (measSeparationPixels)) * (caliVTDistanceCm);
   }
 
-  public int lateralOffsetToTarget() {
+  public int lateralOffsetToTargetInCM() {
     return (int) ((int) (caliVTCenterInPixels / measSeparationPixels) * (20.32 / vtSeparationInPixels));
   }
 
+  // If positive, strafe right
+  // If negitive, strafe left
   public int aLineCamOffset() {
     return (int) (((caliAlCenterInPixels) - measCenterXPixels) * (20.32 / vtSeparationInPixels));
   }
-
-  public int  aLineAngleOffset() {
-   return (measAlAngleDegrees - caliAlAngleInDegrees);
+  
+  // If positive, rotate Left
+  // If negitive, rotate Right
+  public int aLineAngleOffset() {
+    return (measAlAngleDegrees - caliAlAngleInDegrees);
   }
-
 
   public void updateVisionObject() {
     if (OI.visionStartCombo()) {
-        SmartDashboard.putBoolean(isProcessCMDString, true);
+      SmartDashboard.putBoolean(isProcessCMDString, true);
     } else {
-       SmartDashboard.putBoolean(isProcessCMDString, false);
+      SmartDashboard.putBoolean(isProcessCMDString, false);
 
     }
 
-    measCenterXPixels = (int) SmartDashboard.getNumber(measCenterXString, Constants_And_Equations.NT_Table_Constant);
-    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, Constants_And_Equations.NT_Table_Constant);
-    measAlAngleDegrees = (int) SmartDashboard.getNumber(measAlAngleDegreesString, Constants_And_Equations.NT_Table_Constant);
-    measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, Constants_And_Equations.NT_Table_Constant);
+    measCenterXPixels = (int) SmartDashboard.getNumber(measCenterXString, -888);
+    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, -888);
+    measAlAngleDegrees = (int) SmartDashboard.getNumber(measAlAngleDegreesString, -888);
+    measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, -888);
   }
 
-  public void runRotationController() {
+  public void runRotationController(double var) {
+    float headingError = 0f;
+    float rotationAdjust = 0.0f;
+
+    if (var > 0) { 
+      
+    }
+
+    else if (var < 0) {
+
+    }
+
+    else {
+      // stop please
+    }
 
   }
 
-  public void runStrafeController() {
+  public void runStrafeController(double vari) {
+    float headingError = 0f;
+    float strafeAdjust = 0.0f;
+
+    double scaledVari = vari / 100;
+
+    if (vari > 0) {
+    
+    }
+
+    else if (vari < 0) {
+
+    }
+
+    else {
+      // stop please
+    }
 
   }
 
-  public void runVerticalController() {
+  public void runVerticalController(double var) {
+    float headingError = 0f;
+    float verticalAdjust = 0.0f;
+
+    if (var > 0) {
+    
+    }
+
+    else if (var < 0) {
+
+    }
+
+    else {
+      // stop please
+    }
 
   }
 
