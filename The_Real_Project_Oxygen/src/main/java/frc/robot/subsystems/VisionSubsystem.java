@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.text.StyleContext.SmallAttributeSet;
 
 import edu.wpi.cscore.CvSink;
@@ -26,8 +27,9 @@ import frc.robot.VisionMath;
 import edu.wpi.cscore.VideoSource;
 
 /**
- * This class holds all methods and objects related to the camera We use both
- * the Logitech 930e and the Microsoft LifeCam 3000
+ * This class holds all methods and objects related to the cameras. We use both
+ * the Logitech 930e (Vision Tape) and the Microsoft LifeCam 3000 (Alignment
+ * Tape)
  */
 
 public class VisionSubsystem extends Subsystem {
@@ -92,23 +94,29 @@ public class VisionSubsystem extends Subsystem {
   public PIDController strafeController;
   public PIDController verticalController;
 
-  // PID Constants
-  private final int RotationP = 0;
-  private final int RotationI = 0;
-  private final int RotationD = 0;
-  private final int RotationF = 0;
+  // PID Rotation Constants
+  private final float RotationP = 0.0f;
+  private final float RotationI = 0.0f;
+  private final float RotationD = 0.0f;
+  private final float RotationF = 0.0f;
+  // The minimum value required to rotation
+  private final float MIN_ROTATION_VALUE = 0.1f;
 
-  // PID Constants
-  private final int StrafeP = 0;
-  private final int StrafeI = 0;
-  private final int StrafeD = 0;
-  private final int StrafeF = 0;
+  // PID Strafing Constants
+  private final float StrafeP = 0.0f;
+  private final float StrafeI = 0.0f;
+  private final float StrafeD = 0.0f;
+  private final float StrafeF = 0.0f;
+  // The minimum value required to strafe
+  private final float MIN_STRAFE_VALUE = 0.1f;
 
-  // PID Constants
-  private final int verticalP = 0;
-  private final int verticalI = 0;
-  private final int verticalD = 0;
-  private final int verticalF = 0;
+  // PID Vertical Movement Constants
+  private final float verticalP = 0.0f;
+  private final float verticalI = 0.0f;
+  private final float verticalD = 0.0f;
+  private final float verticalF = 0.0f;
+  // The minimum value required to vertical
+  private final float VERTICAL_VALUE = 0.1f;
 
   // Constants
   private static final int NO_DATA = -888;
@@ -151,13 +159,13 @@ public class VisionSubsystem extends Subsystem {
   }
 
   // If positive, strafe right
-  // If negitive, strafe left
+  // If negative, strafe left
   public int aLineCamOffset() {
     return (int) (((caliAlCenterInPixels) - measCenterXPixels) * (20.32 / vtSeparationInPixels));
   }
-  
+
   // If positive, rotate Left
-  // If negitive, rotate Right
+  // If negative, rotate Right
   public int aLineAngleOffset() {
     return (measAlAngleDegrees - caliAlAngleInDegrees);
   }
@@ -170,66 +178,64 @@ public class VisionSubsystem extends Subsystem {
 
     }
 
-    measCenterXPixels = (int) SmartDashboard.getNumber(measCenterXString, -888);
-    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, -888);
-    measAlAngleDegrees = (int) SmartDashboard.getNumber(measAlAngleDegreesString, -888);
-    measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, -888);
+    measCenterXPixels = (int) SmartDashboard.getNumber(measCenterXString, NO_DATA);
+    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, NO_DATA);
+    measAlAngleDegrees = (int) SmartDashboard.getNumber(measAlAngleDegreesString, NO_DATA);
+    measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, NO_DATA);
   }
 
-  public void runRotationController(double var) {
-    float headingError = 0f;
+  public void runRotationController() {
+    float headingError = (float) -aLineAngleOffset();
     float rotationAdjust = 0.0f;
 
-    if (var > 0) { 
-      
+    // rotate Right
+    if (aLineAngleOffset() > 0) {
+      rotationAdjust = RotationP * headingError - MIN_ROTATION_VALUE;
     }
 
-    else if (var < 0) {
-
+    // rotate Left
+    else if (aLineCamOffset() < 0) {
+      rotationAdjust = RotationP * headingError + (MIN_ROTATION_VALUE);
     }
 
-    else {
-      // stop please
-    }
+    // Add CW rotation method here
+    // Add CCW rotation method here
 
   }
 
-  public void runStrafeController(double vari) {
-    float headingError = 0f;
+  public void runStrafeController() {
+    float strafeError = (float) -lateralOffsetToTargetInCM();
     float strafeAdjust = 0.0f;
 
-    double scaledVari = vari / 100;
-
-    if (vari > 0) {
-    
+    // strafe left
+    if (0 > lateralOffsetToTargetInCM()) {
+      strafeAdjust = StrafeP * strafeError - MIN_STRAFE_VALUE;
+    }
+    // strafe Right
+    else if (0 < lateralOffsetToTargetInCM()) {
+      strafeAdjust = StrafeP * strafeError + MIN_STRAFE_VALUE;
     }
 
-    else if (vari < 0) {
-
-    }
-
-    else {
-      // stop please
-    }
+    // Add left Strafe method
+    // Add Right strafe method
 
   }
 
-  public void runVerticalController(double var) {
-    float headingError = 0f;
+  public void runVerticalController() {
+    float distanceError = (float) -distanceFromCamToTargetInCM();
     float verticalAdjust = 0.0f;
 
-    if (var > 0) {
-    
-    }
+    // Alter Talon SRX loops here
+    distanceFromCamToTargetInCM();
 
-    else if (var < 0) {
+  }
 
-    }
+  public void stopThePresses() {
 
-    else {
-      // stop please
-    }
+  }
 
+  public void smartdashboardTestingMethod() {
+  
   }
 
 }

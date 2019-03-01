@@ -63,4 +63,10 @@ public class Constants_And_Equations {
             return (Math.pow(dten, 2) / 10) * -1;
         }
     }
+    
+    // The following method returns a scaled version of currentValue. 
+    // scale is the maximum and minimum, inclusive
+    public static double scaleValue(double value, double currentValue, double scale) {
+       return (scale / value) * currentValue; 
+    }
 }

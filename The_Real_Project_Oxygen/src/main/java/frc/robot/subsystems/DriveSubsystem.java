@@ -147,7 +147,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
     switch (OI.zeroSlotController.getPOV()) {
     case 0:
-      SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
       turnController.setSetpoint(0.0f);
       rotateToAngle = true;
       break;
@@ -201,7 +200,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public void updateDriveTurn_to_angle(double angle) {
     turnController.enable();
-    turnController.setSetpoint(angle);
+    turnController.setSetpoint( (float) angle);
     double currentRotationRate;
     currentRotationRate = rotateToAngleRate;
     mecDrive.driveCartesian(0, 0,
@@ -278,7 +277,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   }
 
-  // Updates PID rotateToAngleRate to input specified in paramaters
+  // Updates rotateToAngleRate to input specified in parameters
   @Override
   public void pidWrite(double output) {
     rotateToAngleRate = output;
@@ -469,5 +468,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
 
   }
+  
 
 }
