@@ -161,10 +161,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
     SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+    SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
     // SmartDashboard Data
 
    visionSub.updateVisionObject();
-
+  
   }
 
   /**
@@ -260,8 +261,8 @@ public class Robot extends TimedRobot {
       frontLifterSub.liftMethod();
     }
 
-    if(OI.zeroSlotController.getAButtonPressed()) {
-      driveSub.updateDriveTurn_to_angle(90);
+    if (OI.zeroSlotController.getAButtonPressed()) {
+    driveSub.updateDriveTurn_to_angle(90);  
     }
 
   Timer.delay(0.02);
