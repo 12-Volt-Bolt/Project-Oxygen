@@ -111,7 +111,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
     turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
     turnController.setInputRange(-180.0f, 180.0f);
-    turnController.setOutputRange(-1.0, 1.0);
+    turnController.setOutputRange(-0.7, 0.7);
+    // Please set output range to less than 80%
     turnController.setAbsoluteTolerance(kToleranceDegrees);
     turnController.setContinuous(true);
     turnController.setName("Drive PID Controller");
@@ -167,7 +168,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         Constants_And_Equations
             .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
         Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
+            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
         twist, -Robot.navXGyro.getAngle());
   }
 

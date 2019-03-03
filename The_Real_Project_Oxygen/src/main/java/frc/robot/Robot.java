@@ -165,6 +165,10 @@ public class Robot extends TimedRobot {
     // SmartDashboard Data
 
    visionSub.updateVisionObject();
+
+   if(OI.allButtonComboPressesd(OI.zeroSlotController)) {
+     navXGyro.reset();
+   }
   
   }
 

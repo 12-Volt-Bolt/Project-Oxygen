@@ -60,6 +60,10 @@ public class OI {
      return false;
   }
 
+  public static boolean allButtonComboPressesd(XboxController xJoy) {
+    return xJoy.getAButtonPressed() && xJoy.getBButtonPressed() && xJoy.getXButtonPressed() && xJoy.getYButtonPressed();
+  }
+
   public static void leftRumbleMethod(XboxController xCon, double power) {
     xCon.setRumble(RumbleType.kLeftRumble, power);
   }
