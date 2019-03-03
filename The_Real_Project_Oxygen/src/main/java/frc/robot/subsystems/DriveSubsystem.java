@@ -67,6 +67,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public PIDController turnController;
   public static double rotateToAngleRate;
+  private double currentRotationRate = 0;
+
 
   final double kP = 0.05;
   final double kI = 0.0002;
@@ -141,74 +143,94 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public void updateDriveCartesian(double xLeft, double yLeft, double xRight, Boolean locked) {
     mecDrive.setSafetyEnabled(false);
 
-    boolean rotateToAngle = false;
-    double currentRotationRate;
-
-    switch (OI.zeroSlotController.getPOV()) {
-    case 0:
-      turnController.setSetpoint(0.0f);
-      rotateToAngle = true;
-      break;
-    case 45:
-      turnController.setSetpoint(45.0f);
-      rotateToAngle = true;
-      break;
-    case 90:
-      turnController.setSetpoint(90.0f);
-      rotateToAngle = true;
-      break;
-    case 135:
-      turnController.setSetpoint(135.0f);
-      rotateToAngle = true;
-      break;
-    case 180:
-      turnController.setSetpoint(179.9f);
-      rotateToAngle = true;
-      break;
-    case 225:
-      turnController.setSetpoint(-135f);
-      rotateToAngle = true;
-      break;
-    case 270:
-      turnController.setSetpoint(-90f);
-      rotateToAngle = true;
-      break;
-    case 315:
-      turnController.setSetpoint(-45f);
-      rotateToAngle = true;
-      break;
+    if (OI.zeroSlotController.getPOV() != -1) {
+      setTurnControllerSetpointDeg(OI.zeroSlotController.getPOV());
     }
-    if (rotateToAngle) {
-      turnController.enable();
+
+    if (Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1) > 0) {
+      enableTurnController(false);
+    }
+
+    if (!turnController.isEnabled()) {
+      currentRotationRate = Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1);
+      enableTurnController(false);
+    } else {
       currentRotationRate = rotateToAngleRate;
     }
-
-    else if (isTurnControllerOn) {
-      turnController.enable();
-      currentRotationRate = Constants_And_Equations.deadzone(xRight, 0.1);
-    } else {
-      currentRotationRate = Constants_And_Equations.deadzone(xRight, 0.1);
-      turnController.disable();
-    }
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),
-        currentRotationRate, -Robot.navXGyro.getAngle());
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1),
+        -Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate,
+        -Robot.navXGyro.getAngle());
   }
 
+  public void driveRampFCD(double twist) {
+    mecDrive.driveCartesian(
+        Constants_And_Equations
+            .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
+        Constants_And_Equations
+            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
+        twist, -Robot.navXGyro.getAngle());
+  }
+
+  // "angle" is used to set a set point for the turn controller
+  // The parameter should be 0 - 360 (inclusive)
+  // Enables the turn controller
+  public void setTurnControllerSetpointDeg(double angle) {
+    if (angle >= 180) {
+      angle = -360;
+    } else if ((int) angle == 180) {
+      angle = 179.9;
+    }
+    // Place this equation in Constants and equations
+    enableTurnController(true);
+    turnController.setSetpoint((float) angle);
+  }
+
+  // Turns robot to a specified angle, using the "angle" parameter.
+  // The parameter should be 0 - 360 (inclusive)
+  // Ensures that the variable "angle" is usable in the
+  // setTurnControllerSetpointMethod
+  // Uses data from the PID write method
+  public void turnToAngleDeg(double angle) {
+
+    if (angle >= 180) {
+      angle = -360;
+    } else if ((int) angle == 180) {
+      angle = 179.9;
+    }
+
+    // Place this equation in Constants and equations
+
+    setTurnControllerSetpointDeg((float) angle);
+
+    if (turnController.onTarget()
+        || Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.2) > 0) {
+      enableTurnController(false);
+    } else {
+      enableTurnController(true);
+      currentRotationRate = rotateToAngleRate;
+    }
+    setMecanumRotationSpeedWithoutJoy(currentRotationRate);
+  }
+
+  public void setMecanumRotationSpeedWithJoy(double speed, double xLeft, double yLeft) {
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),
+        speed, -Robot.navXGyro.getAngle());
+  }
+
+  public void setMecanumRotationSpeedWithoutJoy(double speed) {
+    mecDrive.driveCartesian(0, 0, speed, -Robot.navXGyro.getAngle());
+  }
+
+  public void enableTurnController(boolean trueOrFalse) {
+    if (trueOrFalse) {
+      turnController.enable();
+    } else {
+      turnController.disable();
+    }
+  }
   public void updateDriveRamp(double xLeft, double yLeft, double twist) {
     mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
         Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
-  }
-
-  public void updateDriveTurn_to_angle(double angle) {
-    isTurnControllerOn = true;
-    double currentRotationRate;
-    currentRotationRate = rotateToAngleRate;
-    turnController.enable();
-    turnController.setSetpoint((float) angle);
-    mecDrive.driveCartesian(0, 0, currentRotationRate, -Robot.navXGyro.getAngle());
-    if (turnController.onTarget()) {
-      isTurnControllerOn = false;
-    }
   }
 
   // This method is used to rectify wheel rotation directions
