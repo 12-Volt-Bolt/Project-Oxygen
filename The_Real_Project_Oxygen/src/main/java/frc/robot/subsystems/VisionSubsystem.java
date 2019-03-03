@@ -16,6 +16,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -121,6 +122,9 @@ public class VisionSubsystem extends Subsystem {
   // Constants
   private static final int NO_DATA = -888;
 
+  // Timer
+  private double cmdTimer;
+
   public VisionSubsystem() {
     topCam = CameraServer.getInstance().startAutomaticCapture(TOP_CAM_NAME, RobotMap.CAMERA_ZERO_ID);
     topCam.setResolution(TOP_CAM_ROW_PIXEL_NUM, TOP_CAM_COL_PIXEL_NUM);
@@ -170,7 +174,7 @@ public class VisionSubsystem extends Subsystem {
     return (measAlAngleDegrees - caliAlAngleInDegrees);
   }
 
-  public void updateVisionObject() {
+  public void updateVisionVariables() {
     if (OI.visionStartCombo()) {
       SmartDashboard.putBoolean(isProcessCMDString, true);
     } else {
@@ -230,12 +234,32 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
+  public void positionRobotPhase1() {
+
+    runRotationController();
+    runStrafeController();
+  }
+
   public void stopThePresses() {
 
   }
 
+  // untested method below
+  // The following method updates the vision variables values
+  public void getCMDData() {
+    if ((System.currentTimeMillis() % 1000) == 0) {
+      SmartDashboard.putBoolean(isProcessCMDString, true);
+    } else if ((System.currentTimeMillis() % 2000) == 0 && SmartDashboard.getBoolean(isProcessCMDString, false)) {
+      if (SmartDashboard.putBoolean(isProcessCMDString, true)) {
+        SmartDashboard.putBoolean(isProcessCMDString, false);
+      }
+
+    }
+
+  }
+
   public void smartdashboardTestingMethod() {
-  
+
   }
 
 }

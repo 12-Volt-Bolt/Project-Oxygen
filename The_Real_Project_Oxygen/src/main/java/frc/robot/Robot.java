@@ -164,7 +164,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
     // SmartDashboard Data
 
-   visionSub.updateVisionObject();
+   visionSub.updateVisionVariables();
 
    if(OI.allButtonComboPressesd(OI.zeroSlotController)) {
      navXGyro.reset();

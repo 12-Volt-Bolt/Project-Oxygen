@@ -388,6 +388,21 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
             + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
   }
 
+  public void MoveMecanumStraight(double speed) {
+    mecDrive.setSafetyEnabled(false);
+
+    // if turning, reset newZero
+    if (Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)) != 0) {
+      newZero = Robot.navXGyro.getAngle();
+    }
+    // drive forward based on leftJoyX, Strafe based on LeftJoyY, turn based on
+    // AmountDrifted+RightJoyX
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)),
+        speed,
+        Math.round(Robot.navXGyro.getAngle() - newZero)
+            + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
+  }
+
   ///
 
   // Overload- Turn 2 specified wheels, specified distance, specified speed, in
