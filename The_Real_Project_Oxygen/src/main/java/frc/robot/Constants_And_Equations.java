@@ -19,6 +19,11 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
  * Add your docs here.
  */
 public class Constants_And_Equations {
+    
+  public enum AxisNames
+  {
+    leftX, leftY, rightX, rightY;
+  }
 
     public static final int zero = 0;
     public static final double rampTimeInSecs = 0.2;

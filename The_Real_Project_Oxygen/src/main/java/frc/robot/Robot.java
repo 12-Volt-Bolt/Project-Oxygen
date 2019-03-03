@@ -7,56 +7,32 @@
 
 package frc.robot;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
-import edu.wpi.cscore.VideoSource;
-import edu.wpi.cscore.VideoMode.PixelFormat;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableEntry;
-
-import java.io.IOException;
-
 import com.kauailabs.navx.frc.AHRS;
-
-import org.opencv.core.Mat;
 
 import edu.wpi.first.wpilibj.Compressor;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.CameraServerStartInstantCommand;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.FCDDriveCommand;
-import frc.robot.commands.ManualLifterCommand;
+
 import frc.robot.commands.NonFCDDriveCommand;
-import frc.robot.commands.TurnToAngleCommand;
-import frc.robot.commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
+
+import frc.robot.subsystems.ControllerFunctions;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.LifterSubsystem;
-import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+
+import frc.robot.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 
 /**
@@ -263,6 +239,8 @@ public class Robot<topLiftSub> extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    navXGyro.reset();
   }
 
   /**
@@ -276,7 +254,7 @@ public class Robot<topLiftSub> extends TimedRobot {
     
     //new FCDDriveCommand().start();
 
-    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
 
     
     SmartDashboard.putData(driveSub.turnController);
@@ -289,7 +267,7 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
     SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
 
-
+    SmartDashboard.putNumber("Rolling average", ControllerFunctions.rolledAverageLeftY);
 
 
     SmartDashboard.putData(driveSub.frontRight);

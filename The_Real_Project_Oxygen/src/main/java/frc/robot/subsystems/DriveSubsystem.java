@@ -435,18 +435,17 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     mecDrive.setSafetyEnabled(false);
     // Resets local north if turning
 
-    rotationSpeed = locRotationLock(xLeft, xRight);
+    rotationSpeed = locRotationLock(xLeft, -xRight);
 
     // newZero = Robot.navXGyro.getAngle();
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft),
-        rotationSpeed);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), Constants_And_Equations.deadzone(-yLeft), rotationSpeed);
   }
 
   public double locRotationLock(double xInput, double zInput) {
     // if Z axis joystick is moving or has moved within the past 0.4 seconds set doLocRot to "true", else leave as "false"
     boolean doLocRot = false;
     if (Constants_And_Equations.deadzone(zInput) != 0) { 
-      doLocRot = true;
+      //doLocRot = true;
       locRotDelay = System.currentTimeMillis();
     } else if (System.currentTimeMillis() - locRotDelay > 400) {
       doLocRot = true;
@@ -465,7 +464,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         // if strafing, set locRot power lower beacuse the wheels are already turning, they dont need to pass the minimum required torque
         double turnPower;
         if (xInput != 0) {
-          turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.2); // turnPower equals 
+          turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.25); // turnPower equals 
         } else {
           turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.35);
         }
@@ -473,7 +472,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       }
     }
 
-    return rotationSpeed;
+    return -rotationSpeed;
   }
 
   public void collisionDetection() {

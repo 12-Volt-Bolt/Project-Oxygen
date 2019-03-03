@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants_And_Equations.AxisNames;
 
 /**
  * Add your docs here.
@@ -16,18 +18,20 @@ public class ControllerFunctions extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private double rolledAverage;
-  private final double[] rollingArray = new double[] { 0,0,0,0,0,0,0,0,0,0 };
-  private double[] raLeftX = rollingArray;
-  private double[] raLeftY = rollingArray;
-  private double[] raRightX = rollingArray;
-  private double[] raRightY = rollingArray;
-  private int raLength = rollingArray.length;
+  private static final double[] rollingArray = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  private static final int raLength = rollingArray.length - 1;
 
-  public enum AxisNames
-  {
-    leftX, leftY, rightX, rightY;
-  }
+  private static double[] raLeftX = rollingArray;
+  public static double[] raLeftY = rollingArray;
+  private static double[] raRightX = rollingArray;
+  private static double[] raRightY = rollingArray;
+  private static double rolledAverageLeftX;
+  public static double rolledAverageLeftY;
+  private static double rolledAverageRightX;
+  private static double rolledAverageRightY;
+
+  private static long savedTimeMili;
+  private static final int waitTimeMili = 100;
 
   @Override
   public void initDefaultCommand() {
@@ -35,65 +39,117 @@ public class ControllerFunctions extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());\
   }
 
-  public double[] CallArray(AxisNames whichAxis){
+  public static double[] CallArray(AxisNames whichAxis) {
+    switch (whichAxis) {
+    case leftX:
+      return raLeftX;
+
+    case leftY:
+      return raLeftY;
+
+    case rightX:
+      return raRightX;
+
+    case rightY:
+      return raRightY;
+
+    default:
+      return rollingArray;
+    }
+  }
+
+  public static void SetArray(AxisNames whichAxis, double[] newValue) {
+    switch (whichAxis) {
+    case leftX:
+      raLeftX = newValue;
+      break;
+
+    case leftY:
+      raLeftY = newValue;
+      break;
+
+    case rightX:
+      raRightX = newValue;
+      break;
+
+    case rightY:
+      raRightY = newValue;
+      break;
+
+    default:
+      break;
+    }
+  }
+
+  public static double RolledAverage(AxisNames whichAxis, double arraySum) {
     switch (whichAxis) {
       case leftX:
-        return raLeftX;
+        rolledAverageLeftX = arraySum/raLength;
+        return rolledAverageLeftX;
   
       case leftY:
-        return raLeftY;
-
+        rolledAverageLeftY = arraySum/raLength;
+        return rolledAverageLeftY;
+  
       case rightX:
-        return raRightX;
-     
+        rolledAverageRightX = arraySum/raLength;
+        return rolledAverageRightX;
+  
       case rightY:
-        return raRightY;
-
+        rolledAverageRightY = arraySum/raLength;
+        return rolledAverageRightY;
+  
       default:
-        return rollingArray;
-    }
+        return 0;
+      }
   }
 
-  public void SetArray(AxisNames whichAxis, double[] newValue){
+  public static double RolledAverage(AxisNames whichAxis) {
     switch (whichAxis) {
       case leftX:
-        raLeftX = newValue;
-        break;
+        return rolledAverageLeftX;
   
       case leftY:
-        raLeftY = newValue;
-        break;
-
+        return rolledAverageLeftY;
+  
       case rightX:
-        raRightX = newValue;
-        break;
-     
+        return rolledAverageRightX;
+  
       case rightY:
-        raRightY = newValue;
-        break;
-
+        return rolledAverageRightY;
+  
       default:
-        break;
+        return 0;
+      }
+  } 
+
+  public static double RollingAverage(AxisNames whichAxis, double newInput) {
+    if (Math.abs(newInput) < Math.abs(RolledAverage(whichAxis)) == true) {
+      return newInput;
+    }
+    else if (System.currentTimeMillis() - savedTimeMili > waitTimeMili) {
+      double[] oldArray = CallArray(whichAxis);
+      double[] tempRollingArray = rollingArray;
+      double raSum = 0;
+
+      for (int i = 0; i < raLength; i++) {
+        tempRollingArray[i] = oldArray[i + 1];
+      }
+      tempRollingArray[raLength] = newInput;
+      SetArray(whichAxis, tempRollingArray);
+
+      for (int i = 0; i < raLength; i++) {
+        raSum += tempRollingArray[i];
+      }
+      
+      savedTimeMili = System.currentTimeMillis();
+      return RolledAverage(whichAxis, raSum);
+    }
+    else {
+      return RolledAverage(whichAxis);
     }
   }
 
-  public double RollingAverage(AxisNames whichAxis,  double newInput) {
-    double[] oldArray = CallArray(whichAxis);
-    double[] tempRollingArray = new double[raLength];
-    double raSum = 0;
 
-    for (int i = 0; i < raLength - 1; i++){
-      tempRollingArray[i] = oldArray[i++];
-    }
 
-    tempRollingArray[raLength] = newInput;
-    SetArray(whichAxis, tempRollingArray);
-
-    for (int i = 0; i < raLength; i++) {
-      raSum += tempRollingArray[i];
-    }
-
-    rolledAverage = raSum/(raLength++);
-    return rolledAverage;
-  }
 }
