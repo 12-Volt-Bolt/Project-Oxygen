@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Constants_And_Equations;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
@@ -76,5 +77,19 @@ public class RearLiftSubsystem extends Subsystem {
       break;
     }
 
+  }
+  
+  // moves lifter at speed given in paramaters
+  public void liftMethod(double speed) {
+    setSpeed(Constants_And_Equations.deadzone(speed));
+  }
+
+  // Will move at given speed and use encoder to stay at set position
+  public void liftMethod(double speed, boolean lock) {
+
+  }
+
+  public void stopThePresses() {
+    setSpeed(Constants_And_Equations.zero);
   }
 }

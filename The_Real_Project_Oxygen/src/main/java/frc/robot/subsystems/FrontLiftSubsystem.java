@@ -7,11 +7,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.WPI_MotorSafetyImplem;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Constants_And_Equations;
 import frc.robot.RobotMap;
 
 /**
@@ -34,8 +33,8 @@ public class FrontLiftSubsystem extends Subsystem {
     motor = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
     motor.configOpenloopRamp(rampTimeInSecs);
     positionOption = 0;
-
   }
+
   // TODO: Implement the following methods:
   // A method that sets the speed of the motor controller with a parameter
   // 3 different methods that set a LOW, MED, and HIGH speed just by calling them
@@ -72,9 +71,22 @@ public class FrontLiftSubsystem extends Subsystem {
 
   }
 
+  // moves lifter at speed given in paramaters
+  public void liftMethod(double speed) {
+    setSpeed(Constants_And_Equations.deadzone(speed));
+  }
+
+  // Will move at given speed and use encoder to stay at set position
+  public void liftMethod(double speed, boolean lock) {
+
+  }
+
+  public void stopThePresses() {
+    setSpeed(Constants_And_Equations.zero);
+  }
+
   @Override
   public void initDefaultCommand() {
 
   }
-
 }

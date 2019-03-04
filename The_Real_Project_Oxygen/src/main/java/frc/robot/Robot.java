@@ -7,54 +7,32 @@
 
 package frc.robot;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
-import edu.wpi.cscore.VideoSource;
-import edu.wpi.cscore.VideoMode.PixelFormat;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableEntry;
-
-import java.io.IOException;
-
 import com.kauailabs.navx.frc.AHRS;
-
-import org.opencv.core.Mat;
 
 import edu.wpi.first.wpilibj.Compressor;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.CameraServerStartInstantCommand;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.FCDDriveCommand;
+
 import frc.robot.commands.NonFCDDriveCommand;
-import frc.robot.commands.TurnToAngleCommand;
-import frc.robot.commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
+
+import frc.robot.subsystems.ControllerFunctions;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
-import frc.robot.subsystems.LightSubsystem;
+import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+
+import frc.robot.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 
 /**
@@ -63,13 +41,16 @@ import frc.robot.OI;
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the build.gradle file in the
  * project.
+ * 
+ * @param <topLiftSub>
  */
-public class Robot extends TimedRobot {
+public class Robot<topLiftSub> extends TimedRobot {
   public static DriveSubsystem driveSub = new DriveSubsystem();
   public static VisionSubsystem visionSub;
-  public static FrontLiftSubsystem frontLifterSub;
+  public static FrontLiftSubsystem frontLiftSub;
   public static RearLiftSubsystem rearLiftSub;
   public static TopRailSubsystem topLiftSub;
+  public static LifterSubsystem liftSub;
 
   /**
    *
@@ -100,6 +81,7 @@ public class Robot extends TimedRobot {
   public static int measCenterPixels;
   public static int measSeparationPixels;
   public static int measAngleDegrees;
+  public static int liftSafteyMode;
   public static boolean isProcessCmdBool;
 
   public static final String measCenterString = "DB/Slider 0";
@@ -115,7 +97,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_oi = new OI();
     visionSub = new VisionSubsystem();
-    frontLifterSub = new FrontLiftSubsystem();
+    frontLiftSub = new FrontLiftSubsystem();
     rearLiftSub = new RearLiftSubsystem();
     topLiftSub = new TopRailSubsystem();
 
@@ -190,9 +172,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
     SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
     SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
-    SmartDashboard.putNumber("NewZero", driveSub.newZero);
-    SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
-    SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
 
   }
 
@@ -260,6 +239,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    navXGyro.reset();
   }
 
   /**
@@ -271,57 +252,63 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
     
-    new FCDDriveCommand().start();
-  
+    //new FCDDriveCommand().start();
+
+    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
+
     
     SmartDashboard.putData(driveSub.turnController);
 
-    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
+    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
+    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
 
-    //SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
-    //SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
-    //SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
-    //SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
-    //SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
-    //SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
-    //SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
-
-
+    SmartDashboard.putNumber("Rolling average", ControllerFunctions.rolledAverageLeftY);
 
 
-    //SmartDashboard.putData(driveSub.frontRight);
-    //SmartDashboard.putData(driveSub.rearLeft);
-    //SmartDashboard.putData(driveSub.frontLeft);
-    //SmartDashboard.putData(driveSub.rearRight);
-    //SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
-    //SmartDashboard.putData("Turn Controller ", driveSub.turnController);
-    //SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
-    //SmartDashboard.putData("Turn Controller", driveSub.turnController);
-    //SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+    SmartDashboard.putData(driveSub.frontRight);
+    SmartDashboard.putData(driveSub.rearLeft);
+    SmartDashboard.putData(driveSub.frontLeft);
+    SmartDashboard.putData(driveSub.rearRight);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller ", driveSub.turnController);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller", driveSub.turnController);
+    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
 
-    //if(OI.zeroSlotController.getXButtonPressed()) {
-    //  rearLiftSub.liftMethod();
-    //}
-    //
-    //if(OI.zeroSlotController.getAButtonPressed()) {
-    //  topLiftSub.liftMethod();
-    //
-    //}
-    //
-    //if(OI.zeroSlotController.getBButtonPressed()) {
-    //  frontLifterSub.liftMethod();
-    //}
 
-  
+    liftSafteyMode = LifterSubsystem.checkLiftSaftey();
+
+    switch (liftSafteyMode) {
+      case 1:
+        
+        break;
+    
+      default:
+        // do nothing, saftey on
+        break;
+    }
 
   }
+
+  private double testValue;
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-    
+    if (OI.zeroSlotController.getBumper(Hand.kRight) == true) {
+      testValue = Constants_And_Equations.Clamp(-1, 1, testValue + 0.1);
+    } else if (OI.zeroSlotController.getBumper(Hand.kLeft) == true) {
+      testValue = Constants_And_Equations.Clamp(-1, 1, testValue - 0.1);
+    }
+
+    driveSub.frontLeft.set(testValue);
   }
 
 }

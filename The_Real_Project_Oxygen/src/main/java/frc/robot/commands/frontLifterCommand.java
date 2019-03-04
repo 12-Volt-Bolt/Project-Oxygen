@@ -27,7 +27,7 @@ public class frontLifterCommand extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.frontLifterSub.liftMethod();
+    Robot.frontLiftSub.liftMethod();
   }
 
 }
