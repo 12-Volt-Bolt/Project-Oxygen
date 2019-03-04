@@ -33,6 +33,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -268,10 +270,13 @@ public class Robot extends TimedRobot {
     if (OI.zeroSlotController.getAButtonPressed()) {
 
     }
+   
+  
 
   Timer.delay(0.02);
 
   }
+
 
   /**
    * This function is called periodically during test mode.

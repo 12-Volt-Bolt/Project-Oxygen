@@ -69,7 +69,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public static double rotateToAngleRate;
   private double currentRotationRate = 0;
 
-
   final double kP = 0.05;
   final double kI = 0.0002;
   final double kD = 0.08;
@@ -176,8 +175,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // The parameter should be 0 - 360 (inclusive)
   // Enables the turn controller
   public void setTurnControllerSetpointDeg(double angle) {
-    if (angle >= 180) {
-      angle = -360;
+    if (angle > 180) {
+      angle -= 360;
     } else if ((int) angle == 180) {
       angle = 179.9;
     }
@@ -193,8 +192,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Uses data from the PID write method
   public void turnToAngleDeg(double angle) {
 
-    if (angle >= 180) {
-      angle = -360;
+    if (angle > 180) {
+      angle -= 360;
     } else if ((int) angle == 180) {
       angle = 179.9;
     }
@@ -229,6 +228,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       turnController.disable();
     }
   }
+
   public void updateDriveRamp(double xLeft, double yLeft, double twist) {
     mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
         Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
@@ -397,8 +397,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     // drive forward based on leftJoyX, Strafe based on LeftJoyY, turn based on
     // AmountDrifted+RightJoyX
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)),
-        speed,
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)), speed,
         Math.round(Robot.navXGyro.getAngle() - newZero)
             + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
   }
