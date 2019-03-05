@@ -51,6 +51,7 @@ import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
+import frc.robot.subsystems.DiskUnitSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.LightSubsystem;
@@ -72,6 +73,7 @@ public class Robot extends TimedRobot {
   public static FrontLiftSubsystem frontLifterSub;
   public static RearLiftSubsystem rearLiftSub;
   public static TopRailSubsystem topLiftSub;
+  public static DiskUnitSubsystem DiskSub;
 
   /**
    *
@@ -111,6 +113,7 @@ public class Robot extends TimedRobot {
     rearLiftSub = new RearLiftSubsystem();
     topLiftSub = new TopRailSubsystem();
     driveSub = new DriveSubsystem();
+    DiskSub = new DiskUnitSubsystem();
 
     
     // VERY IMPORTANT
@@ -238,6 +241,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    DiskSub.stopThePresses();
   }
 
   /**
@@ -270,6 +275,9 @@ public class Robot extends TimedRobot {
     if (OI.zeroSlotController.getAButtonPressed()) {
 
     }
+   
+    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
+
    
   
 

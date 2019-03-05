@@ -244,6 +244,10 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
+  public void activateVisionDriveMode() {
+      
+  }
+
   // untested method below
   // The following method updates the vision variables values
   public void getCMDData() {
