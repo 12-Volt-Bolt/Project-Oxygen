@@ -198,6 +198,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       angle = 179.9;
     }
 
+
     // Place this equation in Constants and equations
 
     setTurnControllerSetpointDeg((float) angle);
@@ -211,6 +212,12 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     setMecanumRotationSpeedWithoutJoy(currentRotationRate);
   }
+
+  public void turnAnAmount(double turnDegrees) {
+    double newAngle  = ((int) (Robot.navXGyro.getAngle()) + turnDegrees);
+    turnToAngleDeg(newAngle);
+  }
+
 
   public void setMecanumRotationSpeedWithJoy(double speed, double xLeft, double yLeft) {
     mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),

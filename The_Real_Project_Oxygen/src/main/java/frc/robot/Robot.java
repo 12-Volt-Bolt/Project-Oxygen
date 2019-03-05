@@ -273,7 +273,7 @@ public class Robot extends TimedRobot {
     }
 
     if (OI.zeroSlotController.getAButtonPressed()) {
-
+       driveSub.turnAnAmount(30);
     }
    
     DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());

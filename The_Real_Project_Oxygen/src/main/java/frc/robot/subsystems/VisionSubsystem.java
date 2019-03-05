@@ -125,6 +125,13 @@ public class VisionSubsystem extends Subsystem {
   // Timer
   private double cmdTimer;
 
+  // Test Parameters
+  private final double testDistanceFromCamToTargetInCM = 50;
+  private final double testLateralOffsetToTargetInCM = 50;
+  private final double testALineCamOffset = 50;
+  private final double testALineAngleOffset = 50;
+
+
   public VisionSubsystem() {
     topCam = CameraServer.getInstance().startAutomaticCapture(TOP_CAM_NAME, RobotMap.CAMERA_ZERO_ID);
     topCam.setResolution(TOP_CAM_ROW_PIXEL_NUM, TOP_CAM_COL_PIXEL_NUM);
@@ -188,17 +195,17 @@ public class VisionSubsystem extends Subsystem {
     measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, NO_DATA);
   }
 
-  public void runRotationController() {
-    float headingError = (float) -aLineAngleOffset();
+  public void runRotationController(double aLineAngleOffset) {
+    float headingError = (float) -aLineAngleOffset;
     float rotationAdjust = 0.0f;
 
     // rotate Right
-    if (aLineAngleOffset() > 0) {
+    if (aLineAngleOffset > 0) {
       rotationAdjust = RotationP * headingError - MIN_ROTATION_VALUE;
     }
 
     // rotate Left
-    else if (aLineCamOffset() < 0) {
+    else if (aLineAngleOffset < 0) {
       rotationAdjust = RotationP * headingError + (MIN_ROTATION_VALUE);
     }
 
@@ -207,16 +214,16 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public void runStrafeController() {
-    float strafeError = (float) -lateralOffsetToTargetInCM();
+  public void runStrafeController(double lateralOffset) {
+    float strafeError = (float) -lateralOffset;
     float strafeAdjust = 0.0f;
 
     // strafe left
-    if (0 > lateralOffsetToTargetInCM()) {
+    if (0 > lateralOffset) {
       strafeAdjust = StrafeP * strafeError - MIN_STRAFE_VALUE;
     }
     // strafe Right
-    else if (0 < lateralOffsetToTargetInCM()) {
+    else if (0 < lateralOffset) {
       strafeAdjust = StrafeP * strafeError + MIN_STRAFE_VALUE;
     }
 
@@ -225,19 +232,17 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public void runVerticalController() {
-    float distanceError = (float) -distanceFromCamToTargetInCM();
+  public void runVerticalController(double distanceToCam) {
+    float distanceError = (float) -distanceToCam;
     float verticalAdjust = 0.0f;
 
     // Alter Talon SRX loops here
-    distanceFromCamToTargetInCM();
-
+  
   }
 
   public void positionRobotPhase1() {
-
-    runRotationController();
-    runStrafeController();
+    runRotationController(aLineAngleOffset());
+    runStrafeController(lateralOffsetToTargetInCM());
   }
 
   public void stopThePresses() {

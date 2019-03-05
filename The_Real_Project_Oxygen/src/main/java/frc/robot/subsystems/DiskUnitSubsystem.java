@@ -10,6 +10,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.NidecBrushless;
+import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.OI;
 import frc.robot.RobotMap;
@@ -22,13 +24,19 @@ public class DiskUnitSubsystem extends Subsystem {
   // here. Call these from Commands.
 
   public WPI_VictorSPX hatchMotor;  
-  
+  public NidecBrushless NidecHatchMotor;
+ 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
+    
+  }
+
+  public DiskUnitSubsystem() {
     hatchMotor = new WPI_VictorSPX(RobotMap.HATCH_MOTOR_ID);
     hatchMotor.set(0);
+    NidecHatchMotor = new NidecBrushless(0, 0);
   }
 
   public void hatchStepSpeed(boolean buttonPos, boolean buttonNeg, boolean offButton) {
@@ -52,6 +60,5 @@ public class DiskUnitSubsystem extends Subsystem {
   public void stopThePresses() {
     hatchMotor.set(0);
   }
-  
   
 }
