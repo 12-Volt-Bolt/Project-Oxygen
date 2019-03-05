@@ -226,7 +226,7 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-   new NonFCDDriveCommand().start();
+    new NonFCDDriveCommand().start();
 
   }
 
@@ -259,7 +259,7 @@ public class Robot<topLiftSub> extends TimedRobot {
     
     SmartDashboard.putData(driveSub.turnController);
 
-    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getError());
     SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
     SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
     SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());

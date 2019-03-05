@@ -444,8 +444,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public double locRotationLock(double xInput, double zInput) {
     // if Z axis joystick is moving or has moved within the past 0.4 seconds set doLocRot to "true", else leave as "false"
     boolean doLocRot = false;
-    if (Constants_And_Equations.deadzone(zInput) != 0) { 
-      //doLocRot = true;
+    if (Constants_And_Equations.deadzone(zInput) != 0) {
       locRotDelay = System.currentTimeMillis();
     } else if (System.currentTimeMillis() - locRotDelay > 400) {
       doLocRot = true;
@@ -471,6 +470,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         rotationSpeed = Constants_And_Equations.Clamp(-1, 1, turnPower);
       }
     }
+    SmartDashboard.putNumber("newZero", newZero);
+    SmartDashboard.putNumber("Rotation speed", -rotationSpeed);
 
     return -rotationSpeed;
   }
