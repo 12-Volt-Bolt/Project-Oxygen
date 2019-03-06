@@ -6,42 +6,34 @@
 /*----------------------------------------------------------------------------*/
 
 /*
-Drive subsystem formating:
-  Functions use a BlankBlankBlank format
-    Blank 1 determins what type of update loop the code contains
-      ValueBlankBlank: runs until the paramater-set conditions have been fulfilled
-      UpdateBlankBlank: needs to be called every update and turns things on OR off
-
-    Blank 2 determins what is being run/set
-      BlankMoveBlank: effects all wheels 
-      BlankTurnBlank: effects fewer than all the wheels
-      BlankDriveBlank: effects all wheels dynamically (IE: turn while driving)
-      BlankEncoderBlank: reads/sets encoder values
-
-    Blank 3 determins what specific input/output the function requires/returns (One function can have multiple Blank 3s)
-      BlankBlankIn: input/output in inches
-      BlankBlankCm: input/output in centimeters
-      BlankBlankCartesian: input/output in cartesian coordinates
-      BlankBlankPolar: input/output in polar coordinates
-      BlankBlankSet: Sets a value dictated in paramaters/constants
-      Ect...
-
+/*  Drive subsystem formating:
+/*    Functions use a BlankBlankBlank format
+/*      Blank 1 determins what type of update loop the code contains
+/*        ValueBlankBlank: runs until the paramater-set conditions have been fulfilled
+/*        UpdateBlankBlank: needs to be called every update and turns things on OR off
+/*  
+/*      Blank 2 determins what is being run/set
+/*        BlankMoveBlank: effects all wheels 
+/*        BlankTurnBlank: effects fewer than all the wheels
+/*        BlankDriveBlank: effects all wheels dynamically (IE: turn while driving)
+/*        BlankEncoderBlank: reads/sets encoder values
+/*  
+/*      Blank 3 determins what specific input/output the function requires/returns (One function can have multiple Blank 3s)
+/*        BlankBlankIn: input/output in inches
+/*        BlankBlankCm: input/output in centimeters
+/*        BlankBlankCartesian: input/output in cartesian coordinates
+/*        BlankBlankPolar: input/output in polar coordinates
+/*        BlankBlankSet: Sets a value dictated in paramaters/constants
+/*        Ect...
+/*  
 */
 
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.kauailabs.navx.frc.AHRS;
-import com.kauailabs.navx.frc.AHRS.SerialDataType;
-//import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
-
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -74,13 +66,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   final double kD = 0.08;
   final double kF = 0.00;
 
-  // variables for tank driving
-  public double newZero = 0.00;
-  public double rotationSpeed = 0.00;
-  public double angleOff = 0.00;
 
-  /* This tuning parameter indicates how close to "on target" the */
-  /* PID Controller will attempt to get. */
+  // variables for LocRot driving
+  private double newZero = 0.00;
+  private double rotationSpeed = 0.00;
+  private double angleOff = 0.00;
+  private double locRotDelay; // is measured in milliseconds
+
+  /* This tuning parameter indicates how close to "on target" the PID Controller will attempt to get. */
 
   final double kToleranceDegrees = 5.0f;
 
@@ -464,32 +457,44 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     mecDrive.setSafetyEnabled(false);
     // Resets local north if turning
 
-    rotationSpeed = locRotationLock(xLeft, xRight);
+    rotationSpeed = locRotationLock(xLeft, -xRight);
 
     // newZero = Robot.navXGyro.getAngle();
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft), Constants_And_Equations.deadzone(xLeft),
-        rotationSpeed);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), Constants_And_Equations.deadzone(-yLeft), rotationSpeed);
   }
 
   public double locRotationLock(double xInput, double zInput) {
-    if (Constants_And_Equations.deadzone(zInput) != 0) {
+    // if Z axis joystick is moving or has moved within the past 0.4 seconds set doLocRot to "true", else leave as "false"
+    boolean doLocRot = false;
+    if (Constants_And_Equations.deadzone(zInput) != 0) { 
+      //doLocRot = true;
+      locRotDelay = System.currentTimeMillis();
+    } else if (System.currentTimeMillis() - locRotDelay > 400) {
+      doLocRot = true;
+    }
+
+    // if not locking rotation, roationSpeed equals Z axis input
+    if (doLocRot == false) {
       newZero = Robot.navXGyro.getAngle();
       rotationSpeed = zInput;
     } else {
       angleOff = Robot.navXGyro.getAngle() - newZero;
+      // if "angleOff" is greater than kToleranceDegrees, rotationSpeed equals zero and robot does not turn
       if (Math.abs(angleOff) < kToleranceDegrees) {
         rotationSpeed = 0;
       } else {
-        if (xInput == 0) {
-          angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.35);
+        // if strafing, set locRot power lower beacuse the wheels are already turning, they dont need to pass the minimum required torque
+        double turnPower;
+        if (xInput != 0) {
+          turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.25); // turnPower equals 
         } else {
-          angleOff = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.2);
+          turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.35);
         }
-        rotationSpeed = Constants_And_Equations.Clamp(-1, 1, angleOff);
+        rotationSpeed = Constants_And_Equations.Clamp(-1, 1, turnPower);
       }
     }
 
-    return rotationSpeed;
+    return -rotationSpeed;
   }
 
   public void collisionDetection() {
@@ -506,7 +511,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       collisionDetected = true;
     }
     SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
-
   }
 
+
+  
 }

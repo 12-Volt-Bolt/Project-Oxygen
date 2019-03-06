@@ -7,59 +7,33 @@
 
 package frc.robot;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
-import edu.wpi.cscore.VideoSource;
-import edu.wpi.cscore.VideoMode.PixelFormat;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableEntry;
-
-import java.io.IOException;
-
 import com.kauailabs.navx.frc.AHRS;
-
-import org.opencv.core.Mat;
-
 import edu.wpi.first.wpilibj.Compressor;
-
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.CameraServerStartInstantCommand;
-import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
-import frc.robot.commands.ManualLifterCommand;
 import frc.robot.commands.NonFCDDriveCommand;
-import frc.robot.commands.TurnToAngleCommand;
-import frc.robot.commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DiskUnitSubsystem;
+import frc.robot.subsystems.ControllerFunctions;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.LifterSubsystem;
-import frc.robot.subsystems.LightSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+
+import frc.robot.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 
 /**
@@ -156,9 +130,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
     SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
     SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
-    SmartDashboard.putNumber("NewZero", driveSub.newZero);
-    SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
-    SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
+    //SmartDashboard.putNumber("NewZero", driveSub.newZero);
+    //SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
+    //SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
     SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
     SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
     SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
@@ -261,12 +235,22 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
 
     SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
-  
     new FCDDriveCommand().start();
+    
+    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
 
     
-   
+    SmartDashboard.putData(driveSub.turnController);
 
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
+    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
+    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
+
+    SmartDashboard.putNumber("Rolling average", ControllerFunctions.rolledAverageLeftY);
 
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
@@ -287,17 +271,22 @@ public class Robot extends TimedRobot {
    
     DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
 
-  Timer.delay(0.02);
-
   }
 
+  private double testValue;
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-    
+    if (OI.zeroSlotController.getBumper(Hand.kRight) == true) {
+      testValue = Constants_And_Equations.Clamp(-1, 1, testValue + 0.1);
+    } else if (OI.zeroSlotController.getBumper(Hand.kLeft) == true) {
+      testValue = Constants_And_Equations.Clamp(-1, 1, testValue - 0.1);
+    }
+
+    driveSub.frontLeft.set(testValue);
   }
 
 }
