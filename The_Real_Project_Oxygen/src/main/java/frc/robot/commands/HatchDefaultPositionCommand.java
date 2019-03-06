@@ -26,9 +26,11 @@ public class HatchDefaultPositionCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    /*
     if(Robot.DiskSub.hatchMotor.getOutputCurrent() > Robot.DiskSub.currentlimit) {
       Robot.DiskSub.stopThePresses();
     }
+    */
   }
 
   // Make this return true when this Command no longer needs to run execute()

@@ -19,11 +19,10 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
  * Add your docs here.
  */
 public class Constants_And_Equations {
-    
-  public enum AxisNames
-  {
-    leftX, leftY, rightX, rightY;
-  }
+
+    public enum AxisNames {
+        leftX, leftY, rightX, rightY;
+    }
 
     public static final int zero = 0;
     public static final double rampTimeInSecs = 0.2;
@@ -31,7 +30,6 @@ public class Constants_And_Equations {
     public static double a_Vision_Variable;
     public static final int NT_Table_Constant = 999999;
     public static final int visionCaliConstant = 1;
-
 
     public static double Clamp(double min, double max, double value) {
         if (value > max) {
@@ -90,16 +88,15 @@ public class Constants_And_Equations {
     public static float gyroAngleForPIDLoop(double angle) {
         if (angle > 180) {
             angle -= 360;
-          } else if ((int) angle == 180) {
+        } else if ((int) angle == 180) {
             angle = 179.9;
-          }
-          return (float) angle;
+        }
+        return (float) angle;
     }
 
-    
-    // The following method returns a scaled version of currentValue. 
+    // The following method returns a scaled version of currentValue.
     // scale is the maximum and minimum, inclusive
     public static double scaleValue(double value, double currentValue, double scale) {
-       return (scale / value) * currentValue; 
+        return (scale / value) * currentValue;
     }
 }

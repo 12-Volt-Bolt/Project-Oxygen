@@ -225,7 +225,7 @@ public class VisionSubsystem extends Subsystem {
   public void runVerticalController() {
     float distanceError = (float) -distanceFromCamToTargetInCM();
     float verticalAdjust = 0.0f;
-   
+
     if (distanceFromCamToTargetInCM() > 5) {
       Robot.driveSub.setMecanumVerticalSpeedWithoutJoy(verticalAdjust);
     }
@@ -258,7 +258,6 @@ public class VisionSubsystem extends Subsystem {
     }
 
   }
-
 
   public void CMDButtonOn(boolean trueOrFalse) {
     if (trueOrFalse) {
