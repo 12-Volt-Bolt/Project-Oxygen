@@ -60,45 +60,61 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public  WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotMap.FRONT_LEFT_MOTOR_ID);
-  public  WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
-  public  WPI_TalonSRX rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
-  public  WPI_TalonSRX rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
+  public WPI_TalonSRX frontLeft;
+  public WPI_TalonSRX frontRight;
+  public WPI_TalonSRX rearLeft;
+  public WPI_TalonSRX rearRight;
 
+  public PIDController turnController;
+  public static double rotateToAngleRate;
+  private double currentRotationRate = 0;
 
-  public  PIDController turnController;
-  public  double rotateToAngleRate;
-
-   final double kP = 0.05;
-   final double kI = 0.0002;
-   final double kD = 0.08;
-   final double kF = 0.00;
+  final double kP = 0.05;
+  final double kI = 0.0002;
+  final double kD = 0.08;
+  final double kF = 0.00;
 
   // variables for tank driving
-  public  double newZero = 0.00;
-  public  double rotationSpeed = 0.00;
-  public  double angleOff = 0.00;
+  public double newZero = 0.00;
+  public double rotationSpeed = 0.00;
+  public double angleOff = 0.00;
 
   /* This tuning parameter indicates how close to "on target" the */
   /* PID Controller will attempt to get. */
 
-   final double kToleranceDegrees = 5.0f;
+  final double kToleranceDegrees = 5.0f;
 
-  //Variables for collision detection
-   double last_world_linear_accel_x;
-   double last_world_linear_accel_y;
+  // Variables for collision detection
+  double last_world_linear_accel_x;
+  double last_world_linear_accel_y;
 
   public boolean collisionDetected = false;
 
   // Collision detection threshold
   final double kCollisionThreshold_DeltaG = 0.5f;
 
+  public MecanumDrive mecDrive;
 
-  public MecanumDrive mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
+  boolean isTurnControllerOn = false;
 
   public DriveSubsystem() {
     super();
+    frontLeft = new WPI_TalonSRX(RobotMap.FRONT_LEFT_MOTOR_ID);
+    frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
+    rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
+    rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
+
+    mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
+
     correctMotorDirectionForMecanumDrive();
+
+    turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
+    turnController.setInputRange(-180.0f, 180.0f);
+    turnController.setOutputRange(-0.7, 0.7);
+    // Please set output range to less than 80%
+    turnController.setAbsoluteTolerance(kToleranceDegrees);
+    turnController.setContinuous(true);
+    turnController.setName("Drive PID Controller");
 
   }
 
@@ -107,18 +123,12 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
     setDefaultCommand(new DefaultDriveCommand());
-    turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
-    turnController.setInputRange(-180.0f, 180.0f);
-    turnController.setOutputRange(-1.0, 1.0);
-    turnController.setAbsoluteTolerance(kToleranceDegrees);
-    turnController.setContinuous(true);
-    turnController.setName("Drive PID Controller");
-
   }
-  
+
   public void updateDriveCartesian(double xLeft, double yLeft, double xRight) {
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1),
-    -Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft), 0.1), Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1));  
+    mecDrive.setSafetyEnabled(false);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),
+        Constants_And_Equations.deadzone(xRight, 0.1));
   }
 
   public void driveRampNonFCD(double twist) {
@@ -130,58 +140,22 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         twist);
   }
 
-  public void executeMecanumDrive(double ySpeed, double xSpeed, double rotation) {
-    mecDrive.setSafetyEnabled(false);
-     mecDrive.driveCartesian(ySpeed, xSpeed, rotation);
-    } 
-
   public void updateDriveCartesian(double xLeft, double yLeft, double xRight, Boolean locked) {
     mecDrive.setSafetyEnabled(false);
 
-    boolean rotateToAngle = false;
-    double currentRotationRate;
-    
-    switch (OI.zeroSlotController.getPOV()) {
-    case 0:
-      SmartDashboard.putBoolean("Can you see this (POV turn 0)", rotateToAngle);
-      turnController.setSetpoint(0.0f);
-      rotateToAngle = true;
-      break;
-    case 45:
-      turnController.setSetpoint(45.0f);
-      rotateToAngle = true;
-      break;
-    case 90:
-      turnController.setSetpoint(90.0f);
-      rotateToAngle = true;
-      break;
-    case 135:
-      turnController.setSetpoint(135.0f);
-      rotateToAngle = true;
-      break;
-    case 180:
-      turnController.setSetpoint(179.9f);
-      rotateToAngle = true;
-      break;
-    case 225:
-      turnController.setSetpoint(-135f);
-      rotateToAngle = true;
-      break;
-    case 270:
-      turnController.setSetpoint(-90f);
-      rotateToAngle = true;
-      break;
-    case 315:
-      turnController.setSetpoint(-45f);
-      rotateToAngle = true;
-      break;
+    if (OI.zeroSlotController.getPOV() != -1) {
+      setTurnControllerSetpointDeg(OI.zeroSlotController.getPOV());
     }
-    if (rotateToAngle) {
-      turnController.enable();
-      currentRotationRate = rotateToAngleRate;
-    } else {
+
+    if (Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1) > 0) {
+      enableTurnController(false);
+    }
+
+    if (!turnController.isEnabled()) {
       currentRotationRate = Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1);
-      turnController.disable();
+      enableTurnController(false);
+    } else {
+      currentRotationRate = rotateToAngleRate;
     }
     mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1),
         -Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate,
@@ -193,38 +167,71 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         Constants_And_Equations
             .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
         Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
+            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
         twist, -Robot.navXGyro.getAngle());
   }
 
-  public void turnToAngle(double angle) {
-    turnController.enable();
-    turnController.setSetpoint(angle);
-    double currentRotationRate;
-    currentRotationRate = rotateToAngleRate;
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1),
-        -Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate,
-        -Robot.navXGyro.getAngle());
-
+  // "angle" is used to set a set point for the turn controller
+  // The parameter should be 0 - 360 (inclusive)
+  // Enables the turn controller
+  public void setTurnControllerSetpointDeg(double angle) {
+    if (angle > 180) {
+      angle -= 360;
+    } else if ((int) angle == 180) {
+      angle = 179.9;
+    }
+    // Place this equation in Constants and equations
+    enableTurnController(true);
+    turnController.setSetpoint((float) angle);
   }
 
-  public void updateDriveRamp(double twist, double xLeft, double yLeft) {
+  // Turns robot to a specified angle, using the "angle" parameter.
+  // The parameter should be 0 - 360 (inclusive)
+  // Ensures that the variable "angle" is usable in the
+  // setTurnControllerSetpointMethod
+  // Uses data from the PID write method
+  public void turnToAngleDeg(double angle) {
+
+    if (angle > 180) {
+      angle -= 360;
+    } else if ((int) angle == 180) {
+      angle = 179.9;
+    }
+
+    // Place this equation in Constants and equations
+
+    setTurnControllerSetpointDeg((float) angle);
+
+    if (turnController.onTarget()
+        || Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.2) > 0) {
+      enableTurnController(false);
+    } else {
+      enableTurnController(true);
+      currentRotationRate = rotateToAngleRate;
+    }
+    setMecanumRotationSpeedWithoutJoy(currentRotationRate);
+  }
+
+  public void setMecanumRotationSpeedWithJoy(double speed, double xLeft, double yLeft) {
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),
+        speed, -Robot.navXGyro.getAngle());
+  }
+
+  public void setMecanumRotationSpeedWithoutJoy(double speed) {
+    mecDrive.driveCartesian(0, 0, speed, -Robot.navXGyro.getAngle());
+  }
+
+  public void enableTurnController(boolean trueOrFalse) {
+    if (trueOrFalse) {
+      turnController.enable();
+    } else {
+      turnController.disable();
+    }
+  }
+
+  public void updateDriveRamp(double xLeft, double yLeft, double twist) {
     mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
         Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
-  }
-
-  public void updateDriveTurn_to_angle(double angle, double xLeft, double yLeft) {
-    turnController.setSetpoint(angle);
-    double currentRotationRate;
-    currentRotationRate = rotateToAngleRate;
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), -Constants_And_Equations.deadzone(yLeft),
-        currentRotationRate, -Robot.navXGyro.getAngle());
-
-  }
-
-  // We may make our own mecanum method someday
-  public void homeBrewMecanumMethod() {
-
   }
 
   // This method is used to rectify wheel rotation directions
@@ -296,7 +303,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   }
 
-  // Updates PID rotateToAngleRate to input specified in paramaters
+  // Updates rotateToAngleRate to input specified in parameters
   @Override
   public void pidWrite(double output) {
     rotateToAngleRate = output;
@@ -377,6 +384,20 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     // AmountDrifted+RightJoyX
     mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)),
         Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)),
+        Math.round(Robot.navXGyro.getAngle() - newZero)
+            + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
+  }
+
+  public void MoveMecanumStraight(double speed) {
+    mecDrive.setSafetyEnabled(false);
+
+    // if turning, reset newZero
+    if (Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)) != 0) {
+      newZero = Robot.navXGyro.getAngle();
+    }
+    // drive forward based on leftJoyX, Strafe based on LeftJoyY, turn based on
+    // AmountDrifted+RightJoyX
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)), speed,
         Math.round(Robot.navXGyro.getAngle() - newZero)
             + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
   }
@@ -471,18 +492,18 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     return rotationSpeed;
   }
 
-public void collisionDetection() {
+  public void collisionDetection() {
     double curr_world_linear_accel_x = Robot.navXGyro.getWorldLinearAccelX();
     double currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
     last_world_linear_accel_x = curr_world_linear_accel_x;
-    
+
     double curr_world_linear_accel_y = Robot.navXGyro.getWorldLinearAccelY();
     double currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
     last_world_linear_accel_y = curr_world_linear_accel_y;
-    
-    if ( ( Math.abs(currentJerkX) > kCollisionThreshold_DeltaG ) ||
-         ( Math.abs(currentJerkY) > kCollisionThreshold_DeltaG) ) {
-        collisionDetected = true;
+
+    if ((Math.abs(currentJerkX) > kCollisionThreshold_DeltaG)
+        || (Math.abs(currentJerkY) > kCollisionThreshold_DeltaG)) {
+      collisionDetected = true;
     }
     SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
 

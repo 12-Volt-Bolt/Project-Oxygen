@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -50,6 +51,18 @@ public class OI {
       oneXJoyRightStickButton = new JoystickButton(oneSlotController, RobotMap.RIGHT_STICK_ID),
       oneXJoyMenuButton = new JoystickButton(oneSlotController, RobotMap.MENU_BUTTON_ID),
       oneXJoyStartButton = new JoystickButton(oneSlotController, RobotMap.START_BUTTON_ID);
+
+  
+  public static boolean visionStartCombo() {
+     if(OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5 && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
+         return true;
+     }
+     return false;
+  }
+
+  public static boolean allButtonComboPressesd(XboxController xJoy) {
+    return xJoy.getAButtonPressed() && xJoy.getBButtonPressed() && xJoy.getXButtonPressed() && xJoy.getYButtonPressed();
+  }
 
   public static void leftRumbleMethod(XboxController xCon, double power) {
     xCon.setRumble(RumbleType.kLeftRumble, power);
