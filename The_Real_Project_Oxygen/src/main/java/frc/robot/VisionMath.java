@@ -51,7 +51,7 @@ public class VisionMath {
 
     // Calibration Data
     // TODO: these values will be updated when the competition bot is built and
-    // ready to be utlized for testing
+    // ready to be utilized for testing
     public static final int calibCenterXInPixels = 1;
     public static final int calibDistanceInCm = 1;
     public static final int calibTargetSeparationInPixels = 1;
@@ -62,7 +62,6 @@ public class VisionMath {
         this.measCenterXInPixels = centerXInPixels;
         this.measTargetSeparationInPixels = targetSeparationInPixels;
         this.measAlignmentLineAngleInDegrees = alignmentLineAngleInDegrees;
-
         beta = 0;
         alpha = 0;
         linearDistanceAwayFromVisionTarget = 0;

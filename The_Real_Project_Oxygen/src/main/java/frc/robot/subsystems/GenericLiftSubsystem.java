@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Constants_And_Equations;
 import frc.robot.RobotMap;
 
 /**
@@ -23,7 +24,7 @@ public class GenericLiftSubsystem extends Subsystem {
   private WPI_TalonSRX rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
   private WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
 
-  private int[] liftID = new int[] { 7,6,5 };
+  private Constants_And_Equations cAndE;
 
 //  enum LiftId {
 //  frontLift(7)
@@ -40,21 +41,52 @@ public class GenericLiftSubsystem extends Subsystem {
 //    }
 //  }
 
+  //private int[] liftID = new int[] { 7,6,5 };
+  
+  public enum LiftID {
+    frontLift(7)
+    ,rearLift(6)
+    ,topLift(5);
+
+    private final int id;
+
+    LiftID(int id) {
+      this.id = id;
+    }
+    public int getID() {
+      return id;
+    }
+  }
+
   //public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
   //public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
   //public int topLift = RobotMap.TOP_RAIL_MOTOR_ID;
 
-  public GenericLiftSubsystem() {
+  private GenericLiftSubsystem() {
+    frontLift.configOpenloopRamp(cAndE.rampTimeInSecs);
+    rearLift.configOpenloopRamp(cAndE.rampTimeInSecs);
+    topLift.configOpenloopRamp(cAndE.rampTimeInSecs);
   }
 
-  public void liftMethod(double speed, String liftID) {
-
+  public void liftMethod(double speed, LiftID lifterName) {
+    setMotor(speed, lifterName);
   }
 
-  public void setMotor(double speed, int liftID) {
-    switch (liftID) {
-      case 7:
-        
+  public void setMotor(double speed, LiftID lifterID) {
+    switch (lifterID) {
+      case frontLift:
+        frontLift.set(speed);
+        break;
+      case rearLift:
+        rearLift.set(speed);
+        break;
+      case topLift:
+        topLift.set(speed);
+        break;
+      default:
+        String message = "Motor ID '" + lifterID + "' is not valid!";
+        System.out.print(message);
+        break;
     }
   }
 

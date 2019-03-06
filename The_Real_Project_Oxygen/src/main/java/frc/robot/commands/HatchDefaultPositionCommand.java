@@ -8,21 +8,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
-public class MoveCommand extends Command {
-  public MoveCommand() {
+public class HatchDefaultPositionCommand extends Command {
+  public HatchDefaultPositionCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.DiskSub);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.DiskSub.setSpeed(-0.1);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    /*
+    if(Robot.DiskSub.hatchMotor.getOutputCurrent() > Robot.DiskSub.currentlimit) {
+      Robot.DiskSub.stopThePresses();
+    }
+    */
   }
 
   // Make this return true when this Command no longer needs to run execute()

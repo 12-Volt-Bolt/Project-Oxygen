@@ -5,30 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  * Add your docs here.
  */
-public class frontLifterCommand extends InstantCommand {
-  /**
-   * Add your docs here.
-   */
-  public frontLifterCommand() {
-    super();
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    requires(Robot.frontLiftSub);
-  }
+public class StepClimb extends Subsystem {
+  // Put methods for controlling this subsystem
+  // here. Call these from Commands.
 
-  // Called once when the command executes
   @Override
-  protected void initialize() {
-    Robot.frontLiftSub.liftMethod();
+  public void initDefaultCommand() {
+    // Set the default command for a subsystem here.
+    // setDefaultCommand(new MySpecialCommand());
   }
 
+  
 }
