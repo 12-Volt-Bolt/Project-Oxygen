@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.CMDButtonCommand;
 import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.getBottomCamCommand;
@@ -237,7 +238,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
     new FCDDriveCommand().start();
     
-    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
+    driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
 
     
     SmartDashboard.putData(driveSub.turnController);
@@ -270,8 +271,14 @@ public class Robot extends TimedRobot {
     }
    
     DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
-
+    
+    if(OI.visionStartCombo()) {
+      new CMDButtonCommand().start();
+    }
+    
   }
+
+  
 
   private double testValue;
 

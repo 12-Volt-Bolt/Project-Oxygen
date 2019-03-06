@@ -121,6 +121,7 @@ public class VisionSubsystem extends Subsystem {
 
   // Constants
   private static final int NO_DATA = -888;
+  private static final int ERROR_NUM = -999;
 
   // Timer
   private double cmdTimer;
@@ -175,13 +176,6 @@ public class VisionSubsystem extends Subsystem {
   }
 
   public void updateVisionVariables() {
-    if (OI.visionStartCombo()) {
-      SmartDashboard.putBoolean(isProcessCMDString, true);
-    } else {
-      SmartDashboard.putBoolean(isProcessCMDString, false);
-
-    }
-
     measCenterXPixels = (int) SmartDashboard.getNumber(measCenterXString, NO_DATA);
     measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, NO_DATA);
     measAlAngleDegrees = (int) SmartDashboard.getNumber(measAlAngleDegreesString, NO_DATA);
@@ -204,7 +198,7 @@ public class VisionSubsystem extends Subsystem {
 
     // Add CW rotation method here
     // Add CCW rotation method here
-
+    Robot.driveSub.setMecanumRotationSpeedWithoutJoy(rotationAdjust);
   }
 
   public void runStrafeController() {
@@ -220,22 +214,24 @@ public class VisionSubsystem extends Subsystem {
       strafeAdjust = StrafeP * strafeError + MIN_STRAFE_VALUE;
     }
 
+    strafeAdjust /= 320;
+
     // Add left Strafe method
     // Add Right strafe method
+    Robot.driveSub.setMecanumStrafeSpeedWithoutJoy(strafeAdjust);
 
   }
 
   public void runVerticalController() {
     float distanceError = (float) -distanceFromCamToTargetInCM();
     float verticalAdjust = 0.0f;
-
-    // Alter Talon SRX loops here
-    distanceFromCamToTargetInCM();
-
+   
+    if (distanceFromCamToTargetInCM() > 5) {
+      Robot.driveSub.setMecanumVerticalSpeedWithoutJoy(verticalAdjust);
+    }
   }
 
   public void positionRobotPhase1() {
-
     runRotationController();
     runStrafeController();
   }
@@ -245,21 +241,31 @@ public class VisionSubsystem extends Subsystem {
   }
 
   public void activateVisionDriveMode() {
-      
+
   }
 
   // untested method below
   // The following method updates the vision variables values
   public void getCMDData() {
-    if ((System.currentTimeMillis() % 1000) == 0) {
+    if ((System.currentTimeMillis() % 2000) == 0 && SmartDashboard.getBoolean(isProcessCMDString, false)) {
       SmartDashboard.putBoolean(isProcessCMDString, true);
-    } else if ((System.currentTimeMillis() % 2000) == 0 && SmartDashboard.getBoolean(isProcessCMDString, false)) {
-      if (SmartDashboard.putBoolean(isProcessCMDString, true)) {
-        SmartDashboard.putBoolean(isProcessCMDString, false);
-      }
 
     }
 
+    else if ((System.currentTimeMillis() % 1000) == 0) {
+      SmartDashboard.putBoolean(isProcessCMDString, false);
+
+    }
+
+  }
+
+
+  public void CMDButtonOn(boolean trueOrFalse) {
+    if (trueOrFalse) {
+      SmartDashboard.putBoolean(isProcessCMDString, true);
+    } else if (!trueOrFalse) {
+      SmartDashboard.putBoolean(isProcessCMDString, false);
+    }
   }
 
   public void smartdashboardTestingMethod() {

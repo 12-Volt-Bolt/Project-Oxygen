@@ -87,6 +87,15 @@ public class Constants_And_Equations {
         }
     }
 
+    public static float gyroAngleForPIDLoop(double angle) {
+        if (angle > 180) {
+            angle -= 360;
+          } else if ((int) angle == 180) {
+            angle = 179.9;
+          }
+          return (float) angle;
+    }
+
     
     // The following method returns a scaled version of currentValue. 
     // scale is the maximum and minimum, inclusive

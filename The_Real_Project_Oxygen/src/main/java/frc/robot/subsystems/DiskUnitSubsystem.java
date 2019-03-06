@@ -21,7 +21,11 @@ public class DiskUnitSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public WPI_VictorSPX hatchMotor;  
+  public WPI_VictorSPX hatchMotor;
+  public static double currentlimit = 25;
+
+  public static int hatchLocationEnc;
+  public static int hatchlocationTime;
   
   @Override
   public void initDefaultCommand() {
@@ -44,6 +48,11 @@ public class DiskUnitSubsystem extends Subsystem {
       stopThePresses();
     }
   }
+
+  public void setSpeed(double speed) {
+    hatchMotor.set(speed);
+  }
+
 
   public void changeMotorSpeedBy(double speedChange) {
     hatchMotor.set(hatchMotor.get() + speedChange); 
