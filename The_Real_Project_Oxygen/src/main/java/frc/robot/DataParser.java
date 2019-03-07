@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.ClimbSteps;
@@ -16,15 +16,9 @@ import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 /**
  * Add your docs here.
  */
-public class DataParser extends Subsystem {
+public class DataParser {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
-
-  @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
 
   public <T> T ParseObject (String stringInput, T objectType) {
     
