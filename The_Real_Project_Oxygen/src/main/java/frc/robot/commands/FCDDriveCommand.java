@@ -33,11 +33,12 @@ public class FCDDriveCommand extends Command {
     } 
     else if(!Robot.navXGyro.isConnected()) {
       Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-    } 
+    }
     else {
       Robot.driveSub.updateDriveCartesian(
           OI.zeroSlotController.getX(Hand.kLeft),
-          OI.ySpeedMotorSportsSeries(OI.zeroSlotController), // OI.zeroSlotController.getY(Hand.kLeft), 
+          //OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
+          OI.zeroSlotController.getY(Hand.kLeft), 
           OI.zeroSlotController.getX(Hand.kRight), true);
     }
   }

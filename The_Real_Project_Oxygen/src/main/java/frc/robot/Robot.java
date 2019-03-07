@@ -88,20 +88,18 @@ public class Robot extends TimedRobot {
    * for any initialization code.
    */
 
-
-
   public static VisionMath vMath;
   public static int liftSafteyMode;
 
   @Override
-  public void robotInit() { 
+  public void robotInit() {
     try {
       navXGyro = new AHRS(SPI.Port.kMXP);
 
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
-    
+
     m_oi = new OI();
     visionSub = new VisionSubsystem();
     frontLiftSub = new FrontLiftSubsystem();
@@ -111,30 +109,27 @@ public class Robot extends TimedRobot {
     DiskSub = new DiskUnitSubsystem();
     genericLiftSub = new GenericLiftSubsystem();
 
-    
     // VERY IMPORTANT
     navXGyro.reset();
     // VERY IMPORTANT
 
-  /*
-    
-
-    SmartDashboard.putData("Auto mode", m_chooser);
-    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
-
+    /*
+     * 
+     * 
+     * SmartDashboard.putData("Auto mode", m_chooser); //
+     * m_chooser.setDefaultOption("Default Auto", new ExampleCommand()); //
+     * chooser.addOption("My Auto", new MyAutoCommand());
+     * 
+     * }
+     * 
+     * /** This function is called every robot packet, no matter the mode. Use this
+     * for items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
+     *
+     * <p> This runs after the mode specific periodic functions, but before
+     * LiveWindow and SmartDashboard integrated updating.
+     */
   }
-
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for
-   * items like diagnostics that you want ran during disabled, autonomous,
-   * teleoperated and test.
-   *
-   * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow
-   * and SmartDashboard integrated updating.
-   */
- }
 
   @Override
   public void robotPeriodic() {
@@ -144,9 +139,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
     SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
     SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
-    //SmartDashboard.putNumber("NewZero", driveSub.newZero);
-    //SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
-    //SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
+    // SmartDashboard.putNumber("NewZero", driveSub.newZero);
+    // SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
+    // SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
     SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
     SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
     SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
@@ -161,16 +156,16 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(driveSub.turnController);
     SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
     SmartDashboard.putData("Turn Controller", driveSub.turnController);
-    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+    SmartDashboard.putNumber("PID ERROR", driveSub.turnController.getError());
     SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
     // SmartDashboard Data
 
-   visionSub.updateVisionVariables();
+    visionSub.updateVisionVariables();
 
-   if(OI.allButtonComboPressesd(OI.zeroSlotController)) {
-     navXGyro.reset();
-   }
-  
+    if (OI.allButtonComboPressesd(OI.zeroSlotController)) {
+      navXGyro.reset();
+    }
+
   }
 
   /**
@@ -224,7 +219,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-   new NonFCDDriveCommand().start();
+    new NonFCDDriveCommand().start();
 
   }
 
@@ -247,11 +242,30 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+    SmartDashboard.putBoolean("Is Collision Detected:", driveSub.collisionDetected);
 
-    SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
-    new FCDDriveCommand().start();
-    
-   // driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
+    if(SmartDashboard.getBoolean(visionSub.isProcessCMDString, false)) {
+       driveSub.updateDriveLocalStrafe(ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)),
+       OI.zeroSlotController.getX(Hand.kLeft),
+       OI.zeroSlotController.getX(Hand.kRight));
+    }
+
+    else if (SmartDashboard.getBoolean(visionSub.isProcessCMDString2, false)) {
+      Robot.driveSub.updateDriveCartesian(
+        OI.zeroSlotController.getX(Hand.kLeft),
+        OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
+        //OI.zeroSlotController.getY(Hand.kLeft), 
+        OI.zeroSlotController.getX(Hand.kRight), true);
+    }
+
+    else {
+      new FCDDriveCommand().start();
+  }
+
+    // driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft),
+    // ControllerFunctions.RollingAverage(AxisNames.leftY,
+    // OI.zeroSlotController.getY(Hand.kLeft)),
+    // OI.zeroSlotController.getX(Hand.kRight));
 
     SmartDashboard.putData(driveSub.turnController);
 
@@ -268,32 +282,23 @@ public class Robot extends TimedRobot {
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
     /*
-    switch (liftSafteyMode) {
-      case 1:
-        
-        break;
-    
-      default:
-        // do nothing, saftey on
-        break;
-    }
-*/
-    
-       // visionSub.runRotationController(-5);
-       //visionSub.runStrafeController(-50);
-         visionSub.runVerticalController(1);
-    
-   
-    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
-   
+     * switch (liftSafteyMode) { case 1:
+     * 
+     * break;
+     * 
+     * default: // do nothing, saftey on break; }
+     */
 
-    m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
+    // visionSub.runRotationController(-5);
+    // visionSub.runStrafeController(-50);
+    // visionSub.runVerticalController(1);
 
+    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
+        OI.oneSlotController.getBButtonPressed());
 
-    
+   // m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
+
   }
-
-  
 
   private double testValue;
 
@@ -321,16 +326,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(new HatchDefaultPositionCommand());
     SmartDashboard.putData(new HatchObtainPositionCommand());
     SmartDashboard.putData(new HatchPlacementHeightCommand());
-   // SmartDashboard.putData(new ManualLifterCommand());
+    // SmartDashboard.putData(new ManualLifterCommand());
     SmartDashboard.putData(new NonFCDDriveCommand());
     SmartDashboard.putData(new TurnToAngleCommand(90));
     SmartDashboard.putData(new WhereAreMyCamerasCommand());
-
-
-
-
-
-
 
   }
 

@@ -76,6 +76,7 @@ public class VisionSubsystem extends Subsystem {
   public static final String measAlCenterXString = "DB/Slider 2";
   public static final String measAlAngleDegreesString = "DB/Slider 3";
   public static final String isProcessCMDString = "DB/Button 0";
+  public static final String isProcessCMDString2 = "DB/Button 1";
 
   // Data obtained from LabVIEW vision program
   public static double targetCenterXInPixels;
