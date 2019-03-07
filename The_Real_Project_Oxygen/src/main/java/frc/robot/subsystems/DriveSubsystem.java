@@ -212,9 +212,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   }
 
   public void setMecanumVerticalSpeedWithoutJoy(double speed) {
-    if(!turnController.isEnabled()){
+  /*  if(!turnController.isEnabled()){
       turnController.setSetpoint(Robot.navXGyro.getYaw());
     }
+    */
     mecDrive.driveCartesian(speed, 0, 0);
   }
 
@@ -312,7 +313,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Strafe robot
   // Robot can still turn without inturupting movement
   // Relies on newZero to work
-  public void updateDriveLocalStrafe(double xLeft, double yLeft, double xRight) {
+  public void updateDriveLocalStrafe(double yLeft, double xLeft, double xRight) {
     mecDrive.setSafetyEnabled(false);
     // Resets local north if turning
 

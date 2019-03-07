@@ -96,7 +96,7 @@ public class VisionSubsystem extends Subsystem {
   public PIDController verticalController;
 
   // PID Rotation Constants
-  private final float RotationP = 0.0f;
+  private final float RotationP = 1.0f;
   private final float RotationI = 0.0f;
   private final float RotationD = 0.0f;
   private final float RotationF = 0.0f;
@@ -104,7 +104,7 @@ public class VisionSubsystem extends Subsystem {
   private final float MIN_ROTATION_VALUE = 0.1f;
 
   // PID Strafing Constants
-  private final float StrafeP = 0.0f;
+  private final float StrafeP = 1.0f;
   private final float StrafeI = 0.0f;
   private final float StrafeD = 0.0f;
   private final float StrafeF = 0.0f;
@@ -112,7 +112,7 @@ public class VisionSubsystem extends Subsystem {
   private final float MIN_STRAFE_VALUE = 0.1f;
 
   // PID Vertical Movement Constants
-  private final float verticalP = 0.0f;
+  private final float verticalP = 1.0f;
   private final float verticalI = 0.0f;
   private final float verticalD = 0.0f;
   private final float verticalF = 0.0f;
@@ -182,17 +182,17 @@ public class VisionSubsystem extends Subsystem {
     measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, NO_DATA);
   }
 
-  public void runRotationController() {
-    float headingError = (float) -aLineAngleOffset();
-    float rotationAdjust = 0.0f;
+  public void runRotationController(double rotationOffsetDeg) {
+    float headingError = (float) -rotationOffsetDeg;
+    float rotationAdjust = 1.0f;
 
     // rotate Right
-    if (aLineAngleOffset() > 0) {
+    if (rotationOffsetDeg > 0) {
       rotationAdjust = RotationP * headingError - MIN_ROTATION_VALUE;
     }
 
     // rotate Left
-    else if (aLineCamOffset() < 0) {
+    else if (rotationOffsetDeg < 0) {
       rotationAdjust = RotationP * headingError + (MIN_ROTATION_VALUE);
     }
 
@@ -200,21 +200,22 @@ public class VisionSubsystem extends Subsystem {
     // Add CCW rotation method here
     Robot.driveSub.setMecanumRotationSpeedWithoutJoy(rotationAdjust);
   }
-
-  public void runStrafeController() {
-    float strafeError = (float) -lateralOffsetToTargetInCM();
+ 
+  // lateralOffsetToTargetInCM()
+  public void runStrafeController(double latteralOffSet) {
+    float strafeError = (float) -latteralOffSet;
     float strafeAdjust = 0.0f;
 
     // strafe left
-    if (0 > lateralOffsetToTargetInCM()) {
+    if (0 > latteralOffSet ) {
       strafeAdjust = StrafeP * strafeError - MIN_STRAFE_VALUE;
     }
     // strafe Right
-    else if (0 < lateralOffsetToTargetInCM()) {
+    else if (0 < latteralOffSet) {
       strafeAdjust = StrafeP * strafeError + MIN_STRAFE_VALUE;
     }
 
-    strafeAdjust /= 320;
+    strafeAdjust /= 50;
 
     // Add left Strafe method
     // Add Right strafe method
@@ -222,18 +223,18 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public void runVerticalController() {
-    float distanceError = (float) -distanceFromCamToTargetInCM();
+  //distanceFromCamToTargetInCM();
+  public void runVerticalController(double verticalOffset) {
+    float distanceError = (float) -verticalOffset;
     float verticalAdjust = 0.0f;
 
-    if (distanceFromCamToTargetInCM() > 5) {
       Robot.driveSub.setMecanumVerticalSpeedWithoutJoy(verticalAdjust);
-    }
+  
   }
 
   public void positionRobotPhase1() {
-    runRotationController();
-    runStrafeController();
+    runRotationController(aLineAngleOffset());
+    runStrafeController(lateralOffsetToTargetInCM());
   }
 
   public void stopThePresses() {

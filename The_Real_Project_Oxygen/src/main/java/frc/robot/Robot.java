@@ -21,14 +21,25 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CMDButtonCommand;
+import frc.robot.commands.CameraServerStartInstantCommand;
+import frc.robot.commands.CollisionDetectionCommand;
+import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
+import frc.robot.commands.HatchDefaultPositionCommand;
+import frc.robot.commands.HatchObtainPositionCommand;
+import frc.robot.commands.HatchPlacementHeightCommand;
+import frc.robot.commands.ManualLifterCommand;
 import frc.robot.commands.NonFCDDriveCommand;
+import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.commands.WhereAreMyCamerasCommand;
+import frc.robot.commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DiskUnitSubsystem;
 import frc.robot.subsystems.ControllerFunctions;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
+import frc.robot.subsystems.GenericLiftSubsystem;
 import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
@@ -54,6 +65,7 @@ public class Robot extends TimedRobot {
   public static RearLiftSubsystem rearLiftSub;
   public static TopRailSubsystem topLiftSub;
   public static LifterSubsystem liftSub;
+  public static GenericLiftSubsystem genericLiftSub;
   public static DiskUnitSubsystem DiskSub;
 
   /**
@@ -97,6 +109,7 @@ public class Robot extends TimedRobot {
     topLiftSub = new TopRailSubsystem();
     driveSub = new DriveSubsystem();
     DiskSub = new DiskUnitSubsystem();
+    genericLiftSub = new GenericLiftSubsystem();
 
     
     // VERY IMPORTANT
@@ -238,23 +251,23 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
     new FCDDriveCommand().start();
     
-    driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
+   // driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
 
-    
     SmartDashboard.putData(driveSub.turnController);
 
     SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
     SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
     SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
-    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
-    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
-    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
-    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
+    SmartDashboard.putNumber("PID-P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-F", driveSub.turnController.getF());
 
     SmartDashboard.putNumber("Rolling average", ControllerFunctions.rolledAverageLeftY);
 
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
+    /*
     switch (liftSafteyMode) {
       case 1:
         
@@ -264,17 +277,19 @@ public class Robot extends TimedRobot {
         // do nothing, saftey on
         break;
     }
-
+*/
     
-    if (OI.zeroSlotController.getAButtonPressed()) {
-
-    }
+       // visionSub.runRotationController(-5);
+       //visionSub.runStrafeController(-50);
+         visionSub.runVerticalController(1);
+    
    
     DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
-    
-    if(OI.visionStartCombo()) {
-      new CMDButtonCommand().start();
-    }
+   
+
+    m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
+
+
     
   }
 
@@ -294,6 +309,29 @@ public class Robot extends TimedRobot {
     }
 
     driveSub.frontLeft.set(testValue);
+
+    SmartDashboard.putData(new CameraServerStartInstantCommand());
+    SmartDashboard.putData(new CMDButtonCommand());
+    SmartDashboard.putData(new CollisionDetectionCommand());
+    SmartDashboard.putData(new DefaultDriveCommand());
+    SmartDashboard.putData(new FCDDriveCommand());
+    SmartDashboard.putData(new frontLifterCommand());
+    SmartDashboard.putData(new getBottomCamCommand());
+    SmartDashboard.putData(new getTopCamCommand());
+    SmartDashboard.putData(new HatchDefaultPositionCommand());
+    SmartDashboard.putData(new HatchObtainPositionCommand());
+    SmartDashboard.putData(new HatchPlacementHeightCommand());
+   // SmartDashboard.putData(new ManualLifterCommand());
+    SmartDashboard.putData(new NonFCDDriveCommand());
+    SmartDashboard.putData(new TurnToAngleCommand(90));
+    SmartDashboard.putData(new WhereAreMyCamerasCommand());
+
+
+
+
+
+
+
   }
 
 }

@@ -21,7 +21,6 @@ public class HatchPlacementHeightCommand extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    new HatchObtainPositionCommand().start();
     Robot.DiskSub.setSpeed(0.1);
     Timer.delay(1);
     Robot.DiskSub.stopThePresses();
