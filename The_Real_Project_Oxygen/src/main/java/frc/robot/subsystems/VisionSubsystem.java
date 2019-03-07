@@ -123,6 +123,18 @@ public class VisionSubsystem extends Subsystem {
   private static final int NO_DATA = -888;
   private static final int ERROR_NUM = -999;
 
+  // Mecanum Drive speeds
+  private static double mecYSpeed;
+  private static double mecXSpeed;
+  private static double mecTwistSpeed;
+
+  // cm
+  double VERTICAL_DISTANCE_LIMIT = 25 * 2.54;
+  // degrees
+  float ROTATION_DEGREES_LIMIT = 70;
+  // cm
+  double LATERAL_DISTANCE_LIMIT = 20 * 2.54;
+
   // Timer
   private double cmdTimer;
 
@@ -182,10 +194,16 @@ public class VisionSubsystem extends Subsystem {
     measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, NO_DATA);
   }
 
-  public void runRotationController(double rotationOffsetDeg) {
+  // aLineAngleOffset()
+  public double runRotationController(double rotationOffsetDeg) {
     float headingError = (float) -rotationOffsetDeg;
     float rotationAdjust = 1.0f;
 
+    if (rotationOffsetDeg > ROTATION_DEGREES_LIMIT) {
+      return 0;
+    }
+
+    rotationOffsetDeg /= ROTATION_DEGREES_LIMIT;
     // rotate Right
     if (rotationOffsetDeg > 0) {
       rotationAdjust = RotationP * headingError - MIN_ROTATION_VALUE;
@@ -195,19 +213,26 @@ public class VisionSubsystem extends Subsystem {
     else if (rotationOffsetDeg < 0) {
       rotationAdjust = RotationP * headingError + (MIN_ROTATION_VALUE);
     }
-
     // Add CW rotation method here
     // Add CCW rotation method here
-    Robot.driveSub.setMecanumRotationSpeedWithoutJoy(rotationAdjust);
+    // Robot.driveSub.setMecanumRotationSpeedWithoutJoy(rotationAdjust);
+    return rotationAdjust;
   }
- 
+
   // lateralOffsetToTargetInCM()
-  public void runStrafeController(double latteralOffSet) {
+  public double runStrafeController(double latteralOffSet) {
+
+    if (latteralOffSet > LATERAL_DISTANCE_LIMIT) {
+      return 0;
+    }
+
     float strafeError = (float) -latteralOffSet;
     float strafeAdjust = 0.0f;
 
+    strafeError /= LATERAL_DISTANCE_LIMIT;
+
     // strafe left
-    if (0 > latteralOffSet ) {
+    if (0 > latteralOffSet) {
       strafeAdjust = StrafeP * strafeError - MIN_STRAFE_VALUE;
     }
     // strafe Right
@@ -215,21 +240,30 @@ public class VisionSubsystem extends Subsystem {
       strafeAdjust = StrafeP * strafeError + MIN_STRAFE_VALUE;
     }
 
-    strafeAdjust /= 50;
-
     // Add left Strafe method
     // Add Right strafe method
-    Robot.driveSub.setMecanumStrafeSpeedWithoutJoy(strafeAdjust);
-
+    // Robot.driveSub.setMecanumStrafeSpeedWithoutJoy(strafeAdjust);
+    return strafeAdjust;
   }
 
-  //distanceFromCamToTargetInCM();
-  public void runVerticalController(double verticalOffset) {
+  // distanceFromCamToTargetInCM();
+  public double runVerticalController(double verticalOffset) {
     float distanceError = (float) -verticalOffset;
     float verticalAdjust = 0.0f;
 
-      Robot.driveSub.setMecanumVerticalSpeedWithoutJoy(verticalAdjust);
-  
+    if (verticalOffset > VERTICAL_DISTANCE_LIMIT) {
+      return 0;
+    }
+
+    // Robot.driveSub.setMecanumVerticalSpeedWithoutJoy(verticalAdjust);
+    verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
+    return verticalAdjust;
+
+  }
+
+  public void driveWithVision() {
+    Robot.driveSub.updateDriveCartesian(runStrafeController(lateralOffsetToTargetInCM()), distanceFromCamToTargetInCM(),
+        runRotationController(aLineAngleOffset()));
   }
 
   public void positionRobotPhase1() {
@@ -248,7 +282,7 @@ public class VisionSubsystem extends Subsystem {
   // untested method below
   // The following method updates the vision variables values
   public void getCMDData() {
-    if ((System.currentTimeMillis() % 2000) == 0 && SmartDashboard.getBoolean(isProcessCMDString, false)) {
+    if ((System.currentTimeMillis() % 2500) == 0 && SmartDashboard.getBoolean(isProcessCMDString, false)) {
       SmartDashboard.putBoolean(isProcessCMDString, true);
 
     }

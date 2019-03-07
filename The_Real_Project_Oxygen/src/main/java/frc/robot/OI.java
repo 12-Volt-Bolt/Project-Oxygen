@@ -52,12 +52,12 @@ public class OI {
       oneXJoyMenuButton = new JoystickButton(oneSlotController, RobotMap.MENU_BUTTON_ID),
       oneXJoyStartButton = new JoystickButton(oneSlotController, RobotMap.START_BUTTON_ID);
 
-  
   public static boolean visionStartCombo() {
-     if(OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5 && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
-         return true;
-     }
-     return false;
+    if (OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5
+        && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
+      return true;
+    }
+    return false;
   }
 
   public static boolean allButtonComboPressesd(XboxController xJoy) {
@@ -89,6 +89,10 @@ public class OI {
     leftRumbleMethod(xCon, leftPower);
     rightRumbleMethod(xCon, rightPower);
 
+  }
+
+  public static double ySpeedMotorSportsSeries(XboxController xJoy) {
+    return Constants_And_Equations.turnIntoAxis(xJoy.getTriggerAxis(Hand.kRight), xJoy.getTriggerAxis(Hand.kLeft), 0.1, 0.1);
   }
 
 }

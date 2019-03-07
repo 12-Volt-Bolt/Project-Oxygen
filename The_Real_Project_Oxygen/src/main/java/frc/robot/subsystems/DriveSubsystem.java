@@ -140,7 +140,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       setTurnControllerSetpointDeg(OI.zeroSlotController.getPOV());
     }
 
-    if (Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1) > 0) {
+    if (Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.2) {
       enableTurnController(false);
     }
 
@@ -157,10 +157,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public void driveRampFCD(double twist) {
     mecDrive.driveCartesian(
-        Constants_And_Equations
-            .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
+        Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
+        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
         twist, -Robot.navXGyro.getAngle());
   }
 
@@ -179,7 +177,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Uses obtained PID write method data
   public void turnToAngleDeg(double angle) {
     setTurnControllerSetpointDeg(Constants_And_Equations.gyroAngleForPIDLoop(angle));
-    if (turnController.onTarget()|| Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.2) > 0) {
+    if (turnController.onTarget() || Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.2) {
       enableTurnController(false);
     } else {
       enableTurnController(true);

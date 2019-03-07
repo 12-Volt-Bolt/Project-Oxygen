@@ -99,4 +99,11 @@ public class Constants_And_Equations {
     public static double scaleValue(double value, double currentValue, double scale) {
         return (scale / value) * currentValue;
     }
+    
+    // The method takes in two doubles as parameters and uses them as positive
+    // and negative values for an axis
+    // deadzone1 and deadzone2 are thresholds
+    public static double turnIntoAxis(double axisPos, double axisNeg, double deadzone1, double deadzone2) {
+        return (Constants_And_Equations.deadzone(axisPos, deadzone1) + Constants_And_Equations.deadzone(-axisNeg, deadzone2));
+    }
 }
