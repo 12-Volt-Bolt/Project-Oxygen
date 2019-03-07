@@ -6,16 +6,16 @@
 /*----------------------------------------------------------------------------*/
 
 /*
-/*  Drive subsystem formating:
+/*  Drive subsystem formatting:
 /*    Functions use a BlankBlankBlank format
 /*      Blank 1 determins what type of update loop the code contains
 /*        ValueBlankBlank: runs until the paramater-set conditions have been fulfilled
 /*        UpdateBlankBlank: needs to be called every update and turns things on OR off
 /*  
 /*      Blank 2 determins what is being run/set
-/*        BlankMoveBlank: effects all wheels 
-/*        BlankTurnBlank: effects fewer than all the wheels
-/*        BlankDriveBlank: effects all wheels dynamically (IE: turn while driving)
+/*        BlankMoveBlank: affects all wheels 
+/*        BlankTurnBlank: affects fewer than all the wheels
+/*        BlankDriveBlank: affects all wheels dynamically (IE: turn while driving)
 /*        BlankEncoderBlank: reads/sets encoder values
 /*  
 /*      Blank 3 determins what specific input/output the function requires/returns (One function can have multiple Blank 3s)
@@ -118,29 +118,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     setDefaultCommand(new DefaultDriveCommand());
   }
 
-  public void updateDriveCartesian(double xLeft, double yLeft, double xRight) {
-    mecDrive.setSafetyEnabled(false);
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),
-        Constants_And_Equations.deadzone(xRight, 0.1));
-  }
-
-  public void driveRampNonFCD(double twist) {
-    mecDrive.driveCartesian(
-        Constants_And_Equations
-            .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
-        twist);
-  }
-
-
-
-  public void executeMecanumDrive(double ySpeed, double xSpeed, double rotation) {
-    mecDrive.setSafetyEnabled(false);
-     mecDrive.driveCartesian(ySpeed, xSpeed, rotation);
-    } 
-
-
   public void updateDriveCartesian(double xLeft, double yLeft, double xRight, Boolean locked) {
     mecDrive.setSafetyEnabled(false);
 
@@ -163,13 +140,18 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         -Robot.navXGyro.getAngle());
   }
 
-  public void driveRampFCD(double twist) {
+  public void updateDriveRampNonFCD(double xLeft, double yLeft, double twist) {
     mecDrive.driveCartesian(
-        Constants_And_Equations
-            .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        twist, -Robot.navXGyro.getAngle());
+        Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
+        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)),
+        twist);
+  }
+
+  public void updateDriveRampFCD(double xLeft, double yLeft, double twist) {
+    mecDrive.driveCartesian(
+      Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
+      Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)),
+      twist, -Robot.navXGyro.getAngle());
   }
 
   // "angle" is used to set a set point for the turn controller
@@ -228,7 +210,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   // We may make our own mecanum method someday
   public void homeBrewMecanumMethod() {
-  // RUTH! LOOK:
    //frontLeft.configClosedLoopPeakOutput(slotIdx, percentOut, timeoutMs)
   }
 
@@ -238,12 +219,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     } else {
       turnController.disable();
     }
-  }
-  
-
-  public void updateDriveRamp(double xLeft, double yLeft, double twist) {
-    mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
-        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
   }
 
   // This method is used to rectify wheel rotation directions
@@ -387,5 +362,4 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   
 }
-
 
