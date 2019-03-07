@@ -7,8 +7,9 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.OI;
 import frc.robot.Constants_And_Equations.AxisNames;
 
 /**
@@ -39,7 +40,15 @@ public class ControllerFunctions extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());\
   }
 
-  public static double[] CallArray(AxisNames whichAxis) {
+  public static boolean CheckJoysticks(){
+    if (OI.zeroSlotController.getX(Hand.kLeft) != 0 || OI.zeroSlotController.getY(Hand.kLeft) != 0 || OI.getZeroZ() != 0 || OI.zeroSlotController.getY(Hand.kRight) != 0) {
+      return true;
+    } else{
+      return false;
+    }
+  } 
+
+  private static double[] CallArray(AxisNames whichAxis) {
     switch (whichAxis) {
     case leftX:
       return raLeftX;
@@ -58,7 +67,7 @@ public class ControllerFunctions extends Subsystem {
     }
   }
 
-  public static void SetArray(AxisNames whichAxis, double[] newValue) {
+  private static void SetArray(AxisNames whichAxis, double[] newValue) {
     switch (whichAxis) {
     case leftX:
       raLeftX = newValue;
@@ -81,7 +90,7 @@ public class ControllerFunctions extends Subsystem {
     }
   }
 
-  public static double RolledAverage(AxisNames whichAxis, double arraySum) {
+  private static double RolledAverage(AxisNames whichAxis, double arraySum) {
     switch (whichAxis) {
       case leftX:
         rolledAverageLeftX = arraySum/raLength;
@@ -104,7 +113,7 @@ public class ControllerFunctions extends Subsystem {
       }
   }
 
-  public static double RolledAverage(AxisNames whichAxis) {
+  private static double RolledAverage(AxisNames whichAxis) {
     switch (whichAxis) {
       case leftX:
         return rolledAverageLeftX;

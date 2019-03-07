@@ -42,7 +42,7 @@ import frc.robot.Constants_And_Equations;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.Drive_commands.*;
 //import jdk.javadoc.internal.doclets.toolkit.resources.doclets;
 
 /**
@@ -115,22 +115,17 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    setDefaultCommand(new DefaultDriveCommand());
-  }
-
-  public void updateDriveCartesian(double xLeft, double yLeft, double xRight) {
-    mecDrive.setSafetyEnabled(false);
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),
-        Constants_And_Equations.deadzone(xRight, 0.1));
+    setDefaultCommand(new BasicDrive());
   }
 
   public void driveRampNonFCD(double twist) {
     mecDrive.driveCartesian(
-        Constants_And_Equations
-            .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
-        twist);
+        Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)), Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)), twist);
+  }
+
+  public void updateDriveCartesian(double xLeft, double yLeft, double xRight) {
+    mecDrive.setSafetyEnabled(false);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1), Constants_And_Equations.deadzone(xRight, 0.1));
   }
 
   public void updateDriveCartesian(double xLeft, double yLeft, double xRight, Boolean locked) {
@@ -150,9 +145,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     } else {
       currentRotationRate = rotateToAngleRate;
     }
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1),
-        -Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate,
-        -Robot.navXGyro.getAngle());
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1), -Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate, -Robot.navXGyro.getAngle());
   }
 
   public void driveRampFCD(double twist) {
@@ -225,12 +218,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     } else {
       turnController.disable();
     }
-  }
-
-
-  public void updateDriveRamp(double xLeft, double yLeft, double twist) {
-    mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
-        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
   }
 
   // This method is used to rectify wheel rotation directions

@@ -91,6 +91,14 @@ public class OI {
 
   }
 
+  public static double getZeroZ() {
+    return zeroSlotController.getX(Hand.kRight);
+  }
+  
+  public static double getOneZ() {
+    return oneSlotController.getX(Hand.kRight);
+  }
+
 }
 
 //// CREATING BUTTONS

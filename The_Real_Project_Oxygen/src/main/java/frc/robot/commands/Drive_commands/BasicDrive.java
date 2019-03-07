@@ -5,19 +5,25 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.Drive_commands;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Constants_And_Equations;
 import frc.robot.OI;
-import frc.robot.Robot;
-import frc.robot.RobotMap;
+import frc.robot.Constants_And_Equations.AxisNames;
+import frc.robot.subsystems.ControllerFunctions;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class FCDDriveCommand extends Command {
-  public FCDDriveCommand() {
+public class BasicDrive extends Command {
+
+  private static DriveSubsystem driveSub;
+  private long tempTime = 0;
+
+  public BasicDrive() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveSub);
+    requires(driveSub);
   }
 
   // Called just before this Command runs the first time
@@ -28,29 +34,26 @@ public class FCDDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)) {
-      Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-    } 
-    else if(!Robot.navXGyro.isConnected()) {
-      Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-    } 
-    else {
-      Robot.driveSub.updateDriveCartesian(
-          OI.zeroSlotController.getX(Hand.kLeft),
-          OI.zeroSlotController.getY(Hand.kLeft), 
-          OI.zeroSlotController.getX(Hand.kRight), true);
-    }
+    driveSub.updateDriveCartesian(ControllerFunctions.RollingAverage(AxisNames.leftX, OI.zeroSlotController.getY(Hand.kLeft)),OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.rightX, OI.getZeroZ()));
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    if (ControllerFunctions.CheckJoysticks() == true) {
+      tempTime = System.currentTimeMillis() + 100;
+      return false;
+    } else if(System.currentTimeMillis() > tempTime == true){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    driveSub.StopThePresses();
   }
 
   // Called when another command which requires one or more of the same
