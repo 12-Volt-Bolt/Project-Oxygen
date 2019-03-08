@@ -46,6 +46,14 @@ public class ClimbSteps {
 //        }
     }
 
+    public static class ClimbDataInput {
+        public ClimbStep[] climbSteps;
+
+        public ClimbDataInput(ClimbStep[] newClimbSteps) {
+            climbSteps = newClimbSteps;
+        }
+    }
+
 
 }
 

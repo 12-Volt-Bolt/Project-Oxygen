@@ -26,32 +26,34 @@ public class DataParser {
     String stringToParse = stringInput.replaceAll("\\s", "");
 
     switch (objectType.getClass().getName()) {
-      case "ClimbStep":
-        return (T) ParseClimbStep(stringToParse);
+      case "ClimbStep[]":
+        return (T) ParseClimbData(stringInput);
 
-      case "ClimbSubstep":
-        return (T) ParseClimbSubstep(stringInput);
-    
       default:
         return null;
     }
   }
 
-  public ClimbStep ParseClimbStep (String stringInput) {
-      long count = stringInput.chars().filter(ch -> ch == ';').count();
-      String[] values = stringInput.split(";", 0);
-      ClimbStep temp = new ClimbStep(new ClimbSteps.ClimbSubstep[Math.toIntExact(count)]);
+  public ClimbStep[] ParseClimbData(String stringInput) {
+    String[] steps = stringInput.split(":", 0);
+    ClimbStep[] climbSteps = new ClimbStep[steps.length];
+    for (int i = 0; i > steps.length; i++) {
+      climbSteps[i] = ParseClimbSteps(steps[i]);
+    }
 
-      for (int i = 0; i > count; i++){
-          temp.substeps[i] = ParseClimbSubstep(values[i]);
-      }
-
-      return temp;
+    return climbSteps;
   }
 
-  public ClimbSubstep ParseClimbSubstep (String stringInput) {
+  public ClimbStep ParseClimbSteps(String stringInput) {
+    String[] stringSubsteps = stringInput.split(";", 0);
+    ClimbSubstep[] substeps = new ClimbSubstep[stringSubsteps.length];
 
-      String[] values = stringInput.split(",", 0);
-      return new ClimbSteps.ClimbSubstep(LiftID.valueOf(values[0]), Boolean.getBoolean(values[1]), Double.parseDouble(values[2]), Double.parseDouble(values[3]));
+    for (int i = 0; i < stringSubsteps.length; i++) {
+      String[] values = stringSubsteps[i].split(",", 0);
+       substeps[i] = new ClimbSteps.ClimbSubstep(LiftID.valueOf(values[0]), Boolean.getBoolean(values[1]), Double.parseDouble(values[2]), Double.parseDouble(values[3]));
+    }
+
+
+    return new ClimbStep(substeps);
   }
 }
