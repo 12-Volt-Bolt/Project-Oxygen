@@ -44,7 +44,7 @@ import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-
+import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 import frc.robot.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 
@@ -281,20 +281,22 @@ public class Robot extends TimedRobot {
 
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
-    /*
-     * switch (liftSafteyMode) { case 1:
-     * 
-     * break;
-     * 
-     * default: // do nothing, saftey on break; }
-     */
+    
+    switch (liftSafteyMode) { 
+      case 1:
+        new ManualLifterCommand().start();
+        break;
+    
+      default: 
+        break; // do nothing, saftey on break;
+    }
+     
 
     // visionSub.runRotationController(-5);
     // visionSub.runStrafeController(-50);
     // visionSub.runVerticalController(1);
 
-    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
-        OI.oneSlotController.getBButtonPressed());
+    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
 
    // m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
 

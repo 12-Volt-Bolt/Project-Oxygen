@@ -135,8 +135,8 @@ public class ControllerFunctions extends Subsystem {
       }
       SetArray(whichAxis, tempRollingArray);
       return newInput;
-
-    } else if (System.currentTimeMillis() - savedTimeMili > waitTimeMili == true) {
+    }
+    else if (System.currentTimeMillis() - savedTimeMili > waitTimeMili == true) {
       for (int i = 0; i < raLength; i++) {
         tempRollingArray[i] = oldArray[i + 1];
       }

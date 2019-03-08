@@ -75,9 +75,16 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
+  public void StopThePresses() {
+    frontLift.set(0);
+    rearLift.set(0);
+    topLift.set(0);
+  }
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
+    StopThePresses();
   }
 }
