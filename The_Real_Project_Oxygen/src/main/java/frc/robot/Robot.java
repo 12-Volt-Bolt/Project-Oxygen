@@ -269,7 +269,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putData(driveSub.turnController);
 
-    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getError());
     SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
     SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
     SmartDashboard.putNumber("PID-P", driveSub.turnController.getP());
