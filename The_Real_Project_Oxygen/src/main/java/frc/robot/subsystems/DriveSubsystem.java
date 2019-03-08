@@ -38,10 +38,10 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants_And_Equations;
+import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
+import frc.robot.statics_and_classes.RobotMap;
 import frc.robot.commands.DefaultDriveCommand;
 //import jdk.javadoc.internal.doclets.toolkit.resources.doclets;
 

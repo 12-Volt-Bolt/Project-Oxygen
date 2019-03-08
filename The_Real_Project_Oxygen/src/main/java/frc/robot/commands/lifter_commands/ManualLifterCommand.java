@@ -5,11 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.lifter_commands;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Constants_And_Equations;
+import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.subsystems.GenericLiftSubsystem;

@@ -5,11 +5,11 @@
 /* the project.                                                               */
 /*---------------------i-------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.statics_and_classes;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants_And_Equations.AxisNames;
+import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 
 /**
  * Add your docs here.

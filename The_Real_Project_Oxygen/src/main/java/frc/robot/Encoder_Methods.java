@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import frc.robot.statics_and_classes.RobotMap;
 
 import edu.wpi.first.wpilibj.Encoder;
 

@@ -5,12 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.statics_and_classes;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.ClimbSteps;
-import frc.robot.ClimbSteps.ClimbStep;
-import frc.robot.ClimbSteps.ClimbSubstep;
+import frc.robot.statics_and_classes.ClimbSteps;
+import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
+import frc.robot.statics_and_classes.ClimbSteps.ClimbSubstep;
 import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 
 /**

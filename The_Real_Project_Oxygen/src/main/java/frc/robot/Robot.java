@@ -28,15 +28,15 @@ import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.HatchDefaultPositionCommand;
 import frc.robot.commands.HatchObtainPositionCommand;
 import frc.robot.commands.HatchPlacementHeightCommand;
-import frc.robot.commands.ManualLifterCommand;
+import frc.robot.commands.lifter_commands.ManualLifterCommand;
 import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.WhereAreMyCamerasCommand;
-import frc.robot.commands.frontLifterCommand;
+import frc.robot.commands.lifter_commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DiskUnitSubsystem;
-import frc.robot.subsystems.ControllerFunctions;
+import frc.robot.statics_and_classes.ControllerFunctions;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem;
@@ -45,8 +45,10 @@ import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
-import frc.robot.Constants_And_Equations.AxisNames;
+import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
+import frc.robot.statics_and_classes.VisionMath;
+import frc.robot.statics_and_classes.Constants_And_Equations;
 
 /**
  * The VM is configured to automatically run this class, and to call the

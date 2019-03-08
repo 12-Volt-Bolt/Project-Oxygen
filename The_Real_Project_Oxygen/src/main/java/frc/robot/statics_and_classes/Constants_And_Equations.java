@@ -5,7 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.statics_and_classes;
+
+import frc.robot.OI;
 
 import java.sql.Time;
 
