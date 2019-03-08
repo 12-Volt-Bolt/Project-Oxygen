@@ -47,7 +47,7 @@ public class GenericLiftSubsystem extends Subsystem {
   //public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
   //public int topLift = RobotMap.TOP_RAIL_MOTOR_ID;
 
-  private GenericLiftSubsystem() {
+  public GenericLiftSubsystem() {
     frontLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     rearLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     topLift.configOpenloopRamp(cAndE.rampTimeInSecs);
@@ -80,7 +80,4 @@ public class GenericLiftSubsystem extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
-
-
-
 }

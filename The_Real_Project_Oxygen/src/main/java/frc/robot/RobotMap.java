@@ -23,7 +23,8 @@ public class RobotMap {
   // number and the module. For example you with a rangefinder:
   // public static int rangefinderPort = 1;
   // public static int rangefinderModule = 1;
-
+  
+  // Controller IDs
   public static final int CONTROLLER_ZERO_ID = 0;
   public static final int CONTROLLER_ONE_ID = 1;
 
@@ -31,16 +32,19 @@ public class RobotMap {
   public static final int CAMERA_ZERO_ID = 0;
   public static final int CAMERA_ONE_ID = 1;
 
-  // These are the wheel motor controller IDs
+  // Wheel motor controller IDs
   public static final int FRONT_LEFT_MOTOR_ID = 2;
   public static final int FRONT_RIGHT_MOTOR_ID = 1;
   public static final int REAR_LEFT_MOTOR_ID = 4;
   public static final int REAR_RIGHT_MOTOR_ID = 3;
 
-  // These are the rail motor IDs
+  // Rail motor IDs
   public static final int FRONT_RAIL_MOTOR_ID = 7;
   public static final int REAR_RAIL_MOTOR_ID = 6;
   public static final int TOP_RAIL_MOTOR_ID = 5;
+
+  // Hatch Unit motor IDs
+  public static final int HATCH_MOTOR_ID = 9;
 
   // Solenoid IDs
   public static final int TOP_SOLENOID_ID = 1;
@@ -94,7 +98,6 @@ public class RobotMap {
   public static int DIO_PORT_ID_9 = 9;
 
   // PWM PORT ID's
-
   public static int PWM_PORT_ID_0 = 0;
   public static int PWM_PORT_ID_1 = 1;
   public static int PWM_PORT_ID_2 = 2;
@@ -108,7 +111,6 @@ public class RobotMap {
   public static int PWM_PORT_ID_10 = 10;
 
   // ANALOG PORT ID's
-
   public static int ANALOG_PORT_ID_0 = 0;
   public static int ANALOG_PORT_ID_1 = 1;
   public static int ANALOG_PORT_ID_2 = 2;

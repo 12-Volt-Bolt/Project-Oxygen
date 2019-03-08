@@ -7,17 +7,14 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 
-public class FCDDriveCommand extends Command {
-  public FCDDriveCommand() {
+public class CMDButtonCommand extends Command {
+  public CMDButtonCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveSub);
   }
 
   // Called just before this Command runs the first time
@@ -28,19 +25,9 @@ public class FCDDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)) {
-      Robot.driveSub.updateDriveRamp(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-    } 
-    else if(!Robot.navXGyro.isConnected()) {
-      Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-    }
-    else {
-      Robot.driveSub.updateDriveCartesian(
-          OI.zeroSlotController.getX(Hand.kLeft),
-          //OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
-          OI.zeroSlotController.getY(Hand.kLeft), 
-          OI.zeroSlotController.getX(Hand.kRight), true);
-    }
+    Robot.visionSub.CMDButtonOn(true);
+    Timer.delay(1);
+    Robot.visionSub.CMDButtonOn(false);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -52,6 +39,7 @@ public class FCDDriveCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.visionSub.CMDButtonOn(false);
   }
 
   // Called when another command which requires one or more of the same
