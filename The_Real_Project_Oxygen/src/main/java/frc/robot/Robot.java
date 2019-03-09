@@ -8,38 +8,26 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Compressor;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.CMDButtonCommand;
-import frc.robot.commands.CameraServerStartInstantCommand;
-import frc.robot.commands.CollisionDetectionCommand;
-import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
-import frc.robot.commands.HatchDefaultPositionCommand;
-import frc.robot.commands.HatchObtainPositionCommand;
-import frc.robot.commands.HatchPlacementHeightCommand;
-import frc.robot.commands.ManualLifterCommand;
 import frc.robot.commands.NonFCDDriveCommand;
-import frc.robot.commands.TurnToAngleCommand;
-import frc.robot.commands.WhereAreMyCamerasCommand;
-import frc.robot.commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
-import frc.robot.subsystems.DiskUnitSubsystem;
+
 import frc.robot.subsystems.ControllerFunctions;
+import frc.robot.subsystems.DiskUnitSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
-import frc.robot.subsystems.GenericLiftSubsystem;
 import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
@@ -57,15 +45,13 @@ import frc.robot.OI;
  * 
  * @param <topLiftSub>
  */
-
-public class Robot extends TimedRobot {
+public class Robot<topLiftSub> extends TimedRobot {
   public static DriveSubsystem driveSub;
   public static VisionSubsystem visionSub;
   public static FrontLiftSubsystem frontLiftSub;
   public static RearLiftSubsystem rearLiftSub;
   public static TopRailSubsystem topLiftSub;
   public static LifterSubsystem liftSub;
-  public static GenericLiftSubsystem genericLiftSub;
   public static DiskUnitSubsystem DiskSub;
 
   /**
@@ -80,6 +66,12 @@ public class Robot extends TimedRobot {
   // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
   // The the above at some point please. It keeps throwing an error
 
+  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
+  // The the above at some point please. It keeps throwing an error
+
+  // Stuff we don't need TODO
+  public static Compressor Comp0 = new Compressor(0);
+
   // implement the above at some point please. It keeps throwing an error
   // TODO
 
@@ -88,30 +80,40 @@ public class Robot extends TimedRobot {
    * for any initialization code.
    */
 
+  public static int measCenterPixels;
+  public static int measSeparationPixels;
+  public static int measAngleDegrees;
+  public static int liftSafteyMode;
+  public static boolean isProcessCmdBool;
 
+  public static final String measCenterString = "DB/Slider 0";
+  public static final String measSeparationString = "DB/Slider 1";
+  public static final String measAngleDegreesString = "DB/Slider 2";
+  public static final String isProcessCMDString = "DB/Button 0";
+
+  public static final int NT_Table_Constant = 999999;
 
   public static VisionMath vMath;
-  public static int liftSafteyMode;
 
   @Override
-  public void robotInit() { 
+  public void robotInit() {
+    
     try {
       navXGyro = new AHRS(SPI.Port.kMXP);
 
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
-    
+
+    driveSub = new DriveSubsystem();
     m_oi = new OI();
     visionSub = new VisionSubsystem();
     frontLiftSub = new FrontLiftSubsystem();
     rearLiftSub = new RearLiftSubsystem();
     topLiftSub = new TopRailSubsystem();
-    driveSub = new DriveSubsystem();
     DiskSub = new DiskUnitSubsystem();
-    genericLiftSub = new GenericLiftSubsystem();
 
-    
+   
     // VERY IMPORTANT
     navXGyro.reset();
     // VERY IMPORTANT
@@ -120,9 +122,19 @@ public class Robot extends TimedRobot {
     
 
     SmartDashboard.putData("Auto mode", m_chooser);
-    // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    // chooser.addOption("My Auto", new MyAutoCommand());
+   // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
 
+    try {
+      navXGyro = new AHRS(SPI.Port.kMXP);
+
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
+    }
+    // VERY IMPORTANT
+    navXGyro.reset();
+    // VERY IMPORTANT
+
+    // chooser.addOption("My Auto", new MyAutoCommand());
   }
 
   /**
@@ -138,39 +150,36 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    // SmartDashboard Data
     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
     SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
+
+    if (OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
+      new getTopCamCommand().start();
+    }
+
+    if (OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
+      new getBottomCamCommand().start();
+    }
+
+    if (OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5
+        && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
+      isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, true);
+    } else {
+      isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, false);
+
+    }
+
+    measCenterPixels = (int) SmartDashboard.getNumber(measCenterString, NT_Table_Constant);
+    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, NT_Table_Constant);
+    measAngleDegrees = (int) SmartDashboard.getNumber(measAngleDegreesString, NT_Table_Constant);
+
+    if (isProcessCmdBool) {
+      vMath = new VisionMath(measCenterPixels, measSeparationPixels, measAngleDegrees);
+    }
     SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
     SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
     SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
-    //SmartDashboard.putNumber("NewZero", driveSub.newZero);
-    //SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
-    //SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
-    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
-    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
-    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
-    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
-    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
-    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
-    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
-    SmartDashboard.putData(driveSub.frontRight);
-    SmartDashboard.putData(driveSub.rearLeft);
-    SmartDashboard.putData(driveSub.frontLeft);
-    SmartDashboard.putData(driveSub.rearRight);
-    SmartDashboard.putData(driveSub.turnController);
-    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
-    SmartDashboard.putData("Turn Controller", driveSub.turnController);
-    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
-    SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
-    // SmartDashboard Data
 
-   visionSub.updateVisionVariables();
-
-   if(OI.allButtonComboPressesd(OI.zeroSlotController)) {
-     navXGyro.reset();
-   }
-  
   }
 
   /**
@@ -224,7 +233,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-   new NonFCDDriveCommand().start();
+//    new NonFCDDriveCommand().start();
+    driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft),
+        ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)),
+        OI.zeroSlotController.getX(Hand.kRight));
+
 
   }
 
@@ -238,7 +251,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    DiskSub.stopThePresses();
+    ///navXGyro.reset();
+
+    driveSub.turnController.disable();
+
   }
 
   /**
@@ -247,27 +263,43 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+    visionSub.updateVisionVariables();
 
     SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
-    new FCDDriveCommand().start();
     
-   // driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
+    new FCDDriveCommand().start();
 
+    VisionSubsystem.motorControllerRampForVision();
+
+    //driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
+
+    
     SmartDashboard.putData(driveSub.turnController);
 
-    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getError());
     SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
     SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
-    SmartDashboard.putNumber("PID-P", driveSub.turnController.getP());
-    SmartDashboard.putNumber("PID-I", driveSub.turnController.getI());
-    SmartDashboard.putNumber("PID-D", driveSub.turnController.getD());
-    SmartDashboard.putNumber("PID-F", driveSub.turnController.getF());
+    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
 
     SmartDashboard.putNumber("Rolling average", ControllerFunctions.rolledAverageLeftY);
 
+
+    SmartDashboard.putData(driveSub.frontRight);
+    SmartDashboard.putData(driveSub.rearLeft);
+    SmartDashboard.putData(driveSub.frontLeft);
+    SmartDashboard.putData(driveSub.rearRight);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller ", driveSub.turnController);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller", driveSub.turnController);
+    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
+
+
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
-    /*
     switch (liftSafteyMode) {
       case 1:
         
@@ -277,23 +309,18 @@ public class Robot extends TimedRobot {
         // do nothing, saftey on
         break;
     }
-*/
-    
-       // visionSub.runRotationController(-5);
-       //visionSub.runStrafeController(-50);
-         visionSub.runVerticalController(1);
-    
+
+    SmartDashboard.putNumber("Distance From Target", visionSub.distanceFromCamToTargetInCM());
+    SmartDashboard.putNumber("lateral Offset To Target", visionSub.distanceFromCamToTargetInCM());
    
-    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
-   
-
-    m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
-
-
     
-  }
-
   
+    SmartDashboard.putNumber("measCenterXPixels", visionSub.measCenterXPixels);
+    SmartDashboard.putNumber("Meas Separation", visionSub.measSeparationPixels);
+    SmartDashboard.putNumber("Meas AL Angle",visionSub.measAlAngleDegrees);
+    SmartDashboard.putNumber("Meas AL Angle Center Pixles",visionSub.measAlCenterXPixels);
+
+  }
 
   private double testValue;
 
@@ -309,29 +336,6 @@ public class Robot extends TimedRobot {
     }
 
     driveSub.frontLeft.set(testValue);
-
-    SmartDashboard.putData(new CameraServerStartInstantCommand());
-    SmartDashboard.putData(new CMDButtonCommand());
-    SmartDashboard.putData(new CollisionDetectionCommand());
-    SmartDashboard.putData(new DefaultDriveCommand());
-    SmartDashboard.putData(new FCDDriveCommand());
-    SmartDashboard.putData(new frontLifterCommand());
-    SmartDashboard.putData(new getBottomCamCommand());
-    SmartDashboard.putData(new getTopCamCommand());
-    SmartDashboard.putData(new HatchDefaultPositionCommand());
-    SmartDashboard.putData(new HatchObtainPositionCommand());
-    SmartDashboard.putData(new HatchPlacementHeightCommand());
-   // SmartDashboard.putData(new ManualLifterCommand());
-    SmartDashboard.putData(new NonFCDDriveCommand());
-    SmartDashboard.putData(new TurnToAngleCommand(90));
-    SmartDashboard.putData(new WhereAreMyCamerasCommand());
-
-
-
-
-
-
-
   }
 
 }
