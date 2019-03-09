@@ -19,12 +19,12 @@ public class DataParser {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public <T> T ParseObject (String stringInput, T objectType) {
+  public static <T> T ParseObject (String stringInput, String objectType) {
     
 
     String stringToParse = stringInput.replaceAll("\\s", "");
 
-    switch (objectType.getClass().getName()) {
+    switch (objectType) {
       case "ClimbStep[]":
         return (T) ParseClimbData(stringInput);
 
@@ -33,7 +33,7 @@ public class DataParser {
     }
   }
 
-  public ClimbStep[] ParseClimbData(String stringInput) {
+  public static ClimbStep[] ParseClimbData(String stringInput) {
     String[] steps = stringInput.split(":", 0);
     ClimbStep[] climbSteps = new ClimbStep[steps.length];
     for (int i = 0; i > steps.length; i++) {
@@ -43,7 +43,7 @@ public class DataParser {
     return climbSteps;
   }
 
-  public ClimbStep ParseClimbSteps(String stringInput) {
+  public static ClimbStep ParseClimbSteps(String stringInput) {
     String[] stringSubsteps = stringInput.split(";", 0);
     ClimbSubstep[] substeps = new ClimbSubstep[stringSubsteps.length];
 

@@ -29,6 +29,7 @@ import frc.robot.commands.HatchDefaultPositionCommand;
 import frc.robot.commands.HatchObtainPositionCommand;
 import frc.robot.commands.HatchPlacementHeightCommand;
 import frc.robot.commands.lifter_commands.ManualLifterCommand;
+import frc.robot.commands.lifter_commands.ParseLifterData;
 import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.WhereAreMyCamerasCommand;
@@ -37,6 +38,7 @@ import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DiskUnitSubsystem;
 import frc.robot.statics_and_classes.ControllerFunctions;
+import frc.robot.statics_and_classes.DataParser;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem;
@@ -48,7 +50,9 @@ import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 import frc.robot.statics_and_classes.VisionMath;
+import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
 import frc.robot.statics_and_classes.Constants_And_Equations;
+import frc.robot.statics_and_classes.DataParser;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -69,6 +73,8 @@ public class Robot extends TimedRobot {
   public static LifterSubsystem liftSub;
   public static GenericLiftSubsystem genericLiftSub;
   public static DiskUnitSubsystem DiskSub;
+
+  public static ClimbStep[] climbSteps;
 
   /**
    *
@@ -110,6 +116,7 @@ public class Robot extends TimedRobot {
     driveSub = new DriveSubsystem();
     DiskSub = new DiskUnitSubsystem();
     genericLiftSub = new GenericLiftSubsystem();
+    climbSteps = new DataParser().ParseObject("stringInput", ClimbStep[].class.getName());
 
     // VERY IMPORTANT
     navXGyro.reset();

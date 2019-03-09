@@ -33,6 +33,15 @@ public class Constants_And_Equations {
     public static final int NT_Table_Constant = 999999;
     public static final int visionCaliConstant = 1;
 
+    public static Boolean WithinRange(double value1, double value2, double range) {
+        if (Math.abs(Math.abs(value1) - Math.abs(value2)) > range) {
+            if (value1 < 0 && value2 < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static double Clamp(double min, double max, double value) {
         if (value > max) {
             return max;
