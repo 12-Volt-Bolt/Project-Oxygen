@@ -14,13 +14,17 @@ import frc.robot.statics_and_classes.ClimbSteps.ClimbSubstep;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class StepLifter extends Command {
 
   private static GenericLiftSubsystem genLift;
   private static ClimbStep[] climbsteps = Robot.climbSteps;
-  private static ClimbSubstep[] currentSubstep;
+  private static ArrayList<ClimbSubstep> currentSubsteps = new ArrayList<ClimbSubstep>();
   private static int currentStep = 0;
   private static int lastStep;
+  private static long waitTime;
 
   public StepLifter() {
     // Use requires() here to declare subsystem dependencies
@@ -37,16 +41,16 @@ public class StepLifter extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+
     if (currentStep != lastStep) {
       ClimbStep currentClimbStep = ClimbSteps.GetStep(currentStep);
-      currentSubstep[currentClimbStep.substeps.length] = currentClimbStep.substeps[currentClimbStep.substeps.length];
-      for (int i = 0; i < currentSubstep.length; i++) {
-        genLift.stopRunning(currentSubstep[i].liftID);
+      currentSubsteps = new ArrayList<ClimbSubstep>(Arrays.asList(currentClimbStep.substeps));
+      for (int i = 0; i < currentSubsteps.size(); i++) {
+        genLift.stopRunning(currentSubsteps.get(i).liftID);
       }
-      Thread.sleep(100);
     }
-    for (int i = 0; i < currentSubstep.length; i++) {
-      genLift.StepLift(currentSubstep[i].liftID, currentSubstep[i].lockPos, currentSubstep[i].speed, currentSubstep[i].distance);
+    for (int i = 0; i < currentSubsteps.size(); i++) {
+      genLift.StepLift(currentSubsteps.get(i).liftID, currentSubsteps.get(i).lockPos, currentSubsteps.get(i).speed, currentSubsteps.get(i).distance);
     }
   }
 
