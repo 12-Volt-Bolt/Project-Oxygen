@@ -5,11 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.statics_and_classes;
+package frc.robot;
 
-import frc.robot.statics_and_classes.ClimbSteps;
-import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
-import frc.robot.statics_and_classes.ClimbSteps.ClimbSubstep;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.ClimbSteps;
+import frc.robot.ClimbSteps.ClimbStep;
+import frc.robot.ClimbSteps.ClimbSubstep;
 import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 
 /**
@@ -24,7 +25,7 @@ public class DataParser {
 
     String stringToParse = stringInput.replaceAll("\\s", "");
 
-    switch (objectType.getClass().getName()) {
+    switch (objectType) {
       case "ClimbStep[]":
         return (T) ParseClimbData(stringInput);
 
