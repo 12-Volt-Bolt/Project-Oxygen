@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.OI;
-import frc.robot.commands.frontLifterCommand;
 
 /**
  * Add your docs here.

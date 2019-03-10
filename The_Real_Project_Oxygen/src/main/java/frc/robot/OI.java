@@ -6,13 +6,14 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
+import frc.robot.statics_and_classes.RobotMap;
+import frc.robot.statics_and_classes.Constants_And_Equations;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,12 +53,12 @@ public class OI {
       oneXJoyMenuButton = new JoystickButton(oneSlotController, RobotMap.MENU_BUTTON_ID),
       oneXJoyStartButton = new JoystickButton(oneSlotController, RobotMap.START_BUTTON_ID);
 
-  
   public static boolean visionStartCombo() {
-     if(OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5 && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
-         return true;
-     }
-     return false;
+    if (OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5
+        && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
+      return true;
+    }
+    return false;
   }
 
   public static boolean allButtonComboPressesd(XboxController xJoy) {
@@ -89,6 +90,10 @@ public class OI {
     leftRumbleMethod(xCon, leftPower);
     rightRumbleMethod(xCon, rightPower);
 
+  }
+
+  public static double ySpeedMotorSportsSeries(XboxController xJoy) {
+    return Constants_And_Equations.turnIntoAxis(xJoy.getTriggerAxis(Hand.kRight), xJoy.getTriggerAxis(Hand.kLeft), 0.1, 0.1);
   }
 
 }

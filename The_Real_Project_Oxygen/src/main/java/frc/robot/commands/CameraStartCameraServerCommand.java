@@ -7,28 +7,24 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
 
 /**
  * Add your docs here.
  */
-public class frontLifterCommand extends InstantCommand {
+public class CameraStartCameraServerCommand extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public frontLifterCommand() {
+  public CameraStartCameraServerCommand() {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.frontLiftSub);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.frontLiftSub.liftMethod();
   }
 
 }

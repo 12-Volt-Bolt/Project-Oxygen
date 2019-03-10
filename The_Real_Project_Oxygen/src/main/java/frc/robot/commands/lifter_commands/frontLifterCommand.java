@@ -5,28 +5,30 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.lifter_commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 
 /**
  * Add your docs here.
  */
-public class getTopCamCommand extends InstantCommand {
+public class frontLifterCommand extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public getTopCamCommand() {
+  public frontLifterCommand() {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.frontLiftSub);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.visionSub.theOnlyCamServer.setSource(Robot.visionSub.topCam);
+    Robot.frontLiftSub.liftMethod();
   }
 
 }

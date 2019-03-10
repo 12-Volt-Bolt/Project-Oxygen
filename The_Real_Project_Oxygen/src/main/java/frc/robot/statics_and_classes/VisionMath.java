@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.statics_and_classes;
 
 /**
  * This class handles all vision processing calculations. This class will

@@ -38,11 +38,10 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants_And_Equations;
+import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
-import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.statics_and_classes.RobotMap;
 //import jdk.javadoc.internal.doclets.toolkit.resources.doclets;
 
 /**
@@ -115,7 +114,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    setDefaultCommand(new DefaultDriveCommand());
+    //setDefaultCommand(new DefaultDriveCommand());
   }
 
   public void updateDriveCartesian(double xLeft, double yLeft, double xRight) {
@@ -133,14 +132,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         twist);
   }
 
-  public void updateDriveCartesian(double xLeft, double yLeft, double xRight, Boolean locked) {
+  public void updateDriveCartesian(double xLeft, double yLeft, double xRight, double angle, Boolean locked) {
     mecDrive.setSafetyEnabled(false);
 
-    if (OI.zeroSlotController.getPOV() != -1) {
+    if (angle != -1) {
       setTurnControllerSetpointDeg(OI.zeroSlotController.getPOV());
     }
 
-    if (Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1) > 0) {
+    if (Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.2) {
       enableTurnController(false);
     }
 
@@ -157,10 +156,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public void driveRampFCD(double twist) {
     mecDrive.driveCartesian(
-        Constants_And_Equations
-            .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
+        Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
+        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
         twist, -Robot.navXGyro.getAngle());
   }
 
@@ -179,13 +176,13 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Uses obtained PID write method data
   public void turnToAngleDeg(double angle) {
     setTurnControllerSetpointDeg(Constants_And_Equations.gyroAngleForPIDLoop(angle));
-    if (turnController.onTarget()|| Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.2) > 0) {
+    if (turnController.onTarget() || Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.2) {
       enableTurnController(false);
     } else {
       enableTurnController(true);
       currentRotationRate = rotateToAngleRate;
     }
-    setMecanumRotationSpeedWithoutJoy(currentRotationRate);
+    setMecanumRotationSpeedWithJoy(currentRotationRate, OI.zeroSlotController.getY(Hand.kLeft), Math.abs(OI.zeroSlotController.getX(Hand.kRight)));
   }
 
   public void setMecanumRotationSpeedWithJoy(double speed, double yLeft, double xLeft) {
@@ -326,8 +323,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public double locRotationLock(double xInput, double zInput) {
     // if Z axis joystick is moving or has moved within the past 0.4 seconds set doLocRot to "true", else leave as "false"
     boolean doLocRot = false;
-    if (Constants_And_Equations.deadzone(zInput) != 0) { 
-      //doLocRot = true;
+    if (Constants_And_Equations.deadzone(zInput) != 0) {
       locRotDelay = System.currentTimeMillis();
     } else if (System.currentTimeMillis() - locRotDelay > 400) {
       doLocRot = true;
@@ -353,6 +349,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         rotationSpeed = Constants_And_Equations.Clamp(-1, 1, turnPower);
       }
     }
+    SmartDashboard.putNumber("newZero", newZero);
+    SmartDashboard.putNumber("Rotation speed", -rotationSpeed);
 
     return -rotationSpeed;
   }

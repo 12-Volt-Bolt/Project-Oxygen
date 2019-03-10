@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.statics_and_classes;
 
 import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 
@@ -44,6 +44,14 @@ public class ClimbSteps {
 //
 //            return temp;
 //        }
+    }
+
+    public static class ClimbDataInput {
+        public ClimbStep[] climbSteps;
+
+        public ClimbDataInput(ClimbStep[] newClimbSteps) {
+            climbSteps = newClimbSteps;
+        }
     }
 
 

@@ -9,11 +9,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
+import frc.robot.statics_and_classes.ControllerFunctions;
 import frc.robot.OI;
 import frc.robot.Robot;
 
-public class NonFCDDriveCommand extends Command {
-  public NonFCDDriveCommand() {
+public class DriveNonFCDDriveCommand extends Command {
+  public DriveNonFCDDriveCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveSub);
@@ -27,8 +29,9 @@ public class NonFCDDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-  }
+    Robot.driveSub.updateDriveLocalStrafe(
+      ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)),
+      OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));  }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override

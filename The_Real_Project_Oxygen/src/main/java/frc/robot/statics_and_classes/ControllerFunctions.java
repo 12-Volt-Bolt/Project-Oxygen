@@ -5,11 +5,11 @@
 /* the project.                                                               */
 /*---------------------i-------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.statics_and_classes;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants_And_Equations.AxisNames;
+import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 
 /**
  * Add your docs here.
@@ -81,7 +81,7 @@ public class ControllerFunctions extends Subsystem {
     }
   }
 
-  public static double RolledAverage(AxisNames whichAxis, double arraySum) {
+  public static double AverageArray(AxisNames whichAxis, double arraySum) {
     switch (whichAxis) {
       case leftX:
         rolledAverageLeftX = arraySum/raLength;
@@ -104,7 +104,7 @@ public class ControllerFunctions extends Subsystem {
       }
   }
 
-  public static double RolledAverage(AxisNames whichAxis) {
+  public static double GetRolledAverage(AxisNames whichAxis) {
     switch (whichAxis) {
       case leftX:
         return rolledAverageLeftX;
@@ -124,14 +124,19 @@ public class ControllerFunctions extends Subsystem {
   } 
 
   public static double RollingAverage(AxisNames whichAxis, double newInput) {
-    if (Math.abs(newInput) < Math.abs(RolledAverage(whichAxis)) == true) {
+    
+    double raSum = 0;
+    double[] oldArray = CallArray(whichAxis);
+    double[] tempRollingArray = rollingArray;
+
+    if (Math.abs(newInput) < Math.abs(GetRolledAverage(whichAxis)) == true) {
+      for (int i = 0; i < raLength; i++) {
+        tempRollingArray[i] = newInput;
+      }
+      SetArray(whichAxis, tempRollingArray);
       return newInput;
     }
-    else if (System.currentTimeMillis() - savedTimeMili > waitTimeMili) {
-      double[] oldArray = CallArray(whichAxis);
-      double[] tempRollingArray = rollingArray;
-      double raSum = 0;
-
+    else if (System.currentTimeMillis() - savedTimeMili > waitTimeMili == true) {
       for (int i = 0; i < raLength; i++) {
         tempRollingArray[i] = oldArray[i + 1];
       }
@@ -143,10 +148,10 @@ public class ControllerFunctions extends Subsystem {
       }
       
       savedTimeMili = System.currentTimeMillis();
-      return RolledAverage(whichAxis, raSum);
-    }
-    else {
-      return RolledAverage(whichAxis);
+      return AverageArray(whichAxis, raSum);
+
+    } else {
+      return GetRolledAverage(whichAxis);
     }
   }
 
