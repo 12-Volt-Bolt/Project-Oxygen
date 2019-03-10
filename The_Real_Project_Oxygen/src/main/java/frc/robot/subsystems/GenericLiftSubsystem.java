@@ -10,8 +10,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Constants_And_Equations;
-import frc.robot.RobotMap;
+import frc.robot.statics_and_classes.Constants_And_Equations;
+import frc.robot.statics_and_classes.RobotMap;
 
 /**
  * Add your docs here.
@@ -20,44 +20,41 @@ public class GenericLiftSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private WPI_TalonSRX frontLift = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
-  private WPI_TalonSRX rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
-  private WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX frontLift = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX testLift = new WPI_TalonSRX(1);
 
   private Constants_And_Equations cAndE;
+
+  private static double[] liftLocation = new double[3];
+  private static Boolean[] liftRunning = new Boolean[3];
 
   //private int[] liftID = new int[] { 7,6,5 };
   
   public enum LiftID {
-    frontLift(7)
-    ,rearLift(6)
-    ,topLift(5);
-
-    private final int id;
-
-    LiftID(int id) {
-      this.id = id;
-    }
-    public int getID() {
-      return id;
-    }
+    frontLift
+    ,rearLift
+    ,topLift
+    ,testLift;
   }
 
   //public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
   //public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
   //public int topLift = RobotMap.TOP_RAIL_MOTOR_ID;
 
-  private GenericLiftSubsystem() {
+  public GenericLiftSubsystem() {
     frontLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     rearLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     topLift.configOpenloopRamp(cAndE.rampTimeInSecs);
+    testLift.configOpenloopRamp(cAndE.rampTimeInSecs);
   }
 
   public void liftMethod(double speed, LiftID lifterName) {
     setMotor(speed, lifterName);
   }
 
-  public void setMotor(double speed, LiftID lifterID) {
+  public static void setMotor(double speed, LiftID lifterID) {
     switch (lifterID) {
       case frontLift:
         frontLift.set(speed);
@@ -68,6 +65,9 @@ public class GenericLiftSubsystem extends Subsystem {
       case topLift:
         topLift.set(speed);
         break;
+      case testLift:
+        testLift.set(speed);
+        break;
       default:
         String message = "Motor ID '" + lifterID + "' is not valid!";
         System.out.print(message);
@@ -75,12 +75,66 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
+  public void stopRunning(LiftID liftID) {
+    liftRunning[liftID.ordinal()] = false;
+  }
+
+  public void StopThePresses() {
+    frontLift.set(0);
+    rearLift.set(0);
+    topLift.set(0);
+  }
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
+    StopThePresses();
   }
 
+  public static void StepLift(LiftID liftID, Boolean locPos, double speed, double distance) {
+    if (locPos == true) {
+      LiftAndStay(liftID, speed, distance);
+    } else {
+      LiftAndCoast(liftID, speed, distance);
+    }
+  }
 
+  private static void LiftAndStay(LiftID liftID, double speed, double distance) {
+    liftRunning[liftID.ordinal()] = true;
 
+    double currentLiftLocation = liftLocation[liftID.ordinal()];
+    double realSpeed = speed; 
+    double tempSpeed;
+
+    if (distance < currentLiftLocation) {
+      realSpeed = -realSpeed;
+    }
+
+    while (liftRunning[liftID.ordinal()] == true) {
+      if (Constants_And_Equations.WithinRange(distance, currentLiftLocation, 5) == true) {
+        tempSpeed = 0;
+      } else if (distance > currentLiftLocation == true) {
+        tempSpeed = - realSpeed;
+      } else {
+        tempSpeed = realSpeed;
+      }
+      
+      setMotor(tempSpeed, liftID);
+    }
+  }
+
+  private static void LiftAndCoast(LiftID liftID, double speed, double distance) {
+    double currentLiftLocation = liftLocation[liftID.ordinal()];
+    double realSpeed = speed;
+
+    if (distance < currentLiftLocation) {
+      realSpeed = -realSpeed;
+    }
+
+    while (Constants_And_Equations.WithinRange(distance, currentLiftLocation, 5) == true || liftRunning[liftID.ordinal()] == true) {
+      setMotor(realSpeed, liftID);
+    }
+    liftRunning[liftID.ordinal()] = false;
+  }
 }

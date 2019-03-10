@@ -8,32 +8,55 @@
 package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.Compressor;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.commands.CMDButtonCommand;
+import frc.robot.commands.CameraServerStartInstantCommand;
+import frc.robot.commands.CollisionDetectionCommand;
+import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.FCDDriveCommand;
+import frc.robot.commands.HatchDefaultPositionCommand;
+import frc.robot.commands.HatchObtainPositionCommand;
+import frc.robot.commands.HatchPlacementHeightCommand;
+import frc.robot.commands.lifter_commands.ManualLifterCommand;
+import frc.robot.commands.lifter_commands.ParseLifterData;
+import frc.robot.commands.lifter_commands.StepLifter;
 import frc.robot.commands.NonFCDDriveCommand;
+import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.commands.WhereAreMyCamerasCommand;
+import frc.robot.commands.lifter_commands.frontLifterCommand;
 import frc.robot.commands.getBottomCamCommand;
 import frc.robot.commands.getTopCamCommand;
-
-import frc.robot.subsystems.ControllerFunctions;
+import frc.robot.subsystems.DiskUnitSubsystem;
+import frc.robot.statics_and_classes.ControllerFunctions;
+import frc.robot.statics_and_classes.DataParser;
+import frc.robot.statics_and_classes.RobotMap;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
+import frc.robot.subsystems.GenericLiftSubsystem;
+import frc.robot.subsystems.GenericTestFunctions;
 import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-
-import frc.robot.Constants_And_Equations.AxisNames;
+import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
+import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
+import frc.robot.statics_and_classes.VisionMath;
+import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
+import frc.robot.statics_and_classes.ClimbSteps;
+import frc.robot.statics_and_classes.Constants_And_Equations;
+import frc.robot.statics_and_classes.DataParser;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,13 +67,18 @@ import frc.robot.OI;
  * 
  * @param <topLiftSub>
  */
-public class Robot<topLiftSub> extends TimedRobot {
-  public static DriveSubsystem driveSub = new DriveSubsystem();
+
+public class Robot extends TimedRobot {
+  public static DriveSubsystem driveSub;
   public static VisionSubsystem visionSub;
   public static FrontLiftSubsystem frontLiftSub;
   public static RearLiftSubsystem rearLiftSub;
   public static TopRailSubsystem topLiftSub;
   public static LifterSubsystem liftSub;
+  public static GenericLiftSubsystem genericLiftSub;
+  public static DiskUnitSubsystem DiskSub;
+
+  public static ClimbStep[] climbSteps;
 
   /**
    *
@@ -64,12 +92,6 @@ public class Robot<topLiftSub> extends TimedRobot {
   // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
   // The the above at some point please. It keeps throwing an error
 
-  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
-  // The the above at some point please. It keeps throwing an error
-
-  // Stuff we don't need TODO
-  public static Compressor Comp0 = new Compressor(0);
-
   // implement the above at some point please. It keeps throwing an error
   // TODO
 
@@ -78,100 +100,84 @@ public class Robot<topLiftSub> extends TimedRobot {
    * for any initialization code.
    */
 
-  public static int measCenterPixels;
-  public static int measSeparationPixels;
-  public static int measAngleDegrees;
-  public static int liftSafteyMode;
-  public static boolean isProcessCmdBool;
-
-  public static final String measCenterString = "DB/Slider 0";
-  public static final String measSeparationString = "DB/Slider 1";
-  public static final String measAngleDegreesString = "DB/Slider 2";
-  public static final String isProcessCMDString = "DB/Button 0";
-
-  public static final int NT_Table_Constant = 999999;
-
   public static VisionMath vMath;
+  public static int liftSafteyMode;
 
   @Override
   public void robotInit() {
+    try {
+      navXGyro = new AHRS(SPI.Port.kMXP);
+
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
+    }
+
     m_oi = new OI();
     visionSub = new VisionSubsystem();
     frontLiftSub = new FrontLiftSubsystem();
     rearLiftSub = new RearLiftSubsystem();
     topLiftSub = new TopRailSubsystem();
+    driveSub = new DriveSubsystem();
+    DiskSub = new DiskUnitSubsystem();
+    genericLiftSub = new GenericLiftSubsystem();
+    climbSteps = new DataParser().ParseObject("stringInput", ClimbStep[].class.getName());
 
-    try {
-      navXGyro = new AHRS(SPI.Port.kMXP);
-
-    } catch (RuntimeException ex) {
-      DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
-    }
     // VERY IMPORTANT
     navXGyro.reset();
     // VERY IMPORTANT
 
-  /*
-    
-
-    SmartDashboard.putData("Auto mode", m_chooser);
-   // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-
-    try {
-      navXGyro = new AHRS(SPI.Port.kMXP);
-
-    } catch (RuntimeException ex) {
-      DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
-    }
-    // VERY IMPORTANT
-    navXGyro.reset();
-    // VERY IMPORTANT
-
-    // chooser.addOption("My Auto", new MyAutoCommand());
+    /*
+     * 
+     * 
+     * SmartDashboard.putData("Auto mode", m_chooser); //
+     * m_chooser.setDefaultOption("Default Auto", new ExampleCommand()); //
+     * chooser.addOption("My Auto", new MyAutoCommand());
+     * 
+     * }
+     * 
+     * /** This function is called every robot packet, no matter the mode. Use this
+     * for items like diagnostics that you want ran during disabled, autonomous,
+     * teleoperated and test.
+     *
+     * <p> This runs after the mode specific periodic functions, but before
+     * LiveWindow and SmartDashboard integrated updating.
+     */
   }
-
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for
-   * items like diagnostics that you want ran during disabled, autonomous,
-   * teleoperated and test.
-   *
-   * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow
-   * and SmartDashboard integrated updating.
-   */
- }
 
   @Override
   public void robotPeriodic() {
+    // SmartDashboard Data
     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
     SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
-
-    if (OI.zeroSlotController.getBumperPressed(Hand.kRight)) {
-      new getTopCamCommand().start();
-    }
-
-    if (OI.zeroSlotController.getBumperPressed(Hand.kLeft)) {
-      new getBottomCamCommand().start();
-    }
-
-    if (OI.zeroSlotController.getTriggerAxis(Hand.kLeft) > 0.5
-        && OI.zeroSlotController.getTriggerAxis(Hand.kRight) > 0.5) {
-      isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, true);
-    } else {
-      isProcessCmdBool = SmartDashboard.setDefaultBoolean(isProcessCMDString, false);
-
-    }
-
-    measCenterPixels = (int) SmartDashboard.getNumber(measCenterString, NT_Table_Constant);
-    measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, NT_Table_Constant);
-    measAngleDegrees = (int) SmartDashboard.getNumber(measAngleDegreesString, NT_Table_Constant);
-
-    if (isProcessCmdBool) {
-      vMath = new VisionMath(measCenterPixels, measSeparationPixels, measAngleDegrees);
-    }
     SmartDashboard.putNumber("Controller X", OI.zeroSlotController.getX(Hand.kLeft));
     SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
     SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
+    // SmartDashboard.putNumber("NewZero", driveSub.newZero);
+    // SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
+    // SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
+    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getAvgError());
+    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
+    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
+    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
+    SmartDashboard.putData(driveSub.frontRight);
+    SmartDashboard.putData(driveSub.rearLeft);
+    SmartDashboard.putData(driveSub.frontLeft);
+    SmartDashboard.putData(driveSub.rearRight);
+    SmartDashboard.putData(driveSub.turnController);
+    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
+    SmartDashboard.putData("Turn Controller", driveSub.turnController);
+    SmartDashboard.putNumber("PID ERROR", driveSub.turnController.getError());
+    SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
+    // SmartDashboard Data
+
+    visionSub.updateVisionVariables();
+
+    if (OI.allButtonComboPressesd(OI.zeroSlotController)) {
+      navXGyro.reset();
+    }
 
   }
 
@@ -226,8 +232,11 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    new NonFCDDriveCommand().start();
+    //new NonFCDDriveCommand().start();
 
+    GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
+
+    //new ManualLifterCommand().start();;
   }
 
   @Override
@@ -240,7 +249,7 @@ public class Robot<topLiftSub> extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    navXGyro.reset();
+    DiskSub.stopThePresses();
   }
 
   /**
@@ -249,66 +258,97 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+    SmartDashboard.putBoolean("Is Collision Detected:", driveSub.collisionDetected);
 
-    SmartDashboard.putBoolean("Is Collision Detected:",driveSub.collisionDetected);
-    
-    //new FCDDriveCommand().start();
+    if(SmartDashboard.getBoolean(visionSub.isProcessCMDString, false)) {
+       driveSub.updateDriveLocalStrafe(ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)),
+       OI.zeroSlotController.getX(Hand.kLeft),
+       OI.zeroSlotController.getX(Hand.kRight));
+    }
 
-    driveSub.updateDriveLocal(OI.zeroSlotController.getX(Hand.kLeft), ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)), OI.zeroSlotController.getX(Hand.kRight));
+    else if (SmartDashboard.getBoolean(visionSub.isProcessCMDString2, false)) {
+      Robot.driveSub.updateDriveCartesian(
+        OI.zeroSlotController.getX(Hand.kLeft),
+        OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
+        //OI.zeroSlotController.getY(Hand.kLeft), 
+        OI.zeroSlotController.getX(Hand.kRight), true);
+    }
 
-    
+    else {
+      new FCDDriveCommand().start();
+  }
+
+    // driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft),
+    // ControllerFunctions.RollingAverage(AxisNames.leftY,
+    // OI.zeroSlotController.getY(Hand.kLeft)),
+    // OI.zeroSlotController.getX(Hand.kRight));
+
     SmartDashboard.putData(driveSub.turnController);
 
     SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getError());
     SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
     SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
-    SmartDashboard.putNumber("PID-  P", driveSub.turnController.getP());
-    SmartDashboard.putNumber("PID-  I", driveSub.turnController.getI());
-    SmartDashboard.putNumber("PID-  D", driveSub.turnController.getD());
-    SmartDashboard.putNumber("PID-  F", driveSub.turnController.getF());
+    SmartDashboard.putNumber("PID-P", driveSub.turnController.getP());
+    SmartDashboard.putNumber("PID-I", driveSub.turnController.getI());
+    SmartDashboard.putNumber("PID-D", driveSub.turnController.getD());
+    SmartDashboard.putNumber("PID-F", driveSub.turnController.getF());
 
     SmartDashboard.putNumber("Rolling average", ControllerFunctions.rolledAverageLeftY);
 
-
-    SmartDashboard.putData(driveSub.frontRight);
-    SmartDashboard.putData(driveSub.rearLeft);
-    SmartDashboard.putData(driveSub.frontLeft);
-    SmartDashboard.putData(driveSub.rearRight);
-    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
-    SmartDashboard.putData("Turn Controller ", driveSub.turnController);
-    SmartDashboard.putData("Mecanum Drive", driveSub.mecDrive);
-    SmartDashboard.putData("Turn Controller", driveSub.turnController);
-    SmartDashboard.putNumber("PID ERROR",driveSub.turnController.getError());
-
-
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
-    switch (liftSafteyMode) {
+    
+    switch (liftSafteyMode) { 
       case 1:
-        
+        new ManualLifterCommand().start();
         break;
     
-      default:
-        // do nothing, saftey on
-        break;
+      default: 
+        break; // do nothing, saftey on break;
     }
+     
+
+    // visionSub.runRotationController(-5);
+    // visionSub.runStrafeController(-50);
+    // visionSub.runVerticalController(1);
+
+    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
+
+   // m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
 
   }
 
   private double testValue;
+
+  public ClimbSteps.ClimbSubstep climbchat;
+
+  @Override
+  public void testInit() {
+    //super.testInit();
+    new ClimbSteps();
+
+    ClimbStep temp = ClimbSteps.ParseSteps("a")[0];
+    climbchat = temp.substeps[0];
+  }
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-    if (OI.zeroSlotController.getBumper(Hand.kRight) == true) {
-      testValue = Constants_And_Equations.Clamp(-1, 1, testValue + 0.1);
-    } else if (OI.zeroSlotController.getBumper(Hand.kLeft) == true) {
-      testValue = Constants_And_Equations.Clamp(-1, 1, testValue - 0.1);
-    }
+    Scheduler.getInstance().run();
+    
+    new StepLifter().start();
 
-    driveSub.frontLeft.set(testValue);
+    
+    SmartDashboard.putString("liftID", climbchat.liftID.toString());
+    SmartDashboard.putBoolean("locPos", climbchat.lockPos);
+    SmartDashboard.putNumber("speed", climbchat.speed);
+    SmartDashboard.putNumber("distance", climbchat.distance);
+    
+
+    //GenericLiftSubsystem.setMotor(0.5, LiftID.testLift);
+
+    //GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
   }
-
 }

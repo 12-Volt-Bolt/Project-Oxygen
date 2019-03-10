@@ -7,40 +7,28 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.statics_and_classes.RobotMap;
 
-public class FCDDriveCommand extends Command {
-  public FCDDriveCommand() {
+public class HatchPlacementHeightCommand extends Command {
+  public HatchPlacementHeightCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.driveSub);
+    requires(Robot.DiskSub);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.DiskSub.setSpeed(0.1);
+    Timer.delay(1);
+    Robot.DiskSub.stopThePresses();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)) {
-      Robot.driveSub.updateDriveRamp(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-    } 
-    else if(!Robot.navXGyro.isConnected()) {
-      Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
-    }
-    else {
-      Robot.driveSub.updateDriveCartesian(
-          OI.zeroSlotController.getX(Hand.kLeft),
-          //OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
-          OI.zeroSlotController.getY(Hand.kLeft), 
-          OI.zeroSlotController.getX(Hand.kRight), true);
-    }
   }
 
   // Make this return true when this Command no longer needs to run execute()

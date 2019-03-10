@@ -29,12 +29,7 @@ public class CameraServerStartInstantCommand extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    UsbCamera usbCamera0 = CameraServer.getInstance().startAutomaticCapture();
-    usbCamera0.setResolution(320, 240);
-    usbCamera0.setFPS(10);
-    UsbCamera usbCamera1 = CameraServer.getInstance().startAutomaticCapture(1);
-    usbCamera1.setResolution(320, 240);
-    usbCamera1.setFPS(10);
+   
   }
 
 }

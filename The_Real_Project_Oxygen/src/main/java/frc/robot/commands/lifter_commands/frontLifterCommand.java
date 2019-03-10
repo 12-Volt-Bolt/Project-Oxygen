@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.lifter_commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.InstantCommand;
@@ -22,6 +22,7 @@ public class frontLifterCommand extends InstantCommand {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.frontLiftSub);
   }
 
   // Called once when the command executes

@@ -10,9 +10,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Constants_And_Equations;
+import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
+import frc.robot.statics_and_classes.RobotMap;
 
 /**
  * Add your docs here.

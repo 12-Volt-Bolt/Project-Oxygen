@@ -5,7 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.statics_and_classes;
+
+import frc.robot.OI;
 
 import java.sql.Time;
 
@@ -19,16 +21,26 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
  * Add your docs here.
  */
 public class Constants_And_Equations {
-    
-  public enum AxisNames
-  {
-    leftX, leftY, rightX, rightY;
-  }
+
+    public enum AxisNames {
+        leftX, leftY, rightX, rightY;
+    }
 
     public static final int zero = 0;
     public static final double rampTimeInSecs = 0.2;
 
     public static double a_Vision_Variable;
+    public static final int NT_Table_Constant = 999999;
+    public static final int visionCaliConstant = 1;
+
+    public static Boolean WithinRange(double value1, double value2, double range) {
+        if (Math.abs(Math.abs(value1) - Math.abs(value2)) > range) {
+            if (value1 < 0 && value2 < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static double Clamp(double min, double max, double value) {
         if (value > max) {
@@ -82,5 +94,27 @@ public class Constants_And_Equations {
         } else {
             return 0;
         }
+    }
+
+    public static float gyroAngleForPIDLoop(double angle) {
+        if (angle > 180) {
+            angle -= 360;
+        } else if ((int) angle == 180) {
+            angle = 179.9;
+        }
+        return (float) angle;
+    }
+
+    // The following method returns a scaled version of currentValue.
+    // scale is the maximum and minimum, inclusive
+    public static double scaleValue(double value, double currentValue, double scale) {
+        return (scale / value) * currentValue;
+    }
+    
+    // The method takes in two doubles as parameters and uses them as positive
+    // and negative values for an axis
+    // deadzone1 and deadzone2 are thresholds
+    public static double turnIntoAxis(double axisPos, double axisNeg, double deadzone1, double deadzone2) {
+        return (Constants_And_Equations.deadzone(axisPos, deadzone1) + Constants_And_Equations.deadzone(-axisNeg, deadzone2));
     }
 }

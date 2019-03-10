@@ -5,10 +5,11 @@
 /* the project.                                                               */
 /*---------------------i-------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.statics_and_classes;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Constants_And_Equations.AxisNames;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 
 /**
  * Add your docs here.
@@ -135,8 +136,8 @@ public class ControllerFunctions extends Subsystem {
       }
       SetArray(whichAxis, tempRollingArray);
       return newInput;
-
-    } else if (System.currentTimeMillis() - savedTimeMili > waitTimeMili == true) {
+    }
+    else if (System.currentTimeMillis() - savedTimeMili > waitTimeMili == true) {
       for (int i = 0; i < raLength; i++) {
         tempRollingArray[i] = oldArray[i + 1];
       }
