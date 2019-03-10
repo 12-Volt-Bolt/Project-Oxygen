@@ -22,7 +22,7 @@ public class DataParser {
   public static <T> T ParseObject (String stringInput, String objectType) {
     
 
-    String stringToParse = stringInput.replaceAll("\\s", "");
+    String stringToParse = stringInput.replaceAll("\\s+", "");
 
     switch (objectType) {
       case "ClimbStep[]":
@@ -36,7 +36,7 @@ public class DataParser {
   public static ClimbStep[] ParseClimbData(String stringInput) {
     String[] steps = stringInput.split(":", 0);
     ClimbStep[] climbSteps = new ClimbStep[steps.length];
-    for (int i = 0; i > steps.length; i++) {
+    for (int i = 0; i < steps.length; i++) {
       climbSteps[i] = ParseClimbSteps(steps[i]);
     }
 
@@ -48,8 +48,8 @@ public class DataParser {
     ClimbSubstep[] substeps = new ClimbSubstep[stringSubsteps.length];
 
     for (int i = 0; i < stringSubsteps.length; i++) {
-      String[] values = stringSubsteps[i].split(",", 0);
-       substeps[i] = new ClimbSteps.ClimbSubstep(LiftID.valueOf(values[0]), Boolean.getBoolean(values[1]), Double.parseDouble(values[2]), Double.parseDouble(values[3]));
+      String[] values = (stringSubsteps[i].replaceAll("\\s", "")).split(",", 0);
+      substeps[i] = new ClimbSteps.ClimbSubstep(LiftID.valueOf(values[0]), Boolean.getBoolean(values[1]), Double.parseDouble(values[2]), Integer.parseInt(values[3]));
     }
 
 

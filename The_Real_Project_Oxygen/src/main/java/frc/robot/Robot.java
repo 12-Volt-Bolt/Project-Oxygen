@@ -30,6 +30,7 @@ import frc.robot.commands.HatchObtainPositionCommand;
 import frc.robot.commands.HatchPlacementHeightCommand;
 import frc.robot.commands.lifter_commands.ManualLifterCommand;
 import frc.robot.commands.lifter_commands.ParseLifterData;
+import frc.robot.commands.lifter_commands.StepLifter;
 import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.WhereAreMyCamerasCommand;
@@ -39,9 +40,11 @@ import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DiskUnitSubsystem;
 import frc.robot.statics_and_classes.ControllerFunctions;
 import frc.robot.statics_and_classes.DataParser;
+import frc.robot.statics_and_classes.RobotMap;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem;
+import frc.robot.subsystems.GenericTestFunctions;
 import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
@@ -51,6 +54,7 @@ import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 import frc.robot.statics_and_classes.VisionMath;
 import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
+import frc.robot.statics_and_classes.ClimbSteps;
 import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.statics_and_classes.DataParser;
 
@@ -228,8 +232,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    new NonFCDDriveCommand().start();
+    //new NonFCDDriveCommand().start();
 
+    GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
+
+    //new ManualLifterCommand().start();;
   }
 
   @Override
@@ -313,35 +320,35 @@ public class Robot extends TimedRobot {
 
   private double testValue;
 
+  public ClimbSteps.ClimbSubstep climbchat;
+
+  @Override
+  public void testInit() {
+    //super.testInit();
+    new ClimbSteps();
+
+    ClimbStep temp = ClimbSteps.ParseSteps("a")[0];
+    climbchat = temp.substeps[0];
+  }
+
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-    if (OI.zeroSlotController.getBumper(Hand.kRight) == true) {
-      testValue = Constants_And_Equations.Clamp(-1, 1, testValue + 0.1);
-    } else if (OI.zeroSlotController.getBumper(Hand.kLeft) == true) {
-      testValue = Constants_And_Equations.Clamp(-1, 1, testValue - 0.1);
-    }
+    Scheduler.getInstance().run();
+    
+    new StepLifter().start();
 
-    driveSub.frontLeft.set(testValue);
+    
+    SmartDashboard.putString("liftID", climbchat.liftID.toString());
+    SmartDashboard.putBoolean("locPos", climbchat.lockPos);
+    SmartDashboard.putNumber("speed", climbchat.speed);
+    SmartDashboard.putNumber("distance", climbchat.distance);
+    
 
-    SmartDashboard.putData(new CameraServerStartInstantCommand());
-    SmartDashboard.putData(new CMDButtonCommand());
-    SmartDashboard.putData(new CollisionDetectionCommand());
-    SmartDashboard.putData(new DefaultDriveCommand());
-    SmartDashboard.putData(new FCDDriveCommand());
-    SmartDashboard.putData(new frontLifterCommand());
-    SmartDashboard.putData(new getBottomCamCommand());
-    SmartDashboard.putData(new getTopCamCommand());
-    SmartDashboard.putData(new HatchDefaultPositionCommand());
-    SmartDashboard.putData(new HatchObtainPositionCommand());
-    SmartDashboard.putData(new HatchPlacementHeightCommand());
-    // SmartDashboard.putData(new ManualLifterCommand());
-    SmartDashboard.putData(new NonFCDDriveCommand());
-    SmartDashboard.putData(new TurnToAngleCommand(90));
-    SmartDashboard.putData(new WhereAreMyCamerasCommand());
+    //GenericLiftSubsystem.setMotor(0.5, LiftID.testLift);
 
+    //GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
   }
-
 }

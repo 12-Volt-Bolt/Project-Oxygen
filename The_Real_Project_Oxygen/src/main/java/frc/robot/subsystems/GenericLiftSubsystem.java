@@ -23,6 +23,7 @@ public class GenericLiftSubsystem extends Subsystem {
   private static WPI_TalonSRX frontLift = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
   private static WPI_TalonSRX rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
   private static WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX testLift = new WPI_TalonSRX(1);
 
   private Constants_And_Equations cAndE;
 
@@ -34,7 +35,8 @@ public class GenericLiftSubsystem extends Subsystem {
   public enum LiftID {
     frontLift
     ,rearLift
-    ,topLift;
+    ,topLift
+    ,testLift;
   }
 
   //public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
@@ -45,6 +47,7 @@ public class GenericLiftSubsystem extends Subsystem {
     frontLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     rearLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     topLift.configOpenloopRamp(cAndE.rampTimeInSecs);
+    testLift.configOpenloopRamp(cAndE.rampTimeInSecs);
   }
 
   public void liftMethod(double speed, LiftID lifterName) {
@@ -61,6 +64,9 @@ public class GenericLiftSubsystem extends Subsystem {
         break;
       case topLift:
         topLift.set(speed);
+        break;
+      case testLift:
+        testLift.set(speed);
         break;
       default:
         String message = "Motor ID '" + lifterID + "' is not valid!";

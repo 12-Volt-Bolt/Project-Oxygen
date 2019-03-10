@@ -15,16 +15,19 @@ import frc.robot.statics_and_classes.DataParser;
  */
 public class ClimbSteps {
 
-    public static final String climbStepData = "";
+    private static DataParser parser = new DataParser();
 
-    public static ClimbStep[] CLIMB_STEPS;
+    public static final String LV_3_CLIBM_DATA = "testLift, false, 0.5, 50";
 
-    public static void ParseSteps(String inputData) {
-        CLIMB_STEPS = DataParser.ParseObject(inputData, "ClimbDataInput[]");
+    public static final ClimbStep[] LV_3_CLIMB_STEPS = parser.ParseObject(LV_3_CLIBM_DATA, "ClimbDataInput[]");
+
+    public static ClimbStep[] ParseSteps(String inputData) {
+        //LV_3_CLIMB_STEPS = DataParser.ParseObject(inputData, "ClimbDataInput[]");
+        return parser.ParseObject(LV_3_CLIBM_DATA, "ClimbStep[]");
     }
 
     public static ClimbStep GetStep(int step) {
-        return CLIMB_STEPS[step];
+        return LV_3_CLIMB_STEPS[step];
     }
 
     public static ClimbSubstep GetSubstep(int substep, ClimbStep step) {
@@ -43,9 +46,9 @@ public class ClimbSteps {
         public LiftID liftID;
         public Boolean lockPos;
         public double speed;
-        public double distance;
+        public int distance;
 
-        public ClimbSubstep(LiftID newLiftID, Boolean newLockPos, double newSpeed, double newDistance) {
+        public ClimbSubstep(LiftID newLiftID, Boolean newLockPos, double newSpeed, int newDistance) {
             liftID = newLiftID;
             lockPos = newLockPos;
             speed = newSpeed;

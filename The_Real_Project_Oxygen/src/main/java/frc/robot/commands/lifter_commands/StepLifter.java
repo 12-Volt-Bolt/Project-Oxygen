@@ -13,6 +13,7 @@ import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
 import frc.robot.statics_and_classes.ClimbSteps.ClimbSubstep;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,13 +24,13 @@ public class StepLifter extends Command {
   private static ClimbStep[] climbsteps = Robot.climbSteps;
   private static ArrayList<ClimbSubstep> currentSubsteps = new ArrayList<ClimbSubstep>();
   private static int currentStep = 0;
-  private static int lastStep;
+  private static int lastStep = 1;
   private static long waitTime;
 
   public StepLifter() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(genLift);
+    requires(Robot.genericLiftSub);
   }
   
 
@@ -43,14 +44,20 @@ public class StepLifter extends Command {
   protected void execute() {
 
     if (currentStep != lastStep) {
-      ClimbStep currentClimbStep = ClimbSteps.GetStep(currentStep);
+      lastStep = currentStep;
+      ClimbStep currentClimbStep = ClimbSteps.LV_3_CLIMB_STEPS[currentStep];
       currentSubsteps = new ArrayList<ClimbSubstep>(Arrays.asList(currentClimbStep.substeps));
+      SmartDashboard.putString("liftID", currentSubsteps.get(0).liftID.toString());
+      SmartDashboard.putBoolean("locPos", currentSubsteps.get(0).lockPos);
+      SmartDashboard.putNumber("speed", currentSubsteps.get(0).speed);
+      SmartDashboard.putNumber("distance", currentSubsteps.get(0).distance);
+
       for (int i = 0; i < currentSubsteps.size(); i++) {
         genLift.stopRunning(currentSubsteps.get(i).liftID);
       }
     }
     for (int i = 0; i < currentSubsteps.size(); i++) {
-      genLift.StepLift(currentSubsteps.get(i).liftID, currentSubsteps.get(i).lockPos, currentSubsteps.get(i).speed, currentSubsteps.get(i).distance);
+      genLift.setMotor(currentSubsteps.get(i).speed, currentSubsteps.get(i).liftID/*, currentSubsteps.get(i).speed, currentSubsteps.get(i).distance*/);
     }
   }
 
