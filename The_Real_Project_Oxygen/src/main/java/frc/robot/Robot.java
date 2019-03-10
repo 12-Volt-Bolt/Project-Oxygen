@@ -21,22 +21,17 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CMDButtonCommand;
+import frc.robot.commands.DriveFCDStrafeCommand;
+import frc.robot.commands.DriveWithVisionCommand;
 import frc.robot.commands.CameraServerStartInstantCommand;
-import frc.robot.commands.CollisionDetectionCommand;
-import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.HatchDefaultPositionCommand;
 import frc.robot.commands.HatchObtainPositionCommand;
 import frc.robot.commands.HatchPlacementHeightCommand;
 import frc.robot.commands.lifter_commands.ManualLifterCommand;
-import frc.robot.commands.NonFCDDriveCommand;
 import frc.robot.commands.TurnToAngleCommand;
-import frc.robot.commands.WhereAreMyCamerasCommand;
 import frc.robot.commands.lifter_commands.frontLifterCommand;
-import frc.robot.commands.getBottomCamCommand;
-import frc.robot.commands.getTopCamCommand;
 import frc.robot.subsystems.DiskUnitSubsystem;
-import frc.robot.statics_and_classes.ControllerFunctions;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem;
@@ -49,6 +44,8 @@ import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 import frc.robot.statics_and_classes.VisionMath;
 import frc.robot.statics_and_classes.Constants_And_Equations;
+import frc.robot.statics_and_classes.ControllerFunctions;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -221,7 +218,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-    new NonFCDDriveCommand().start();
+
+    if(OI.visionStartCombo()) {
+    new DriveWithVisionCommand().start();
+    }
+    else {
+    new DriveFCDStrafeCommand().start();
+    }
 
   }
 
@@ -245,30 +248,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
     SmartDashboard.putBoolean("Is Collision Detected:", driveSub.collisionDetected);
-
-    if(SmartDashboard.getBoolean(visionSub.isProcessCMDString, false)) {
-       driveSub.updateDriveLocalStrafe(ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)),
-       OI.zeroSlotController.getX(Hand.kLeft),
-       OI.zeroSlotController.getX(Hand.kRight));
-    }
-
-    else if (SmartDashboard.getBoolean(visionSub.isProcessCMDString2, false)) {
-      Robot.driveSub.updateDriveCartesian(
-        OI.zeroSlotController.getX(Hand.kLeft),
-        OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
-        //OI.zeroSlotController.getY(Hand.kLeft), 
-        OI.zeroSlotController.getX(Hand.kRight), true);
-    }
-
-    else {
-      new FCDDriveCommand().start();
-  }
-
-    // driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft),
-    // ControllerFunctions.RollingAverage(AxisNames.leftY,
-    // OI.zeroSlotController.getY(Hand.kLeft)),
-    // OI.zeroSlotController.getX(Hand.kRight));
-
+    new FCDDriveCommand().start();
+   
     SmartDashboard.putData(driveSub.turnController);
 
     SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getError());
@@ -283,24 +264,20 @@ public class Robot extends TimedRobot {
 
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
-    
-    switch (liftSafteyMode) { 
-      case 1:
-        new ManualLifterCommand().start();
-        break;
-    
-      default: 
-        break; // do nothing, saftey on break;
+    switch (liftSafteyMode) {
+    case 1:
+      new ManualLifterCommand().start();
+      break;
+
+    default:
+      break; // do nothing, saftey on break;
     }
-     
 
-    // visionSub.runRotationController(-5);
-    // visionSub.runStrafeController(-50);
-    // visionSub.runVerticalController(1);
+  
 
-    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
+    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
+        OI.oneSlotController.getBButtonPressed());
 
-   // m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
 
   }
 
@@ -321,19 +298,12 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putData(new CameraServerStartInstantCommand());
     SmartDashboard.putData(new CMDButtonCommand());
-    SmartDashboard.putData(new CollisionDetectionCommand());
-    SmartDashboard.putData(new DefaultDriveCommand());
     SmartDashboard.putData(new FCDDriveCommand());
     SmartDashboard.putData(new frontLifterCommand());
-    SmartDashboard.putData(new getBottomCamCommand());
-    SmartDashboard.putData(new getTopCamCommand());
     SmartDashboard.putData(new HatchDefaultPositionCommand());
     SmartDashboard.putData(new HatchObtainPositionCommand());
     SmartDashboard.putData(new HatchPlacementHeightCommand());
     // SmartDashboard.putData(new ManualLifterCommand());
-    SmartDashboard.putData(new NonFCDDriveCommand());
-    SmartDashboard.putData(new TurnToAngleCommand(90));
-    SmartDashboard.putData(new WhereAreMyCamerasCommand());
 
   }
 

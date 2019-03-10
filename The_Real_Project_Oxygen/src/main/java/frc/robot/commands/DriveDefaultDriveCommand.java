@@ -7,13 +7,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
 
-public class NonFCDDriveCommand extends Command {
-  public NonFCDDriveCommand() {
+public class DriveDefaultDriveCommand extends Command {
+
+  public DriveDefaultDriveCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveSub);
@@ -27,7 +26,7 @@ public class NonFCDDriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -39,6 +38,7 @@ public class NonFCDDriveCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.driveSub.StopThePresses();
   }
 
   // Called when another command which requires one or more of the same

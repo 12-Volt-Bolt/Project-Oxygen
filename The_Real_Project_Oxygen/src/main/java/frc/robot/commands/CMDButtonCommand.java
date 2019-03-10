@@ -20,14 +20,15 @@ public class CMDButtonCommand extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.visionSub.CMDButtonOn(true);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.visionSub.CMDButtonOn(true);
-    Timer.delay(1);
     Robot.visionSub.CMDButtonOn(false);
+    Timer.delay(1);
+    Robot.visionSub.CMDButtonOn(true);
   }
 
   // Make this return true when this Command no longer needs to run execute()

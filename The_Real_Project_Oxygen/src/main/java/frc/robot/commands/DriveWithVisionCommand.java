@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
 
 public class DriveWithVisionCommand extends Command {
   public DriveWithVisionCommand() {
@@ -24,7 +23,6 @@ public class DriveWithVisionCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.visionSub.driveWithVision();
   }
 
   // Make this return true when this Command no longer needs to run execute()

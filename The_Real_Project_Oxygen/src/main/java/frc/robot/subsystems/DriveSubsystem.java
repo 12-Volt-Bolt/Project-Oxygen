@@ -42,7 +42,6 @@ import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.statics_and_classes.RobotMap;
-import frc.robot.commands.DefaultDriveCommand;
 //import jdk.javadoc.internal.doclets.toolkit.resources.doclets;
 
 /**
@@ -115,7 +114,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    setDefaultCommand(new DefaultDriveCommand());
+    //setDefaultCommand(new DefaultDriveCommand());
   }
 
   public void updateDriveCartesian(double xLeft, double yLeft, double xRight) {
@@ -133,10 +132,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
         twist);
   }
 
-  public void updateDriveCartesian(double xLeft, double yLeft, double xRight, Boolean locked) {
+  public void updateDriveCartesian(double xLeft, double yLeft, double xRight, double angle, Boolean locked) {
     mecDrive.setSafetyEnabled(false);
 
-    if (OI.zeroSlotController.getPOV() != -1) {
+    if (angle != -1) {
       setTurnControllerSetpointDeg(OI.zeroSlotController.getPOV());
     }
 
@@ -183,7 +182,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       enableTurnController(true);
       currentRotationRate = rotateToAngleRate;
     }
-    setMecanumRotationSpeedWithoutJoy(currentRotationRate);
+    setMecanumRotationSpeedWithJoy(currentRotationRate, OI.zeroSlotController.getY(Hand.kLeft), Math.abs(OI.zeroSlotController.getX(Hand.kRight)));
   }
 
   public void setMecanumRotationSpeedWithJoy(double speed, double yLeft, double xLeft) {

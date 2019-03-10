@@ -8,16 +8,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
 
 /**
  * Add your docs here.
  */
-public class getTopCamCommand extends InstantCommand {
+public class CameraStartCameraServerCommand extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public getTopCamCommand() {
+  public CameraStartCameraServerCommand() {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -26,7 +25,6 @@ public class getTopCamCommand extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.visionSub.theOnlyCamServer.setSource(Robot.visionSub.topCam);
   }
 
 }

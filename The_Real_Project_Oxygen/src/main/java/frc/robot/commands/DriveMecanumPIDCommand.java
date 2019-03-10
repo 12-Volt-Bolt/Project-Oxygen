@@ -9,28 +9,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Constants_And_Equations;
 import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.subsystems.GenericLiftSubsystem;
-import frc.robot.subsystems.LifterSubsystem;
-import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 
-public class ManualLifterCommand extends Command {
-
-  private static LifterSubsystem liftSub;
-  private static Constants_And_Equations cAndE;
-  private static GenericLiftSubsystem genLift;
-  
-  public ManualLifterCommand() {
+public class DriveMecanumPIDCommand extends Command {
+  public DriveMecanumPIDCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-
-    requires(Robot.frontLiftSub);
-    requires(Robot.rearLiftSub);
-    requires(Robot.topLiftSub);
-    requires(liftSub);
-    requires(genLift);
+    requires(Robot.driveSub);
   }
 
   // Called just before this Command runs the first time
@@ -41,33 +27,28 @@ public class ManualLifterCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    //liftSub.moveAllLifters(cAndE.deadzone(OI.oneSlotController.getY(Hand.kRight)), cAndE.deadzone(OI.oneSlotController.getY(Hand.kLeft)), cAndE.deadzone(cAndE.triggersAsJoy()));
-
-    genLift.liftMethod(cAndE.deadzone(OI.oneSlotController.getY(Hand.kRight)), LiftID.frontLift);
-    genLift.liftMethod(cAndE.deadzone(OI.oneSlotController.getY(Hand.kLeft)), LiftID.rearLift);
-    genLift.liftMethod(cAndE.deadzone(cAndE.triggersAsJoy()), LiftID.topLift);
+    Robot.driveSub.updateDriveCartesian(
+      OI.zeroSlotController.getX(Hand.kLeft),
+      OI.zeroSlotController.getY(Hand.kLeft), 
+      OI.zeroSlotController.getX(Hand.kRight),
+      OI.zeroSlotController.getPOV(),
+       true);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if (Robot.liftSafteyMode != 1) {
-      return true;
-    } else {
-      return false;
-    }
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    genLift.StopThePresses();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    genLift.StopThePresses();
   }
 }

@@ -7,12 +7,17 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+import frc.robot.OI;
 
-public class TurnToAngleCommand extends Command {
-  public TurnToAngleCommand() {
+
+public class DriveFCDStrafeCommand extends Command {
+  public DriveFCDStrafeCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.driveSub);
   }
 
   // Called just before this Command runs the first time
@@ -23,6 +28,8 @@ public class TurnToAngleCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getY(Hand.kLeft),
+        OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
   }
 
   // Make this return true when this Command no longer needs to run execute()

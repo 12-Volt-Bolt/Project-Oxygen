@@ -38,7 +38,8 @@ public class FCDDriveCommand extends Command {
       Robot.driveSub.updateDriveCartesian(
           OI.zeroSlotController.getX(Hand.kLeft),
           //OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
-          OI.zeroSlotController.getY(Hand.kLeft), 
+          OI.zeroSlotController.getY(Hand.kLeft),
+          OI.zeroSlotController.getPOV(),
           OI.zeroSlotController.getX(Hand.kRight), true);
     }
   }

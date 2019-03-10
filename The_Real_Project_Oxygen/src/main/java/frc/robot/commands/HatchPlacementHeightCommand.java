@@ -24,6 +24,7 @@ public class HatchPlacementHeightCommand extends Command {
     Robot.DiskSub.setSpeed(0.1);
     Timer.delay(1);
     Robot.DiskSub.stopThePresses();
+    // Use a variable to check the position of the hatch unit before running
   }
 
   // Called repeatedly when this Command is scheduled to run
