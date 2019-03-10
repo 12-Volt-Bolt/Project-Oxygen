@@ -8,7 +8,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants_And_Equations.AxisNames;
 
 /**
@@ -128,8 +127,9 @@ public class ControllerFunctions extends Subsystem {
     double raSum = 0;
     double[] oldArray = CallArray(whichAxis);
     double[] tempRollingArray = rollingArray;
+    double oldInput = GetRolledAverage(whichAxis);
 
-    if (Math.abs(newInput) < Math.abs(GetRolledAverage(whichAxis)) == true) {
+    if (newInput >= 0 && newInput < oldInput || newInput <= 0 && newInput > oldInput) {
       for (int i = 0; i < raLength; i++) {
         tempRollingArray[i] = newInput;
       }
