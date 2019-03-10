@@ -20,9 +20,9 @@ public class GenericLiftSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private WPI_TalonSRX frontLift = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
-  private WPI_TalonSRX rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
-  private WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+  private WPI_TalonSRX frontLift;
+  private WPI_TalonSRX rearLift;
+  private WPI_TalonSRX topLift;
 
   private Constants_And_Equations cAndE;
 
@@ -43,11 +43,10 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
-  //public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
-  //public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
-  //public int topLift = RobotMap.TOP_RAIL_MOTOR_ID;
-
   public GenericLiftSubsystem() {
+    frontLift = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
+    rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
+    topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
     frontLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     rearLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     topLift.configOpenloopRamp(cAndE.rampTimeInSecs);

@@ -40,5 +40,6 @@
     "typescript",
     "typescriptreact",
     "yml"
-  ]
+  ],
+  "wpilib.autoStartRioLog": true
 }

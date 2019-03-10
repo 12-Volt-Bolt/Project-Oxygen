@@ -103,11 +103,10 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
     turnController.setInputRange(-180.0f, 180.0f);
     turnController.setOutputRange(-0.7, 0.7);
-    // Please set output range to less than 80%
+    // Please set output range to less than 80%, 0.8
     turnController.setAbsoluteTolerance(kToleranceDegrees);
     turnController.setContinuous(true);
     turnController.setName("Drive PID Controller");
-
   }
 
   @Override
@@ -351,7 +350,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     SmartDashboard.putNumber("newZero", newZero);
     SmartDashboard.putNumber("Rotation speed", -rotationSpeed);
-
     return -rotationSpeed;
   }
 

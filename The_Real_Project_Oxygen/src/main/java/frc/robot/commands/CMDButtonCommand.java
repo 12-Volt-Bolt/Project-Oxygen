@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.OI;
 import frc.robot.Robot;
 
 public class CMDButtonCommand extends Command {
@@ -26,15 +27,21 @@ public class CMDButtonCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.visionSub.CMDButtonOn(false);
-    Timer.delay(1);
     Robot.visionSub.CMDButtonOn(true);
+    Timer.delay(1);
+    Robot.visionSub.updateVisionVariables();
+    Robot.visionSub.CMDButtonOn(false);
+    Timer.delay(0.2);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    if(!OI.visionStartCombo()) {
+      Robot.visionSub.CMDButtonOn(false);
+      return false;
+      }
+      return true;
   }
 
   // Called once after isFinished returns true

@@ -31,6 +31,10 @@ public class DiskUnitSubsystem extends Subsystem {
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
+    
+  }
+
+  public DiskUnitSubsystem() {
     hatchMotor = new WPI_VictorSPX(RobotMap.HATCH_MOTOR_ID);
     hatchMotor.set(0);
   }

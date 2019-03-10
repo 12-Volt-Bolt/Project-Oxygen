@@ -85,11 +85,11 @@ public class VisionSubsystem extends Subsystem {
   public static double alAngleInDegrees;
 
   // Calibration Data:
-  public static final int caliVTDistanceCm = 1;
-  public static final int caliVTCenterInPixels = 1;
-  public static final int caliVTSeparationInPixels = 1;
-  public static final int caliAlCenterInPixels = 1;
-  public static final int caliAlAngleInDegrees = 1;
+  public static final double caliVTDistanceCm = 57.15;
+  public static final double caliVTCenterInPixels = 448;
+  public static final double caliVTSeparationInPixels = 98;
+  public static final double caliAlCenterInPixels = 1;
+  public static final double caliAlAngleInDegrees = 1;
 
   // PID Controllers
   public PIDController rotationController;
@@ -118,7 +118,7 @@ public class VisionSubsystem extends Subsystem {
   private final float verticalD = 0.0f;
   private final float verticalF = 0.0f;
   // The minimum value required to vertical
-  private final float VERTICAL_VALUE = 0.1f;
+  private final float MIN_VERTICAL_VALUE = 0.1f;
 
   // Constants
   private static final int NO_DATA = -888;
@@ -168,12 +168,12 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public int distanceFromCamToTargetInCM() {
+  public double distanceFromCamToTargetInCM() {
     return ((caliVTSeparationInPixels) / (measSeparationPixels)) * (caliVTDistanceCm);
   }
 
-  public int lateralOffsetToTargetInCM() {
-    return (int) ((int) (caliVTCenterInPixels / measSeparationPixels) * (20.32 / vtSeparationInPixels));
+  public double lateralOffsetToTargetInCM() {
+    return (int) ((caliVTCenterInPixels - targetCenterXInPixels) * (20.32 / vtSeparationInPixels));
   }
 
   // If positive, strafe right
@@ -184,7 +184,7 @@ public class VisionSubsystem extends Subsystem {
 
   // If positive, rotate Left
   // If negative, rotate Right
-  public int aLineAngleOffset() {
+  public double aLineAngleOffset() {
     return (measAlAngleDegrees - caliAlAngleInDegrees);
   }
 
@@ -251,15 +251,16 @@ public class VisionSubsystem extends Subsystem {
   public double runVerticalController(double verticalOffset) {
     float distanceError = (float) -verticalOffset;
     float verticalAdjust = 0.0f;
-
+    
     if (verticalOffset > VERTICAL_DISTANCE_LIMIT) {
       return 0;
     }
 
-    // Robot.driveSub.setMecanumVerticalSpeedWithoutJoy(verticalAdjust);
-    verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
-    return verticalAdjust;
+    verticalAdjust = StrafeP * verticalAdjust + MIN_VERTICAL_VALUE;
 
+    //verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
+
+    return verticalAdjust;
   }
 
   public void driveWithVision() {
@@ -279,22 +280,7 @@ public class VisionSubsystem extends Subsystem {
   public void activateVisionDriveMode() {
 
   }
-
-  // untested method below
-  // The following method updates the vision variables values
-  public void getCMDData() {
-    if ((System.currentTimeMillis() % 2500) == 0 && SmartDashboard.getBoolean(isProcessCMDString, false)) {
-      SmartDashboard.putBoolean(isProcessCMDString, true);
-
-    }
-
-    else if ((System.currentTimeMillis() % 1000) == 0) {
-      SmartDashboard.putBoolean(isProcessCMDString, false);
-
-    }
-
-  }
-
+ 
   public void CMDButtonOn(boolean trueOrFalse) {
     if (trueOrFalse) {
       SmartDashboard.putBoolean(isProcessCMDString, true);
@@ -308,22 +294,14 @@ public class VisionSubsystem extends Subsystem {
   }
 
   public static void motorControllerRampForVision() {
-    double currentSpeed = Robot.driveSub.rearRight.get();
-  
-    if(Robot.driveSub.rearRight.get() < currentSpeed) {
    Robot.driveSub.rearRight.configOpenloopRamp(0.5);
    Robot.driveSub.rearLeft.configOpenloopRamp(0.5);
    Robot.driveSub.frontRight.configOpenloopRamp(0.5);
    Robot.driveSub.frontLeft.configOpenloopRamp(0.5);
-   }
-
-   else if(Robot.driveSub.rearRight.get() > currentSpeed) {
-    Robot.driveSub.rearRight.configOpenloopRamp(0);
-    Robot.driveSub.rearLeft.configOpenloopRamp(0);
-    Robot.driveSub.frontRight.configOpenloopRamp(0);
-    Robot.driveSub.frontLeft.configOpenloopRamp(0);
-   }
-
   }
-
+  
+  public static void configDriveControllersForVision() {
+    Robot.driveSub.mecDrive.setMaxOutput(0.5);
+    motorControllerRampForVision();
+  }
 }
