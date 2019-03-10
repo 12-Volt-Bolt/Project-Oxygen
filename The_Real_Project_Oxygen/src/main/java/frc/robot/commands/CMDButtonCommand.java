@@ -28,7 +28,7 @@ public class CMDButtonCommand extends Command {
   @Override
   protected void execute() {
     Robot.visionSub.CMDButtonOn(true);
-    Timer.delay(1);
+    Timer.delay(2);
     Robot.visionSub.updateVisionVariables();
     Robot.visionSub.CMDButtonOn(false);
     Timer.delay(0.2);

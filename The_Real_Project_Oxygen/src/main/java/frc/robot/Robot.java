@@ -168,8 +168,8 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("PID ERROR", driveSub.turnController.getError());
     SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
     // SmartDashboard Data
-    SmartDashboard.putNumber("Distance From Target", visionSub.distanceFromCamToTargetInCM() * (0.6));
-    SmartDashboard.putNumber("lateral Offset To Target", visionSub.lateralOffsetToTargetInCM());
+    SmartDashboard.putNumber("Distance From Target (ROBO PERI)", visionSub.distanceFromCamToTargetInCM() /* * (0.6)*/);
+    SmartDashboard.putNumber("lateral Offset To Target (ROBO PERI)", visionSub.lateralOffsetToTargetInCM());
   
     if (OI.allButtonComboPressesd(OI.zeroSlotController)) {
       navXGyro.reset();

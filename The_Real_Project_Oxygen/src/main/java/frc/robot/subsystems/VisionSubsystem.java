@@ -291,6 +291,7 @@ public class VisionSubsystem extends Subsystem {
 
   public void smartdashboardTestingMethod() {
 
+    
   }
 
   public static void motorControllerRampForVision() {
