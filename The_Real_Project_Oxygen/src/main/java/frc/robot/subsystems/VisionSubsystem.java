@@ -301,7 +301,7 @@ public class VisionSubsystem extends Subsystem {
   }
   
   public static void configDriveControllersForVision() {
-    Robot.driveSub.mecDrive.setMaxOutput(0.5);
-    motorControllerRampForVision();
+  //  Robot.driveSub.mecDrive.setMaxOutput(0.5);
+  //  motorControllerRampForVision();
   }
 }

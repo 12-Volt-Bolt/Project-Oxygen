@@ -296,8 +296,8 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("Meas AL Angle",visionSub.measAlAngleDegrees);
     SmartDashboard.putNumber("Meas AL Angle Center Pixles",visionSub.measAlCenterXPixels);
 
-    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
-        OI.oneSlotController.getBButtonPressed());
+    //DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
+    //    OI.oneSlotController.getBButtonPressed());
 
 
   }
