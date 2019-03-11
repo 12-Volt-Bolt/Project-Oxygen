@@ -277,9 +277,6 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public void activateVisionDriveMode() {
-
-  }
  
   public void CMDButtonOn(boolean trueOrFalse) {
     if (trueOrFalse) {
@@ -291,7 +288,7 @@ public class VisionSubsystem extends Subsystem {
 
   public void smartdashboardTestingMethod() {
 
-    
+
   }
 
   public static void motorControllerRampForVision(boolean trueOrFalse) {
