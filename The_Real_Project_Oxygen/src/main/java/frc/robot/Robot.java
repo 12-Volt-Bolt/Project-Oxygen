@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.CMDButtonCommand;
 import frc.robot.commands.DriveFCDStrafeCommand;
+import frc.robot.commands.DriveMecanumPIDCommand;
 import frc.robot.commands.DriveWithVisionCommand;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.FCDDriveCommand;
@@ -273,9 +274,14 @@ public class Robot<topLiftSub> extends TimedRobot {
     if(OI.visionStartCombo()) {
     new CMDButtonCommand().start();
     new DriveWithVisionCommand().start();
+    new DriveFCDStrafeCommand().cancel();;
+    //new DriveMecanumPIDCommand().cancel();
     }
     else {
+    new CMDButtonCommand().cancel();;
+    new DriveWithVisionCommand().cancel();
     new DriveFCDStrafeCommand().start();
+    //new DriveMecanumPIDCommand().start();
     }
 
 
@@ -294,7 +300,7 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("measCenterXPixels", visionSub.measCenterXPixels);
     SmartDashboard.putNumber("Meas Separation", visionSub.measSeparationPixels);
     SmartDashboard.putNumber("Meas AL Angle",visionSub.measAlAngleDegrees);
-    SmartDashboard.putNumber("Meas AL Angle Center Pixles",visionSub.measAlCenterXPixels);
+    SmartDashboard.putNumber("Meas AL Angle Center Pixels",visionSub.measAlCenterXPixels);
 
     //DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
     //    OI.oneSlotController.getBButtonPressed());

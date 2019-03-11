@@ -294,15 +294,31 @@ public class VisionSubsystem extends Subsystem {
     
   }
 
-  public static void motorControllerRampForVision() {
-   Robot.driveSub.rearRight.configOpenloopRamp(0.5);
-   Robot.driveSub.rearLeft.configOpenloopRamp(0.5);
-   Robot.driveSub.frontRight.configOpenloopRamp(0.5);
-   Robot.driveSub.frontLeft.configOpenloopRamp(0.5);
+  public static void motorControllerRampForVision(boolean trueOrFalse) {
+   if(trueOrFalse){
+   Robot.driveSub.rearRight.configOpenloopRamp(0.7);
+   Robot.driveSub.rearLeft.configOpenloopRamp(0.7);
+   Robot.driveSub.frontRight.configOpenloopRamp(0.7);
+   Robot.driveSub.frontLeft.configOpenloopRamp(0.7);
+   }
+   else {
+    Robot.driveSub.rearRight.configOpenloopRamp(0);
+    Robot.driveSub.rearLeft.configOpenloopRamp(0);
+    Robot.driveSub.frontRight.configOpenloopRamp(0);
+    Robot.driveSub.frontLeft.configOpenloopRamp(0);
+   }
   }
   
-  public static void configDriveControllersForVision() {
-  //  Robot.driveSub.mecDrive.setMaxOutput(0.5);
-  //  motorControllerRampForVision();
+  public static void configDriveControllersForVision(boolean trueOrFalse) {
+    if(trueOrFalse) {Robot.driveSub.mecDrive.setMaxOutput(0.75);
+    motorControllerRampForVision(true);
+    }
+    else {
+      if(trueOrFalse) {
+        Robot.driveSub.mecDrive.setMaxOutput(1);
+        motorControllerRampForVision(false);
+    }
   }
+}
+
 }

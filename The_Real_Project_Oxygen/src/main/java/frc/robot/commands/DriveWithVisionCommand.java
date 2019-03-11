@@ -11,25 +11,34 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class DriveWithVisionCommand extends Command {
+  
+  private double meanMotorSpeeds;
+
   public DriveWithVisionCommand() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.driveSub);
+    meanMotorSpeeds = 0;
   }
-
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     //Robot.driveSub.setTurnControllerSetpointDeg(Robot.navXGyro.getAngle());
-    Robot.visionSub.motorControllerRampForVision();
+    Robot.visionSub.motorControllerRampForVision(true);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    meanMotorSpeeds = Robot.driveSub.meanOfDriveMotorSpeeds();
     Robot.visionSub.updateVisionVariables();
-  //  Robot.driveSub.updateDriveCartesian(Robot.visionSub.distanceFromCamToTargetInCM(), 0,0);// Robot.visionSub.distanceFromCamToTargetInCM(),
-                                                                                             // Robot.driveSub.rotateToAngleRate);
+    Robot.driveSub.updateDriveCartesian(Robot.visionSub.distanceFromCamToTargetInCM(), 0,0);// Robot.visionSub.distanceFromCamToTargetInCM(),// Robot.driveSub.rotateToAngleRate);
+    if(meanMotorSpeeds > Robot.driveSub.meanOfDriveMotorSpeeds()) {
+      Robot.visionSub.motorControllerRampForVision(false);
+    }           
+    else {
+      Robot.visionSub.motorControllerRampForVision(true);
+    }                                                                           
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -41,6 +50,7 @@ public class DriveWithVisionCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.visionSub.motorControllerRampForVision(false);
   }
 
   // Called when another command which requires one or more of the same
