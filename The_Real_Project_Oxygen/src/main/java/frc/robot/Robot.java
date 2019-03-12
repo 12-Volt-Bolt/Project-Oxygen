@@ -224,10 +224,10 @@ public class Robot<topLiftSub> extends TimedRobot {
 
     if(OI.visionStartCombo()) {
       new CMDButtonCommand().start();
-  //  new DriveWithVisionCommand().start();
+    new DriveWithVisionCommand().start();
     }
     else {
-   // new DriveFCDStrafeCommand().start();
+    new DriveFCDStrafeCommand().start();
     }
 
   
@@ -263,9 +263,9 @@ public class Robot<topLiftSub> extends TimedRobot {
   
   
     if(OI.visionStartCombo()) {
-    // new CMDButtonCommand().start();
-    // new DriveWithVisionCommand().start();
-    //new DriveFCDStrafeCommand().cancel();;
+     new CMDButtonCommand().start();
+     new DriveWithVisionCommand().start();
+     //new DriveFCDStrafeCommand().cancel();;
     //new DriveMecanumPIDCommand().cancel();
     }
     else {
