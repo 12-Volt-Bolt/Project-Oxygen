@@ -29,11 +29,17 @@ public class GenericLiftSubsystem extends Subsystem {
   private static WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
   private static WPI_TalonSRX testLift = new WPI_TalonSRX(1);
 
+  //private static Encoder frontEncoder = new Encoder(6, 7, false, EncodingType.k4X);
+  //private static Encoder rearEncoder = new Encoder(2, 3, false, EncodingType.k4X);
+  //private static Encoder topEncoder = new Encoder(4, 5, false, EncodingType.k4X);
+  //private static Encoder testEncoder = new Encoder(0, 1, false, EncodingType.k2X);
+  private static Encoder t = new Encoder(0, 1);
+
   private static Constants_And_Equations cAndE;
-  private static EncoderSubsystem encoders;
+  private static EncoderSubsystem encoders = new EncoderSubsystem();
 
   private static int[] liftLocation = new int[] { 0,0,0,0 };
-  private static Boolean[] liftRunning = new Boolean[] { false,false,false,false };
+  public static Boolean[] liftRunning = new Boolean[] { false,false,false,false };
 
   //private int[] liftID = new int[] { 7,6,5 };
   
@@ -81,8 +87,9 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
-  public void stopRunning(LiftID liftID) {
+  public static void StopRunning(LiftID liftID) {
     liftRunning[liftID.ordinal()] = false;
+    setMotor(0, liftID);
   }
 
   public void StopThePresses() {
@@ -99,10 +106,12 @@ public class GenericLiftSubsystem extends Subsystem {
   }
 
   public static void StepLift(LiftID liftID, Boolean locPos, double speed, int distance) {
+    liftRunning[liftID.ordinal()] = true;
+
     if (locPos == true) {
-      LiftAndStay(liftID, speed, distance);
+      LiftTillStopped(liftID, speed);
     } else {
-      LiftAndCoast(liftID, speed, distance);
+      LiftTimed(liftID, speed, distance);
     }
   }
 
@@ -138,14 +147,31 @@ public class GenericLiftSubsystem extends Subsystem {
       realSpeed = -realSpeed;
     }
 
-    while (Constants_And_Equations.WithinRange(distance, currentLiftLocation, 5) != true || liftRunning[liftID.ordinal()] == true) {
+    while (Constants_And_Equations.WithinRange(distance, currentLiftLocation, 5) != true && liftRunning[liftID.ordinal()] == true) {
       setMotor(realSpeed, liftID);
     }
     liftRunning[liftID.ordinal()] = false;
   }
 
+  private static void LiftTillStopped(LiftID liftID, double speed) {
+
+    while (liftRunning[liftID.ordinal()] == true) {
+      setMotor(speed, liftID);
+    }
+  }
+
+  private static void LiftTimed(LiftID liftID, double speed, int distance) {
+
+    long time = System.currentTimeMillis() + (Math.abs(distance) * 100);
+    while (System.currentTimeMillis() < time && liftRunning[liftID.ordinal()] == true) {
+      setMotor(speed, liftID);
+    }
+    StopRunning(liftID);
+    System.out.println("motor off");
+  }
+
   public static void UpdateLiftLocation() {
-    liftLocation = encoders.GetLiftPercetages();
+    liftLocation[3] = t.get();
     SmartDashboard.putNumber("encoder", liftLocation[3]);
   }
 }

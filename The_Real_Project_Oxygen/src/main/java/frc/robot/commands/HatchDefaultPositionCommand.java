@@ -8,7 +8,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.subsystems.EncoderSubsystem;
 
 public class HatchDefaultPositionCommand extends Command {
   public HatchDefaultPositionCommand() {
@@ -17,10 +19,11 @@ public class HatchDefaultPositionCommand extends Command {
     requires(Robot.DiskSub);
   }
 
+  private EncoderSubsystem encodesub = new EncoderSubsystem();
+
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.DiskSub.setSpeed(-0.1);
   }
 
   // Called repeatedly when this Command is scheduled to run

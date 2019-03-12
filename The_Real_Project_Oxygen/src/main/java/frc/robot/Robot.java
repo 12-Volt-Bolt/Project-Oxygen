@@ -79,6 +79,7 @@ public class Robot extends TimedRobot {
   public static LifterSubsystem liftSub;
   public static GenericLiftSubsystem genericLiftSub;
   public static DiskUnitSubsystem DiskSub;
+  public static EncoderSubsystem encodeSub;
 
   public static ClimbStep[] climbSteps;
 
@@ -122,7 +123,8 @@ public class Robot extends TimedRobot {
     //driveSub = new DriveSubsystem();
     DiskSub = new DiskUnitSubsystem();
     genericLiftSub = new GenericLiftSubsystem();
-    climbSteps = new DataParser().ParseObject("stringInput", ClimbStep[].class.getName());
+    //climbSteps = new DataParser();
+    encodeSub = new EncoderSubsystem();
 
     // VERY IMPORTANT
     navXGyro.reset();
@@ -182,6 +184,11 @@ public class Robot extends TimedRobot {
       navXGyro.reset();
     }
 */
+
+
+Scheduler.getInstance().run();
+
+new StepLifter().start();
   }
 
   /**
@@ -264,19 +271,14 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-if (x == 1)
-{ x = 2;
-    new StepLifter().start();}
+
+    new StepLifter().start();
   }
 
-  private double testValue;
 
-  public ClimbSteps.ClimbSubstep climbchat;
-
-  @Override
-  public void testInit() {
+    @Override
+    public void testInit() {
     //super.testInit();
-    new ClimbSteps();
     Scheduler.getInstance().run();
   }
 
@@ -288,7 +290,7 @@ if (x == 1)
     
     //new StepLifter().start();
 
-    SmartDashboard.putNumber("all encoders", EncoderSubsystem.GetLiftPercetages()[3]);
+    //SmartDashboard.putNumber("all encoders", EncoderSubsystem.GetLiftPercetages()[3]);
 
     /*
     SmartDashboard.putString("liftID", climbchat.liftID.toString());
