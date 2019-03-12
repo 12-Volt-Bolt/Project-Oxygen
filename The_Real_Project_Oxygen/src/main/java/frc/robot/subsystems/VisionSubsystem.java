@@ -145,6 +145,8 @@ public class VisionSubsystem extends Subsystem {
     topCam = CameraServer.getInstance().startAutomaticCapture(TOP_CAM_NAME, RobotMap.CAMERA_ZERO_ID);
     topCam.setResolution(TOP_CAM_ROW_PIXEL_NUM, TOP_CAM_COL_PIXEL_NUM);
     topCam.setFPS(TOP_CAM_FPS);
+    topCam.setWhiteBalanceAuto();
+    topCam.setExposureAuto();
 
     bottomCam = CameraServer.getInstance().startAutomaticCapture(BOTTOM_CAM_NAME, RobotMap.CAMERA_ONE_ID);
     bottomCam.setResolution(BOTTOM_CAM_ROW_PIXEL_NUM, BOTTOM_CAM_COL_PIXEL_NUM);
@@ -152,7 +154,8 @@ public class VisionSubsystem extends Subsystem {
 
     bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
     topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-
+    
+    
     targetCenterXInPixels = NO_DATA;
     vtSeparationInPixels = NO_DATA;
     alCenterXinPixels = NO_DATA;

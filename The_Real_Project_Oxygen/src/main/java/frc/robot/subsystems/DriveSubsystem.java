@@ -127,14 +127,16 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public void updateDriveCartesian(double yValue, double xValue, double twist) {
     mecDrive.setSafetyEnabled(false);
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xValue, 0.1),
-        -Constants_And_Equations.deadzone(yValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1));
+    mecDrive.driveCartesian(
+        Constants_And_Equations.deadzone(yValue, 0.1),
+        -Constants_And_Equations.deadzone(xValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1));
   }
 
   public void updateDriveCartesian(double yValue, double xValue, double twist, double gyroAngle) {
     mecDrive.setSafetyEnabled(false);
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xValue, 0.1),
-        -Constants_And_Equations.deadzone(yValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1), -gyroAngle);
+    mecDrive.driveCartesian(
+        Constants_And_Equations.deadzone(yValue, 0.1),
+        -Constants_And_Equations.deadzone(xValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1), gyroAngle);
   }
 
   public void driveRampNonFCD(double yValue, double xValue, double twist) {
