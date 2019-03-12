@@ -89,12 +89,20 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   boolean isTurnControllerOn = false;
 
+  WPI_TalonSRX[] driveMotorArray = {frontRight, frontLeft, rearLeft, rearRight};
+
+
   public DriveSubsystem() {
     super();
     frontLeft = new WPI_TalonSRX(RobotMap.FRONT_LEFT_MOTOR_ID);
     frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
     rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
     rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
+
+    frontLeft.configFactoryDefault();
+    rearLeft.configFactoryDefault();
+    rearRight.configFactoryDefault();
+    frontRight.configFactoryDefault();
 
     mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
 
@@ -222,6 +230,12 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
   }
 
+  // Updates rotateToAngleRate to input specified in parameters
+  @Override
+  public void pidWrite(double output) {
+    rotateToAngleRate = output;
+  }
+
 
   public void updateDriveRamp(double xLeft, double yLeft, double twist) {
     mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
@@ -243,6 +257,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     frontLeft.set(speed);
     rearRight.set(speed);
     rearLeft.set(speed);
+  }
+
+  public double meanOfDriveMotorSpeeds() {
+     double totalSpeed = 0;;  
+    for(WPI_TalonSRX currentTalon : driveMotorArray ) {
+      totalSpeed += currentTalon.get();
+    }
+    return totalSpeed / driveMotorArray.length;
   }
 
   /// Encoder methods should go here. Please make sure to have an encoder object
@@ -267,11 +289,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   }
 
-  // Updates rotateToAngleRate to input specified in parameters
-  @Override
-  public void pidWrite(double output) {
-    rotateToAngleRate = output;
-  }
 
   // Move robot forward/backwards without rotation drifting
   // Strafe robot

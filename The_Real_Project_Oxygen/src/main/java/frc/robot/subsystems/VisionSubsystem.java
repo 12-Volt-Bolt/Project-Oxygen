@@ -134,7 +134,7 @@ public class VisionSubsystem extends Subsystem {
   // degrees
   float ROTATION_DEGREES_LIMIT = 70;
   // cm
-  double LATERAL_DISTANCE_LIMIT = 20 * 2.54;
+  double LATERAL_DISTANCE_LIMIT = 10 * 2.54;
 
   // Timer
   private double cmdTimer;
@@ -243,7 +243,7 @@ public class VisionSubsystem extends Subsystem {
 
     // Add left Strafe method
     // Add Right strafe method
-    // Robot.driveSub.setMecanumStrafeSpeedWithoutJoy(strafeAdjust);
+    
     return strafeAdjust;
   }
 
@@ -255,10 +255,10 @@ public class VisionSubsystem extends Subsystem {
     if (verticalOffset > VERTICAL_DISTANCE_LIMIT) {
       return 0;
     }
+    verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
 
     verticalAdjust = StrafeP * verticalAdjust + MIN_VERTICAL_VALUE;
 
-    //verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
 
     return verticalAdjust;
   }
@@ -277,9 +277,6 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public void activateVisionDriveMode() {
-
-  }
  
   public void CMDButtonOn(boolean trueOrFalse) {
     if (trueOrFalse) {
@@ -291,18 +288,34 @@ public class VisionSubsystem extends Subsystem {
 
   public void smartdashboardTestingMethod() {
 
-    
+
   }
 
-  public static void motorControllerRampForVision() {
-   Robot.driveSub.rearRight.configOpenloopRamp(0.5);
-   Robot.driveSub.rearLeft.configOpenloopRamp(0.5);
-   Robot.driveSub.frontRight.configOpenloopRamp(0.5);
-   Robot.driveSub.frontLeft.configOpenloopRamp(0.5);
+  public static void motorControllerRampForVision(boolean trueOrFalse) {
+   if(trueOrFalse){
+   Robot.driveSub.rearRight.configOpenloopRamp(0.7);
+   Robot.driveSub.rearLeft.configOpenloopRamp(0.7);
+   Robot.driveSub.frontRight.configOpenloopRamp(0.7);
+   Robot.driveSub.frontLeft.configOpenloopRamp(0.7);
+   }
+   else {
+    Robot.driveSub.rearRight.configOpenloopRamp(0);
+    Robot.driveSub.rearLeft.configOpenloopRamp(0);
+    Robot.driveSub.frontRight.configOpenloopRamp(0);
+    Robot.driveSub.frontLeft.configOpenloopRamp(0);
+   }
   }
   
-  public static void configDriveControllersForVision() {
-  //  Robot.driveSub.mecDrive.setMaxOutput(0.5);
-  //  motorControllerRampForVision();
+  public static void configDriveControllersForVision(boolean trueOrFalse) {
+    if(trueOrFalse) {Robot.driveSub.mecDrive.setMaxOutput(0.75);
+    motorControllerRampForVision(true);
+    }
+    else {
+      if(trueOrFalse) {
+        Robot.driveSub.mecDrive.setMaxOutput(1);
+        motorControllerRampForVision(false);
+    }
   }
+}
+
 }

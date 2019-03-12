@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.CMDButtonCommand;
 import frc.robot.commands.DriveFCDStrafeCommand;
+import frc.robot.commands.DriveMecanumPIDCommand;
 import frc.robot.commands.DriveWithVisionCommand;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.FCDDriveCommand;
@@ -75,14 +76,6 @@ public class Robot<topLiftSub> extends TimedRobot {
   // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
   // The the above at some point please. It keeps throwing an error
 
-  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
-  // The the above at some point please. It keeps throwing an error
-
-  // Stuff we don't need TODO
-  public static Compressor Comp0 = new Compressor(0);
-
-  // implement the above at some point please. It keeps throwing an error
-  // TODO
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -228,17 +221,16 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-/*
+
     if(OI.visionStartCombo()) {
-    new CMDButtonCommand().start();
-    new DriveWithVisionCommand().start();
+      new CMDButtonCommand().start();
+  //  new DriveWithVisionCommand().start();
     }
     else {
-    new DriveFCDStrafeCommand().start();
+   // new DriveFCDStrafeCommand().start();
     }
 
-  }
-  */
+  
 
   if(OI.zeroSlotController.getAButtonPressed()) {
     driveSub.mecDrive.setSafetyEnabled(false);
@@ -271,11 +263,17 @@ public class Robot<topLiftSub> extends TimedRobot {
   
   
     if(OI.visionStartCombo()) {
-    new CMDButtonCommand().start();
-    new DriveWithVisionCommand().start();
+    // new CMDButtonCommand().start();
+    // new DriveWithVisionCommand().start();
+    //new DriveFCDStrafeCommand().cancel();;
+    //new DriveMecanumPIDCommand().cancel();
     }
     else {
-    new DriveFCDStrafeCommand().start();
+   // new CMDButtonCommand().cancel();;
+   // new DriveWithVisionCommand().cancel();
+   // new DriveFCDStrafeCommand().start();
+    new DriveMecanumPIDCommand().start();
+    //new DriveMecanumPIDCommand().start();
     }
 
 
@@ -294,7 +292,7 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("measCenterXPixels", visionSub.measCenterXPixels);
     SmartDashboard.putNumber("Meas Separation", visionSub.measSeparationPixels);
     SmartDashboard.putNumber("Meas AL Angle",visionSub.measAlAngleDegrees);
-    SmartDashboard.putNumber("Meas AL Angle Center Pixles",visionSub.measAlCenterXPixels);
+    SmartDashboard.putNumber("Meas AL Angle Center Pixels",visionSub.measAlCenterXPixels);
 
     //DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
     //    OI.oneSlotController.getBButtonPressed());
@@ -328,7 +326,7 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putData(new HatchDefaultPositionCommand());
     SmartDashboard.putData(new HatchObtainPositionCommand());
     SmartDashboard.putData(new HatchPlacementHeightCommand());
-    // SmartDashboard.putData(new ManualLifterCommand());
+    SmartDashboard.putData(new ManualLifterCommand());
   }
 
 }
