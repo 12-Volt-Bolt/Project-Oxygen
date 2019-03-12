@@ -7,8 +7,11 @@
 
 package frc.robot.commands.lifter_commands;
 import frc.robot.subsystems.GenericLiftSubsystem;
+import frc.robot.subsystems.GenericTestFunctions;
 import frc.robot.Robot;
+import frc.robot.statics_and_classes.ClimbData;
 import frc.robot.statics_and_classes.ClimbSteps;
+import frc.robot.statics_and_classes.DataParser;
 import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
 import frc.robot.statics_and_classes.ClimbSteps.ClimbSubstep;
 
@@ -27,6 +30,10 @@ public class StepLifter extends Command {
   private static int lastStep = 1;
   private static long waitTime;
 
+  private static DataParser parser;
+  
+  public static ClimbStep[] LV_3_CLIMB_STEPS;
+
   public StepLifter() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -37,15 +44,18 @@ public class StepLifter extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    LV_3_CLIMB_STEPS = parser.ParseClimbData(ClimbData.LV_3_CLIMB_DATA);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    genLift.UpdateLiftLocation();
 
-    if (currentStep != lastStep) {
+    if (currentStep != lastStep) 
+    {
       lastStep = currentStep;
-      ClimbStep currentClimbStep = ClimbSteps.LV_3_CLIMB_STEPS[currentStep];
+      ClimbStep currentClimbStep = LV_3_CLIMB_STEPS[currentStep];
       currentSubsteps = new ArrayList<ClimbSubstep>(Arrays.asList(currentClimbStep.substeps));
       SmartDashboard.putString("liftID", currentSubsteps.get(0).liftID.toString());
       SmartDashboard.putBoolean("locPos", currentSubsteps.get(0).lockPos);
@@ -53,11 +63,13 @@ public class StepLifter extends Command {
       SmartDashboard.putNumber("distance", currentSubsteps.get(0).distance);
 
       for (int i = 0; i < currentSubsteps.size(); i++) {
-        genLift.stopRunning(currentSubsteps.get(i).liftID);
+        //genLift.stopRunning(currentSubsteps.get(i).liftID);
       }
-    }
-    for (int i = 0; i < currentSubsteps.size(); i++) {
-      genLift.setMotor(currentSubsteps.get(i).speed, currentSubsteps.get(i).liftID/*, currentSubsteps.get(i).speed, currentSubsteps.get(i).distance*/);
+    } else 
+    {
+      for (int i = 0; i < currentSubsteps.size(); i++) {
+        genLift.StepLift(currentSubsteps.get(i).liftID, currentSubsteps.get(i).lockPos, currentSubsteps.get(i).speed, currentSubsteps.get(i).distance);
+      }
     }
   }
 

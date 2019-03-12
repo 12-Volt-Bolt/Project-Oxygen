@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import frc.robot.OI;
 import frc.robot.statics_and_classes.RobotMap;
 
@@ -52,6 +53,7 @@ public class GenericTestFunctions extends Subsystem {
   }
 
   public static void SetSpeed(double speed) {
+    hatchMotor.setSafetyEnabled(false);
     hatchMotor.set(speed);
   }
 

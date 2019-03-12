@@ -9,9 +9,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.statics_and_classes.RobotMap;
+import frc.robot.subsystems.EncoderSubsystem;
 
 /**
  * Add your docs here.
@@ -25,10 +29,11 @@ public class GenericLiftSubsystem extends Subsystem {
   private static WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
   private static WPI_TalonSRX testLift = new WPI_TalonSRX(1);
 
-  private Constants_And_Equations cAndE;
+  private static Constants_And_Equations cAndE;
+  private static EncoderSubsystem encoders;
 
-  private static double[] liftLocation = new double[3];
-  private static Boolean[] liftRunning = new Boolean[3];
+  private static int[] liftLocation = new int[] { 0,0,0,0 };
+  private static Boolean[] liftRunning = new Boolean[] { false,false,false,false };
 
   //private int[] liftID = new int[] { 7,6,5 };
   
@@ -48,6 +53,7 @@ public class GenericLiftSubsystem extends Subsystem {
     rearLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     topLift.configOpenloopRamp(cAndE.rampTimeInSecs);
     testLift.configOpenloopRamp(cAndE.rampTimeInSecs);
+    
   }
 
   public void liftMethod(double speed, LiftID lifterName) {
@@ -92,7 +98,7 @@ public class GenericLiftSubsystem extends Subsystem {
     StopThePresses();
   }
 
-  public static void StepLift(LiftID liftID, Boolean locPos, double speed, double distance) {
+  public static void StepLift(LiftID liftID, Boolean locPos, double speed, int distance) {
     if (locPos == true) {
       LiftAndStay(liftID, speed, distance);
     } else {
@@ -100,7 +106,7 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
-  private static void LiftAndStay(LiftID liftID, double speed, double distance) {
+  private static void LiftAndStay(LiftID liftID, double speed, int distance) {
     liftRunning[liftID.ordinal()] = true;
 
     double currentLiftLocation = liftLocation[liftID.ordinal()];
@@ -124,7 +130,7 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
-  private static void LiftAndCoast(LiftID liftID, double speed, double distance) {
+  private static void LiftAndCoast(LiftID liftID, double speed, int distance) {
     double currentLiftLocation = liftLocation[liftID.ordinal()];
     double realSpeed = speed;
 
@@ -132,9 +138,14 @@ public class GenericLiftSubsystem extends Subsystem {
       realSpeed = -realSpeed;
     }
 
-    while (Constants_And_Equations.WithinRange(distance, currentLiftLocation, 5) == true || liftRunning[liftID.ordinal()] == true) {
+    while (Constants_And_Equations.WithinRange(distance, currentLiftLocation, 5) != true || liftRunning[liftID.ordinal()] == true) {
       setMotor(realSpeed, liftID);
     }
     liftRunning[liftID.ordinal()] = false;
+  }
+
+  public static void UpdateLiftLocation() {
+    liftLocation = encoders.GetLiftPercetages();
+    SmartDashboard.putNumber("encoder", liftLocation[3]);
   }
 }

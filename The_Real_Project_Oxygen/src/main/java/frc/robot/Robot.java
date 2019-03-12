@@ -42,6 +42,7 @@ import frc.robot.statics_and_classes.ControllerFunctions;
 import frc.robot.statics_and_classes.DataParser;
 import frc.robot.statics_and_classes.RobotMap;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.EncoderSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem;
 import frc.robot.subsystems.GenericTestFunctions;
@@ -54,6 +55,7 @@ import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 import frc.robot.statics_and_classes.VisionMath;
 import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
+import frc.robot.statics_and_classes.ClimbData;
 import frc.robot.statics_and_classes.ClimbSteps;
 import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.statics_and_classes.DataParser;
@@ -116,8 +118,8 @@ public class Robot extends TimedRobot {
     visionSub = new VisionSubsystem();
     frontLiftSub = new FrontLiftSubsystem();
     rearLiftSub = new RearLiftSubsystem();
-    topLiftSub = new TopRailSubsystem();
-    driveSub = new DriveSubsystem();
+    //topLiftSub = new TopRailSubsystem();
+    //driveSub = new DriveSubsystem();
     DiskSub = new DiskUnitSubsystem();
     genericLiftSub = new GenericLiftSubsystem();
     climbSteps = new DataParser().ParseObject("stringInput", ClimbStep[].class.getName());
@@ -146,6 +148,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    /*
     // SmartDashboard Data
     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
     SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
@@ -178,7 +181,7 @@ public class Robot extends TimedRobot {
     if (OI.allButtonComboPressesd(OI.zeroSlotController)) {
       navXGyro.reset();
     }
-
+*/
   }
 
   /**
@@ -217,6 +220,8 @@ public class Robot extends TimedRobot {
      * ExampleCommand(); break; }
      */
 
+    Scheduler.getInstance().run();
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
@@ -231,7 +236,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    Scheduler.getInstance().run();
     //new NonFCDDriveCommand().start();
 
     GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
@@ -252,70 +256,17 @@ public class Robot extends TimedRobot {
     DiskSub.stopThePresses();
   }
 
+  private int x = 1;
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-    SmartDashboard.putBoolean("Is Collision Detected:", driveSub.collisionDetected);
-
-    if(SmartDashboard.getBoolean(visionSub.isProcessCMDString, false)) {
-       driveSub.updateDriveLocalStrafe(ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)),
-       OI.zeroSlotController.getX(Hand.kLeft),
-       OI.zeroSlotController.getX(Hand.kRight));
-    }
-
-    else if (SmartDashboard.getBoolean(visionSub.isProcessCMDString2, false)) {
-      Robot.driveSub.updateDriveCartesian(
-        OI.zeroSlotController.getX(Hand.kLeft),
-        OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
-        //OI.zeroSlotController.getY(Hand.kLeft), 
-        OI.zeroSlotController.getX(Hand.kRight), true);
-    }
-
-    else {
-      new FCDDriveCommand().start();
-  }
-
-    // driveSub.updateDriveLocalStrafe(OI.zeroSlotController.getX(Hand.kLeft),
-    // ControllerFunctions.RollingAverage(AxisNames.leftY,
-    // OI.zeroSlotController.getY(Hand.kLeft)),
-    // OI.zeroSlotController.getX(Hand.kRight));
-
-    SmartDashboard.putData(driveSub.turnController);
-
-    SmartDashboard.putNumber("PID-Average Error ", driveSub.turnController.getError());
-    SmartDashboard.putNumber("PID-Setpoint ", driveSub.turnController.getSetpoint());
-    SmartDashboard.putNumber("PID-Delta (Change in) Setpoint  ", driveSub.turnController.getDeltaSetpoint());
-    SmartDashboard.putNumber("PID-P", driveSub.turnController.getP());
-    SmartDashboard.putNumber("PID-I", driveSub.turnController.getI());
-    SmartDashboard.putNumber("PID-D", driveSub.turnController.getD());
-    SmartDashboard.putNumber("PID-F", driveSub.turnController.getF());
-
-    SmartDashboard.putNumber("Rolling average", ControllerFunctions.rolledAverageLeftY);
-
-    liftSafteyMode = LifterSubsystem.checkLiftSaftey();
-
-    
-    switch (liftSafteyMode) { 
-      case 1:
-        new ManualLifterCommand().start();
-        break;
-    
-      default: 
-        break; // do nothing, saftey on break;
-    }
-     
-
-    // visionSub.runRotationController(-5);
-    // visionSub.runStrafeController(-50);
-    // visionSub.runVerticalController(1);
-
-    DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(), OI.oneSlotController.getBButtonPressed());
-
-   // m_oi.zeroXJoyStartButton.whileHeld(new CMDButtonCommand());
-
+if (x == 1)
+{ x = 2;
+    new StepLifter().start();}
   }
 
   private double testValue;
@@ -326,9 +277,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     //super.testInit();
     new ClimbSteps();
-
-    ClimbStep temp = ClimbSteps.ParseSteps("a")[0];
-    climbchat = temp.substeps[0];
+    Scheduler.getInstance().run();
   }
 
   /**
@@ -336,16 +285,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    Scheduler.getInstance().run();
     
-    new StepLifter().start();
+    //new StepLifter().start();
 
-    
+    SmartDashboard.putNumber("all encoders", EncoderSubsystem.GetLiftPercetages()[3]);
+
+    /*
     SmartDashboard.putString("liftID", climbchat.liftID.toString());
     SmartDashboard.putBoolean("locPos", climbchat.lockPos);
     SmartDashboard.putNumber("speed", climbchat.speed);
     SmartDashboard.putNumber("distance", climbchat.distance);
-    
+    */
 
     //GenericLiftSubsystem.setMotor(0.5, LiftID.testLift);
 
