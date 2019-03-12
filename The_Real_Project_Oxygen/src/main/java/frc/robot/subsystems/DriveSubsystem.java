@@ -99,6 +99,11 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
     rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
 
+    frontLeft.configFactoryDefault();
+    rearLeft.configFactoryDefault();
+    rearRight.configFactoryDefault();
+    frontRight.configFactoryDefault();
+
     mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
 
     correctMotorDirectionForMecanumDrive();

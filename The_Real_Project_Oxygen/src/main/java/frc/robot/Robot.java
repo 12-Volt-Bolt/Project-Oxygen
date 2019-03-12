@@ -76,14 +76,6 @@ public class Robot<topLiftSub> extends TimedRobot {
   // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
   // The the above at some point please. It keeps throwing an error
 
-  // PowerDistributionPanel theOnlyPDP = new PowerDistributionPanel();
-  // The the above at some point please. It keeps throwing an error
-
-  // Stuff we don't need TODO
-  public static Compressor Comp0 = new Compressor(0);
-
-  // implement the above at some point please. It keeps throwing an error
-  // TODO
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -229,17 +221,16 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
-/*
+
     if(OI.visionStartCombo()) {
-    new CMDButtonCommand().start();
-    new DriveWithVisionCommand().start();
+      new CMDButtonCommand().start();
+  //  new DriveWithVisionCommand().start();
     }
     else {
-    new DriveFCDStrafeCommand().start();
+   // new DriveFCDStrafeCommand().start();
     }
 
-  }
-  */
+  
 
   if(OI.zeroSlotController.getAButtonPressed()) {
     driveSub.mecDrive.setSafetyEnabled(false);
@@ -272,15 +263,16 @@ public class Robot<topLiftSub> extends TimedRobot {
   
   
     if(OI.visionStartCombo()) {
-   // new CMDButtonCommand().start();
-   // new DriveWithVisionCommand().start();
+    // new CMDButtonCommand().start();
+    // new DriveWithVisionCommand().start();
     //new DriveFCDStrafeCommand().cancel();;
     //new DriveMecanumPIDCommand().cancel();
     }
     else {
    // new CMDButtonCommand().cancel();;
    // new DriveWithVisionCommand().cancel();
-    new DriveFCDStrafeCommand().start();
+   // new DriveFCDStrafeCommand().start();
+    new DriveMecanumPIDCommand().start();
     //new DriveMecanumPIDCommand().start();
     }
 

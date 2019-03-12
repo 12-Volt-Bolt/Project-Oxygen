@@ -134,7 +134,7 @@ public class VisionSubsystem extends Subsystem {
   // degrees
   float ROTATION_DEGREES_LIMIT = 70;
   // cm
-  double LATERAL_DISTANCE_LIMIT = 20 * 2.54;
+  double LATERAL_DISTANCE_LIMIT = 10 * 2.54;
 
   // Timer
   private double cmdTimer;
@@ -243,7 +243,7 @@ public class VisionSubsystem extends Subsystem {
 
     // Add left Strafe method
     // Add Right strafe method
-    // Robot.driveSub.setMecanumStrafeSpeedWithoutJoy(strafeAdjust);
+    
     return strafeAdjust;
   }
 
@@ -255,10 +255,10 @@ public class VisionSubsystem extends Subsystem {
     if (verticalOffset > VERTICAL_DISTANCE_LIMIT) {
       return 0;
     }
+    verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
 
     verticalAdjust = StrafeP * verticalAdjust + MIN_VERTICAL_VALUE;
 
-    //verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
 
     return verticalAdjust;
   }
