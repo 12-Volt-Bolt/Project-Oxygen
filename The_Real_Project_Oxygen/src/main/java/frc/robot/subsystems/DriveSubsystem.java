@@ -124,10 +124,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public void driveRampNonFCD(double twist) {
     mecDrive.driveCartesian(
-        Constants_And_Equations
-            .parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations
-            .parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
+        Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
+        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
         twist);
   }
 
@@ -202,7 +200,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public void setMecanumVerticalSpeedWithJoy(double speed, double xLeft, double xRight) {
     if(!turnController.isEnabled()){
-      turnController.setSetpoint(Robot.navXGyro.getYaw());
+      turnController.setSetpoint((int) Robot.navXGyro.getYaw());
     }
     mecDrive.driveCartesian(speed, -Constants_And_Equations.deadzone(xLeft, 0.1), Constants_And_Equations.deadzone(xRight, 0.1));
   }
