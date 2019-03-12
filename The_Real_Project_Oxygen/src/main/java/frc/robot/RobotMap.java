@@ -42,6 +42,9 @@ public class RobotMap {
   public static final int REAR_RAIL_MOTOR_ID = 6;
   public static final int TOP_RAIL_MOTOR_ID = 5;
 
+  // These are arm motors
+  public static final int HATCH_ARM_LIFTER = 0;
+
   // Solenoid IDs
   public static final int TOP_SOLENOID_ID = 1;
   public static final int BOTTOM_SOLENOID_ID = 2;
