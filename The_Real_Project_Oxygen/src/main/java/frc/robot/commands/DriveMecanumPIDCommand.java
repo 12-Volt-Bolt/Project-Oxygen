@@ -27,7 +27,7 @@ public class DriveMecanumPIDCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveSub.updateDriveCartesian(
+    Robot.driveSub.updateDriveCartesianPID(
       OI.zeroSlotController.getX(Hand.kLeft),
       OI.zeroSlotController.getY(Hand.kLeft), 
       OI.zeroSlotController.getX(Hand.kRight),

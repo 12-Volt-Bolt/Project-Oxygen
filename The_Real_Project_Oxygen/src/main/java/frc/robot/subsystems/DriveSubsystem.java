@@ -65,14 +65,16 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   final double kD = 0.08;
   final double kF = 0.00;
 
-
   // variables for LocRot driving
   private double newZero = 0.00;
   private double rotationSpeed = 0.00;
   private double angleOff = 0.00;
   private double locRotDelay; // is measured in milliseconds
 
-  /* This tuning parameter indicates how close to "on target" the PID Controller will attempt to get. */
+  /*
+   * This tuning parameter indicates how close to "on target" the PID Controller
+   * will attempt to get.
+   */
 
   final double kToleranceDegrees = 5.0f;
 
@@ -89,8 +91,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   boolean isTurnControllerOn = false;
 
-  WPI_TalonSRX[] driveMotorArray = {frontRight, frontLeft, rearLeft, rearRight};
-
+  WPI_TalonSRX[] driveMotorArray = { frontRight, frontLeft, rearLeft, rearRight };
 
   public DriveSubsystem() {
     super();
@@ -121,51 +122,51 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    //setDefaultCommand(new DefaultDriveCommand());
+    // setDefaultCommand(new DefaultDriveCommand());
   }
 
-  public void updateDriveCartesian(double xLeft, double yLeft, double xRight) {
+  public void updateDriveCartesian(double yValue, double xValue, double twist) {
     mecDrive.setSafetyEnabled(false);
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft, 0.1), -Constants_And_Equations.deadzone(yLeft, 0.1),
-        Constants_And_Equations.deadzone(xRight, 0.1));
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xValue, 0.1),
+        -Constants_And_Equations.deadzone(yValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1));
   }
 
-  public void driveRampNonFCD(double twist) {
-    mecDrive.driveCartesian(
-        Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getY(Hand.kLeft), 0.1)),
-        twist);
+  public void updateDriveCartesian(double yValue, double xValue, double twist, double gyroAngle) {
+    mecDrive.setSafetyEnabled(false);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xValue, 0.1),
+        -Constants_And_Equations.deadzone(yValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1), -gyroAngle);
   }
 
-  public void updateDriveCartesian(double xLeft, double yLeft, double xRight, double angle, Boolean locked) {
+  public void driveRampNonFCD(double yValue, double xValue, double twist) {
+    updateDriveCartesian(Constants_And_Equations.parabola(yValue), Constants_And_Equations.parabola(xValue), twist);
+  }
+
+  public void driveRampFCD(double yValue, double xValue, double twist, double gyroAngle) {
+   updateDriveCartesian(Constants_And_Equations.parabola(yValue), Constants_And_Equations.parabola(xValue), twist, gyroAngle);
+  }
+
+
+  public void updateDriveCartesianPID(double yValue, double xValue, double twist, double angle, Boolean locked) {
     mecDrive.setSafetyEnabled(false);
 
     if (angle != -1) {
-      setTurnControllerSetpointDeg(OI.zeroSlotController.getPOV());
+      setTurnControllerSetpointDeg(angle);
     }
 
-    if (Math.abs(OI.zeroSlotController.getX(Hand.kRight)) > 0.2) {
+    if (Math.abs(twist) > 0.2) {
       enableTurnController(false);
     }
 
     if (!turnController.isEnabled()) {
-      currentRotationRate = Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight), 0.1);
+      currentRotationRate = Constants_And_Equations.deadzone(twist, 0.1);
       enableTurnController(false);
     } else {
       currentRotationRate = rotateToAngleRate;
     }
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft), 0.1),
-        -Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft), 0.1), currentRotationRate,
-        -Robot.navXGyro.getAngle());
+    updateDriveCartesian(yValue, xValue, currentRotationRate, Robot.navXGyro.getAngle());
   }
 
-  public void driveRampFCD(double twist) {
-    mecDrive.driveCartesian(
-        Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-OI.zeroSlotController.getX(Hand.kLeft), 0.1)),
-        twist, -Robot.navXGyro.getAngle());
-  }
-
+  
   // "angle" is used to set a set point for the turn controller
   // The parameter should be 0 - 360 (inclusive)
   // Enables the turn controller
@@ -187,40 +188,23 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       enableTurnController(true);
       currentRotationRate = rotateToAngleRate;
     }
-    setMecanumRotationSpeedWithJoy(currentRotationRate, OI.zeroSlotController.getY(Hand.kLeft), Math.abs(OI.zeroSlotController.getX(Hand.kRight)));
+    setMecanumRotationSpeedWithJoy(currentRotationRate, 0, 0);
   }
 
-  public void setMecanumRotationSpeedWithJoy(double speed, double yLeft, double xLeft) {
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yLeft, 0.1), -Constants_And_Equations.deadzone(xLeft, 0.1), speed, -Robot.navXGyro.getAngle());
+  public void setMecanumRotationSpeedWithJoy(double speed, double yValue, double xValue) {
+    updateDriveCartesian(yValue, xValue, speed);
   }
 
-  public void setMecanumRotationSpeedWithoutJoy(double speed) {
-    mecDrive.driveCartesian(0, 0, speed, -Robot.navXGyro.getAngle());
+  public void setMecanumStrafeSpeedWithJoy(double speed, double yValue, double twist) {
+    updateDriveLocalStrafe(yValue, speed, twist);
   }
 
-  public void setMecanumStrafeSpeedWithJoy(double speed, double yLeft, double xRight) {
-    updateDriveLocalStrafe(yLeft, speed, xRight);
-  }
-
-  public void setMecanumStrafeSpeedWithoutJoy(double speed) {
-    updateDriveLocalStrafe(0, speed, 0);
-  }
-
-  public void setMecanumVerticalSpeedWithJoy(double speed, double xLeft, double xRight) {
-    if(!turnController.isEnabled()){
+  public void setMecanumYSpeedWithJoy(double speed, double xValue, double twist) {
+    if (!turnController.isEnabled()) {
       turnController.setSetpoint((int) Robot.navXGyro.getYaw());
     }
-    mecDrive.driveCartesian(speed, -Constants_And_Equations.deadzone(xLeft, 0.1), Constants_And_Equations.deadzone(xRight, 0.1));
+    updateDriveCartesian(speed, xValue, twist);
   }
-
-  public void setMecanumVerticalSpeedWithoutJoy(double speed) {
-  /*  if(!turnController.isEnabled()){
-      turnController.setSetpoint(Robot.navXGyro.getYaw());
-    }
-    */
-    mecDrive.driveCartesian(speed, 0, 0);
-  }
-
 
   public void enableTurnController(boolean trueOrFalse) {
     if (trueOrFalse) {
@@ -236,12 +220,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     rotateToAngleRate = output;
   }
 
-
-  public void updateDriveRamp(double xLeft, double yLeft, double twist) {
-    mecDrive.driveCartesian(Constants_And_Equations.parabola(Constants_And_Equations.deadzone(-xLeft)),
-        Constants_And_Equations.parabola(-Constants_And_Equations.deadzone(-yLeft)), twist, -Robot.navXGyro.getAngle());
-  }
-
   // This method is used to rectify wheel rotation directions
   public void correctMotorDirectionForMecanumDrive() {
     // Please do not edit this unless you know the purpose of it.
@@ -249,7 +227,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     frontLeft.setInverted(true);
     rearLeft.setInverted(true);
     rearRight.setInverted(true);
-
   }
 
   public void setAllMotors(double speed) {
@@ -260,8 +237,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   }
 
   public double meanOfDriveMotorSpeeds() {
-     double totalSpeed = 0;;  
-    for(WPI_TalonSRX currentTalon : driveMotorArray ) {
+    double totalSpeed = 0;
+    ;
+    for (WPI_TalonSRX currentTalon : driveMotorArray) {
       totalSpeed += currentTalon.get();
     }
     return totalSpeed / driveMotorArray.length;
@@ -272,7 +250,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Wheels have an 8 in diameter
   // Methods we need: Drive "x" distance, zero encoder each encoder, zero both
   /// enocoders
-
 
   // Stops all motors
   public void StopThePresses() {
@@ -289,7 +266,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   }
 
-
   // Move robot forward/backwards without rotation drifting
   // Strafe robot
   // Robot can still turn without inturupting movement
@@ -304,7 +280,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     // drive forward based on leftJoyX, Strafe based on LeftJoyY, turn based on
     // AmountDrifted+RightJoyX
     mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)),
-        Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)), Math.round(Robot.navXGyro.getAngle() - newZero) + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
+        Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)),
+        Math.round(Robot.navXGyro.getAngle() - newZero)
+            + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
   }
 
   public void moveMecanumStraight(double speed) {
@@ -316,26 +294,29 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     }
     // drive forward based on leftJoyX, Strafe based on LeftJoyY, turn based on
     // AmountDrifted+RightJoyX
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)), speed, Math.round(Robot.navXGyro.getAngle() - newZero) + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(OI.zeroSlotController.getY(Hand.kLeft)), speed,
+        Math.round(Robot.navXGyro.getAngle() - newZero)
+            + Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kRight)));
   }
-  
+
   // Move robot forward/backwards without rotation drifting by asigning a local
   // north and turning towards that
   // Strafe robot
   // Robot can still turn without inturupting movement
   // Relies on newZero to work
-  public void updateDriveLocalStrafe(double yLeft, double xLeft, double xRight) {
+  public void updateDriveLocalStrafe(double yValue, double xValue, double twist) {
     mecDrive.setSafetyEnabled(false);
     // Resets local north if turning
 
-    rotationSpeed = locRotationLock(xLeft, -xRight);
+    rotationSpeed = locRotationLock(xValue, -twist);
 
     // newZero = Robot.navXGyro.getAngle();
-    mecDrive.driveCartesian(Constants_And_Equations.deadzone(xLeft), Constants_And_Equations.deadzone(-yLeft), rotationSpeed);
+    updateDriveCartesian(yValue, xValue, twist);
   }
 
   public double locRotationLock(double xInput, double zInput) {
-    // if Z axis joystick is moving or has moved within the past 0.4 seconds set doLocRot to "true", else leave as "false"
+    // if Z axis joystick is moving or has moved within the past 0.4 seconds set
+    // doLocRot to "true", else leave as "false"
     boolean doLocRot = false;
     if (Constants_And_Equations.deadzone(zInput) != 0) {
       locRotDelay = System.currentTimeMillis();
@@ -349,14 +330,17 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
       rotationSpeed = zInput;
     } else {
       angleOff = Robot.navXGyro.getAngle() - newZero;
-      // if "angleOff" is greater than kToleranceDegrees, rotationSpeed equals zero and robot does not turn
+      // if "angleOff" is greater than kToleranceDegrees, rotationSpeed equals zero
+      // and robot does not turn
       if (Math.abs(angleOff) < kToleranceDegrees) {
         rotationSpeed = 0;
       } else {
-        // if strafing, set locRot power lower beacuse the wheels are already turning, they dont need to pass the minimum required torque
+        // if strafing, set locRot power lower beacuse the wheels are already turning,
+        // they dont need to pass the minimum required torque
         double turnPower;
         if (xInput != 0) {
-          turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.25); // turnPower equals 
+          turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.25); // turnPower
+                                                                                                                     // equals
         } else {
           turnPower = Constants_And_Equations.deadzoneSet(Constants_And_Equations.parabola((angleOff) / 180), 0.35);
         }
@@ -384,6 +368,4 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     SmartDashboard.putBoolean("CollisionDetected", collisionDetected);
   }
 
-
-  
 }

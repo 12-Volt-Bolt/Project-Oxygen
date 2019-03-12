@@ -38,10 +38,9 @@ public class CMDButtonCommand extends Command {
   @Override
   protected boolean isFinished() {
     if(!OI.visionStartCombo()) {
-      Robot.visionSub.CMDButtonOn(false);
-      return false;
-      }
       return true;
+      }
+      return false;
   }
 
   // Called once after isFinished returns true
