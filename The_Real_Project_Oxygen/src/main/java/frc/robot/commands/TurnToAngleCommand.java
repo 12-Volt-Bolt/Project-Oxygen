@@ -8,11 +8,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
 public class TurnToAngleCommand extends Command {
-  public TurnToAngleCommand() {
+  private double angle;
+  public TurnToAngleCommand(double angle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.driveSub);
+    this.angle = angle;
   }
 
   // Called just before this Command runs the first time
@@ -23,6 +27,7 @@ public class TurnToAngleCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    Robot.driveSub.turnToAngleDeg(angle);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -34,11 +39,13 @@ public class TurnToAngleCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.driveSub.enableTurnController(false);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.driveSub.enableTurnController(false);
   }
 }

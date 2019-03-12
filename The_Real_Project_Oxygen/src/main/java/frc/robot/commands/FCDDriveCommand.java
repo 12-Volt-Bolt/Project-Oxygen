@@ -29,15 +29,14 @@ public class FCDDriveCommand extends Command {
   @Override
   protected void execute() {
     if (OI.zeroSlotController.getRawButtonPressed(RobotMap.LEFT_STICK_ID)) {
-      Robot.driveSub.updateDriveRamp(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
+      Robot.driveSub.driveRampFCD(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), Robot.navXGyro.getAngle());
     } 
     else if(!Robot.navXGyro.isConnected()) {
       Robot.driveSub.updateDriveCartesian(OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getY(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));
     }
     else {
-      Robot.driveSub.updateDriveCartesian(
+      Robot.driveSub.updateDriveCartesianPID(
           OI.zeroSlotController.getX(Hand.kLeft),
-          //OI.ySpeedMotorSportsSeries(OI.zeroSlotController), 
           OI.zeroSlotController.getY(Hand.kLeft),
           OI.zeroSlotController.getPOV(),
           OI.zeroSlotController.getX(Hand.kRight), true);

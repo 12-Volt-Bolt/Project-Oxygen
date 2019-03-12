@@ -76,7 +76,7 @@ public class VisionSubsystem extends Subsystem {
   public static final String measAlCenterXString = "DB/Slider 2";
   public static final String measAlAngleDegreesString = "DB/Slider 3";
   public static final String isProcessCMDString = "DB/Button 0";
-  public static final String isProcessCMDString2 = "DB/Button 1";
+ //x public static final String isProcessCMDString2 = "DB/Button 1";
 
   // Data obtained from LabVIEW vision program
   public static double targetCenterXInPixels;
@@ -118,7 +118,7 @@ public class VisionSubsystem extends Subsystem {
   private final float verticalD = 0.0f;
   private final float verticalF = 0.0f;
   // The minimum value required to vertical
-  private final float MIN_VERTICAL_VALUE = 0.1f;
+  private final float MIN_FORWARD_VALUE = 0.1f;
 
   // Constants
   private static final int NO_DATA = -888;
@@ -130,7 +130,7 @@ public class VisionSubsystem extends Subsystem {
   private static double mecTwistSpeed;
 
   // cm
-  double VERTICAL_DISTANCE_LIMIT = 25 * 2.54;
+  double FORWARD_DISTANCE_LIMIT = 25 * 2.54;
   // degrees
   float ROTATION_DEGREES_LIMIT = 70;
   // cm
@@ -138,6 +138,8 @@ public class VisionSubsystem extends Subsystem {
 
   // Timer
   private double cmdTimer;
+
+  private Object verticalAdjust;
 
   public VisionSubsystem() {
     topCam = CameraServer.getInstance().startAutomaticCapture(TOP_CAM_NAME, RobotMap.CAMERA_ZERO_ID);
@@ -195,6 +197,7 @@ public class VisionSubsystem extends Subsystem {
     measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, NO_DATA);
   }
 
+  /*
   // aLineAngleOffset()
   public double runRotationController(double rotationOffsetDeg) {
     float headingError = (float) -rotationOffsetDeg;
@@ -219,25 +222,26 @@ public class VisionSubsystem extends Subsystem {
     // Robot.driveSub.setMecanumRotationSpeedWithoutJoy(rotationAdjust);
     return rotationAdjust;
   }
+  */
 
   // lateralOffsetToTargetInCM()
-  public double runStrafeController(double latteralOffSet) {
+  public double runStrafeController(double lateralOffSet) {
 
-    if (latteralOffSet > LATERAL_DISTANCE_LIMIT) {
+    if (lateralOffSet > LATERAL_DISTANCE_LIMIT) {
       return 0;
     }
 
-    float strafeError = (float) -latteralOffSet;
+    float strafeError = (float) -lateralOffSet;
     float strafeAdjust = 0.0f;
 
     strafeError /= LATERAL_DISTANCE_LIMIT;
 
     // strafe left
-    if (0 > latteralOffSet) {
+    if (0 > lateralOffSet) {
       strafeAdjust = StrafeP * strafeError - MIN_STRAFE_VALUE;
     }
     // strafe Right
-    else if (0 < latteralOffSet) {
+    else if (0 < lateralOffSet) {
       strafeAdjust = StrafeP * strafeError + MIN_STRAFE_VALUE;
     }
 
@@ -248,29 +252,24 @@ public class VisionSubsystem extends Subsystem {
   }
 
   // distanceFromCamToTargetInCM();
-  public double runVerticalController(double verticalOffset) {
-    float distanceError = (float) -verticalOffset;
-    float verticalAdjust = 0.0f;
+  public double runForwardController(double forwardOffset) {
+    float distanceError = (float) -forwardOffset;
+    float forwardAdjust = 0.0f;
     
-    if (verticalOffset > VERTICAL_DISTANCE_LIMIT) {
+    if (forwardOffset > FORWARD_DISTANCE_LIMIT) {
       return 0;
     }
-    verticalAdjust /= VERTICAL_DISTANCE_LIMIT;
 
-    verticalAdjust = StrafeP * verticalAdjust + MIN_VERTICAL_VALUE;
+    forwardAdjust /= FORWARD_DISTANCE_LIMIT;
+
+    forwardAdjust = StrafeP * forwardAdjust + MIN_FORWARD_VALUE;
 
 
-    return verticalAdjust;
+    return forwardAdjust;
   }
 
-  public void driveWithVision() {
-    Robot.driveSub.updateDriveCartesian(runStrafeController(lateralOffsetToTargetInCM()), distanceFromCamToTargetInCM(),
-        runRotationController(aLineAngleOffset()));
-  }
-
-  public void positionRobotPhase1() {
-    runRotationController(aLineAngleOffset());
-    runStrafeController(lateralOffsetToTargetInCM());
+  public void driveWithVision(double lateralSpeed, double forwardSpeed) {
+    Robot.driveSub.updateDriveCartesian(forwardSpeed, lateralSpeed, Robot.driveSub.rotateToAngleRate);      
   }
 
   public void stopThePresses() {
@@ -293,10 +292,10 @@ public class VisionSubsystem extends Subsystem {
 
   public static void motorControllerRampForVision(boolean trueOrFalse) {
    if(trueOrFalse){
-   Robot.driveSub.rearRight.configOpenloopRamp(0.7);
-   Robot.driveSub.rearLeft.configOpenloopRamp(0.7);
-   Robot.driveSub.frontRight.configOpenloopRamp(0.7);
-   Robot.driveSub.frontLeft.configOpenloopRamp(0.7);
+   Robot.driveSub.rearRight.configOpenloopRamp(0);
+   Robot.driveSub.rearLeft.configOpenloopRamp(0);
+   Robot.driveSub.frontRight.configOpenloopRamp(0);
+   Robot.driveSub.frontLeft.configOpenloopRamp(0);
    }
    else {
     Robot.driveSub.rearRight.configOpenloopRamp(0);
@@ -307,7 +306,8 @@ public class VisionSubsystem extends Subsystem {
   }
   
   public static void configDriveControllersForVision(boolean trueOrFalse) {
-    if(trueOrFalse) {Robot.driveSub.mecDrive.setMaxOutput(0.75);
+    if(trueOrFalse) {
+    Robot.driveSub.mecDrive.setMaxOutput(0.75);
     motorControllerRampForVision(true);
     }
     else {

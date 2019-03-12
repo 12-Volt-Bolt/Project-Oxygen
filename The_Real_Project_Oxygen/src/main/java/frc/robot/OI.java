@@ -27,7 +27,7 @@ public class OI {
   public static XboxController zeroSlotController = new XboxController(RobotMap.CONTROLLER_ZERO_ID);
   public static XboxController oneSlotController = new XboxController(RobotMap.CONTROLLER_ONE_ID);
 
-  JoystickButton zeroXConJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
+  public static JoystickButton zeroXConJoyYButton = new JoystickButton(zeroSlotController, RobotMap.Y_BUTTON_ID),
       zeroXJoyJoyBButton = new JoystickButton(zeroSlotController, RobotMap.B_BUTTON_ID),
       zeroXJoyAButton = new JoystickButton(zeroSlotController, RobotMap.A_BUTTON_ID),
       zeroXJoyXButton = new JoystickButton(zeroSlotController, RobotMap.X_BUTTON_ID),
@@ -40,7 +40,7 @@ public class OI {
       zeroXJoyMenuButton = new JoystickButton(zeroSlotController, RobotMap.MENU_BUTTON_ID),
       zeroXJoyStartButton = new JoystickButton(zeroSlotController, RobotMap.START_BUTTON_ID);
 
-  JoystickButton xJoyYButton = new JoystickButton(oneSlotController, RobotMap.Y_BUTTON_ID),
+  public static JoystickButton xJoyYButton = new JoystickButton(oneSlotController, RobotMap.Y_BUTTON_ID),
       oneXJoyBButton = new JoystickButton(oneSlotController, RobotMap.B_BUTTON_ID),
       oneXJoyAButton = new JoystickButton(oneSlotController, RobotMap.A_BUTTON_ID),
       oneXJoyXButton = new JoystickButton(oneSlotController, RobotMap.X_BUTTON_ID),
