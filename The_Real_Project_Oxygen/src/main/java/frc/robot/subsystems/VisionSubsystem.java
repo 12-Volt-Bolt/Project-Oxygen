@@ -177,27 +177,13 @@ public class VisionSubsystem extends Subsystem {
     return (int) (((caliVTSeparationInPixels) / (measSeparationPixels)) * (caliVTDistanceCm));
   }
 
-  public double lateralOffsetToTargetInCM() {
+  public int lateralOffsetToTargetInCM() {
     return (int) (((caliVTCenterInPixels - targetCenterXInPixels) * (20.32 / vtSeparationInPixels)));
-  }
-
-  // If positive, strafe right
-  // If negative, strafe left
-  public int aLineCamOffset() {
-    return (int) (((caliAlCenterInPixels) - measCenterXPixels) * (20.32 / vtSeparationInPixels));
-  }
-
-  // If positive, rotate Left
-  // If negative, rotate Right
-  public double aLineAngleOffset() {
-    return (measAlAngleDegrees - caliAlAngleInDegrees);
   }
 
   public void updateVisionVariables() {
     measCenterXPixels = (int) SmartDashboard.getNumber(measCenterXString, NO_DATA);
     measSeparationPixels = (int) SmartDashboard.getNumber(measSeparationString, NO_DATA);
-    measAlAngleDegrees = (int) SmartDashboard.getNumber(measAlAngleDegreesString, NO_DATA);
-    measAlCenterXPixels = (int) SmartDashboard.getNumber(measAlCenterXString, NO_DATA);
   }
 
   /*
@@ -230,22 +216,25 @@ public class VisionSubsystem extends Subsystem {
   // lateralOffsetToTargetInCM()
   public double runStrafeController(double lateralOffSet) {
 
-    if (lateralOffSet > LATERAL_DISTANCE_LIMIT) {
+    if (Math.abs(lateralOffSet) > LATERAL_DISTANCE_LIMIT) {
       return 0;
     }
 
-    float strafeError = (float) -lateralOffSet;
-    float strafeAdjust = 0.0f;
+    double strafeError = (float) -lateralOffSet;
+    double strafeAdjust = 0.0f;
 
-    strafeError /= LATERAL_DISTANCE_LIMIT;
+  //  strafeError /= LATERAL_DISTANCE_LIMIT;
 
     // strafe left
     if (0 > lateralOffSet) {
-      strafeAdjust = StrafeP * strafeError - MIN_STRAFE_VALUE;
+     // strafeAdjust = StrafeP * strafeError - MIN_STRAFE_VALUE;
+     strafeAdjust = -0.6;
     }
     // strafe Right
     else if (0 < lateralOffSet) {
-      strafeAdjust = StrafeP * strafeError + MIN_STRAFE_VALUE;
+    //  strafeAdju st = StrafeP * strafeError + MIN_STRAFE_VALUE;
+    strafeAdjust = 0.3;
+
     }
 
     // Add left Strafe method

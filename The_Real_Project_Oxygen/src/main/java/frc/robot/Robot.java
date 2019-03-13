@@ -262,12 +262,14 @@ public class Robot<topLiftSub> extends TimedRobot {
     Scheduler.getInstance().run();  
 
     SmartDashboard.putNumber("Distance From Target (ROBO TELE)", visionSub.distanceFromCamToTargetInCM() /* * (0.6)*/);
-    SmartDashboard.putNumber("lateral Offset To Target (ROBO TELE)", visionSub.lateralOffsetToTargetInCM());
+    SmartDashboard.putNumber("lateral Offset To Target (ROBO TELE 1)", visionSub.lateralOffsetToTargetInCM());
     SmartDashboard.putNumber("Motor Adjust for Vision y axis", -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()) );
-  
+    SmartDashboard.putNumber("Lateral Motor speed", visionSub.runStrafeController(visionSub.lateralOffsetToTargetInCM()));
     if(OI.visionStartCombo()) {
      new CMDButtonCommand().start();
-   // Robot.driveSub.updateDriveCartesian(0, -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()),0);// Robot.visionSub.distanceFromCamToTargetInCM(),// Robot.driveSub.rotateToAngleRate);
+    Robot.driveSub.updateDriveCartesian(visionSub.runStrafeController(visionSub.lateralOffsetToTargetInCM()),
+          -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()), 0);// Robot.visionSub.distanceFromCamToTargetInCM(),//
+                                                                                                   // Robot.driveSub.rotateToAngleRate);
      //new DriveFCDStrafeCommand().cancel();;
     //new DriveMecanumPIDCommand().cancel();
     }
@@ -275,7 +277,7 @@ public class Robot<topLiftSub> extends TimedRobot {
    // new CMDButtonCommand().cancel();;
    // new DriveWithVisionCommand().cancel();
    // new DriveFCDStrafeCommand().start();
-    new DriveMecanumPIDCommand().start();
+   // new DriveMecanumPIDCommand().start();
     //new DriveMecanumPIDCommand().start();
     }
 
