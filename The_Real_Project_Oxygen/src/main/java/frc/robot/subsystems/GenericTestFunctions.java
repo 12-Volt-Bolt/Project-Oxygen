@@ -38,20 +38,6 @@ public class GenericTestFunctions extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  public static void ChangeMotorSpeed() {
-    if(OI.zeroSlotController.getPOV() == 0) {
-     changeMotorSpeedBy(0.1);
-    }
-
-    if(OI.zeroSlotController.getPOV() == 180) {
-      changeMotorSpeedBy(-0.1);
-    }
-    
-    if(OI.zeroSlotController.getBButton() == true) {
-      stopThePresses();
-    }
-  }
-
   public static void SetSpeed(double speed) {
     hatchMotor.setSafetyEnabled(false);
     hatchMotor.set(speed);

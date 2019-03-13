@@ -12,7 +12,7 @@ import frc.robot.OI;
 import frc.robot.subsystems.HatchArm;
 
 public class HatchArmAlternate extends Command {
-  private HatchArm hatchArm;
+  private HatchArm hatchArm = new HatchArm();
   private long time;
 
   public HatchArmAlternate() {

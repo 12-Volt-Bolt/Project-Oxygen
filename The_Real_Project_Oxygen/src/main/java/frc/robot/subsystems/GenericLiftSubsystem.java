@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.statics_and_classes.Constants_And_Equations;
 import frc.robot.statics_and_classes.RobotMap;
-import frc.robot.subsystems.EncoderSubsystem;
 
 /**
  * Add your docs here.
@@ -24,24 +23,20 @@ public class GenericLiftSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private static WPI_TalonSRX frontLift = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
-  private static WPI_TalonSRX rearLift = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
-  private static WPI_TalonSRX topLift = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
-  private static WPI_TalonSRX testLift = new WPI_TalonSRX(1);
+  private static WPI_TalonSRX frontLifter = new WPI_TalonSRX(RobotMap.FRONT_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX rearLifter = new WPI_TalonSRX(RobotMap.REAR_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX topLifter = new WPI_TalonSRX(RobotMap.TOP_RAIL_MOTOR_ID);
+  private static WPI_TalonSRX testLifter = new WPI_TalonSRX(1);
 
-  //private static Encoder frontEncoder = new Encoder(6, 7, false, EncodingType.k4X);
-  //private static Encoder rearEncoder = new Encoder(2, 3, false, EncodingType.k4X);
-  //private static Encoder topEncoder = new Encoder(4, 5, false, EncodingType.k4X);
-  //private static Encoder testEncoder = new Encoder(0, 1, false, EncodingType.k2X);
-  private static Encoder t = new Encoder(0, 1);
+  //private static Encoder frontEncoder = new Encoder(0, 1);
+  //private static Encoder rearEncoder = new Encoder(2, 3);
+  //private static Encoder topEncoder = new Encoder(4, 5);
+  private static Encoder testEncoder = new Encoder(0, 1);
 
   private static Constants_And_Equations cAndE;
-  private static EncoderSubsystem encoders = new EncoderSubsystem();
 
   private static int[] liftLocation = new int[] { 0,0,0,0 };
   public static Boolean[] liftRunning = new Boolean[] { false,false,false,false };
-
-  //private int[] liftID = new int[] { 7,6,5 };
   
   public enum LiftID {
     frontLift
@@ -50,15 +45,11 @@ public class GenericLiftSubsystem extends Subsystem {
     ,testLift;
   }
 
-  //public int frontLift = RobotMap.FRONT_RAIL_MOTOR_ID;
-  //public int rearLift = RobotMap.REAR_RAIL_MOTOR_ID;
-  //public int topLift = RobotMap.TOP_RAIL_MOTOR_ID;
-
   public GenericLiftSubsystem() {
-    frontLift.configOpenloopRamp(cAndE.rampTimeInSecs);
-    rearLift.configOpenloopRamp(cAndE.rampTimeInSecs);
-    topLift.configOpenloopRamp(cAndE.rampTimeInSecs);
-    testLift.configOpenloopRamp(cAndE.rampTimeInSecs);
+    frontLifter.configOpenloopRamp(cAndE.rampTimeInSecs);
+    rearLifter.configOpenloopRamp(cAndE.rampTimeInSecs);
+    topLifter.configOpenloopRamp(cAndE.rampTimeInSecs);
+    testLifter.configOpenloopRamp(cAndE.rampTimeInSecs);
     
   }
 
@@ -66,22 +57,22 @@ public class GenericLiftSubsystem extends Subsystem {
     setMotor(speed, lifterName);
   }
 
-  public static void setMotor(double speed, LiftID lifterID) {
-    switch (lifterID) {
+  public static void setMotor(double speed, LiftID liftID) {
+    switch (liftID) {
       case frontLift:
-        frontLift.set(speed);
+        frontLifter.set(speed);
         break;
       case rearLift:
-        rearLift.set(speed);
+        rearLifter.set(speed);
         break;
       case topLift:
-        topLift.set(speed);
+        topLifter.set(speed);
         break;
       case testLift:
-        testLift.set(speed);
+        testLifter.set(speed);
         break;
       default:
-        String message = "Motor ID '" + lifterID + "' is not valid!";
+        String message = "Motor ID '" + liftID + "' is not valid!";
         System.out.print(message);
         break;
     }
@@ -93,9 +84,9 @@ public class GenericLiftSubsystem extends Subsystem {
   }
 
   public void StopThePresses() {
-    frontLift.set(0);
-    rearLift.set(0);
-    topLift.set(0);
+    frontLifter.set(0);
+    rearLifter.set(0);
+    topLifter.set(0);
   }
 
   @Override
@@ -109,9 +100,9 @@ public class GenericLiftSubsystem extends Subsystem {
     liftRunning[liftID.ordinal()] = true;
 
     if (locPos == true) {
-      LiftTillStopped(liftID, speed);
+      LiftAndStay(liftID, speed, distance);
     } else {
-      LiftTimed(liftID, speed, distance);
+      LiftAndCoast(liftID, speed, distance);
     }
   }
 
@@ -140,14 +131,13 @@ public class GenericLiftSubsystem extends Subsystem {
   }
 
   private static void LiftAndCoast(LiftID liftID, double speed, int distance) {
-    double currentLiftLocation = liftLocation[liftID.ordinal()];
     double realSpeed = speed;
 
-    if (distance < currentLiftLocation) {
+    if (distance < liftLocation[liftID.ordinal()]) {
       realSpeed = -realSpeed;
     }
 
-    while (Constants_And_Equations.WithinRange(distance, currentLiftLocation, 5) != true && liftRunning[liftID.ordinal()] == true) {
+    while (Constants_And_Equations.WithinRange(distance, liftLocation[liftID.ordinal()], 5) != true && liftRunning[liftID.ordinal()] == true) {
       setMotor(realSpeed, liftID);
     }
     liftRunning[liftID.ordinal()] = false;
@@ -160,7 +150,7 @@ public class GenericLiftSubsystem extends Subsystem {
     }
   }
 
-  private static void LiftTimed(LiftID liftID, double speed, int distance) {
+  public static void LiftTimed(LiftID liftID, double speed, int distance) {
 
     long time = System.currentTimeMillis() + (Math.abs(distance) * 100);
     while (System.currentTimeMillis() < time && liftRunning[liftID.ordinal()] == true) {
@@ -171,7 +161,45 @@ public class GenericLiftSubsystem extends Subsystem {
   }
 
   public static void UpdateLiftLocation() {
-    liftLocation[3] = t.get();
-    SmartDashboard.putNumber("encoder", liftLocation[3]);
+    liftLocation[3] = (int) Math.round(liftLocation[3] / 5.7);
   }
+
+  public static void ResetEncoder(LiftID liftID) {
+    switch (liftID) {
+      case frontLift:
+        
+        break;
+      case rearLift:
+
+        break;
+      case topLift:
+        break;
+      case testLift:
+        testEncoder.reset();
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  public static void ResetLift(LiftID liftID) {
+    long time = System.currentTimeMillis() + 5000;
+    liftRunning[liftID.ordinal()] = true;
+    switch (liftID) {
+      case testLift:
+        LiftTimed(LiftID.testLift, -0.3, 50);
+        break;
+    
+      default:
+        break;
+
+      }
+
+    while (time > System.currentTimeMillis()) {}
+    liftRunning[liftID.ordinal()] = false;
+    ResetEncoder(liftID);
+  }
+
+
 }

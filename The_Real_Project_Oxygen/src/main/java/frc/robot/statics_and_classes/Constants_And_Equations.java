@@ -14,6 +14,7 @@ import java.sql.Time;
 //import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
@@ -92,15 +93,15 @@ public class Constants_And_Equations {
         }
     }
 
-    public static double triggersAsJoy() {
-        double leftTrig = deadzone(OI.oneSlotController.getTriggerAxis(Hand.kLeft));
-        double rightTrig = deadzone(OI.oneSlotController.getTriggerAxis(Hand.kRight));
-        if (leftTrig != 0 && rightTrig != 0) {
+    public static double triggersAsJoy(XboxController controller) {
+        double leftTrig = deadzone(controller.getTriggerAxis(Hand.kLeft));
+        double rightTrig = deadzone(controller.getTriggerAxis(Hand.kRight));
+        if (leftTrig == 0 && rightTrig == 0) {
             return 0;
         } else if (leftTrig > 0) {
-            return leftTrig;
+            return -leftTrig;
         } else if (rightTrig > 0) {
-            return -rightTrig;
+            return rightTrig;
         } else {
             return 0;
         }

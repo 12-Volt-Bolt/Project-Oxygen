@@ -6,9 +6,9 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands.lifter_commands;
-import frc.robot.subsystems.EncoderSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem;
 import frc.robot.subsystems.GenericTestFunctions;
+import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.statics_and_classes.ClimbData;
@@ -41,7 +41,6 @@ public class StepLifter extends Command {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.genericLiftSub);
-    requires(Robot.encodeSub);
   }
   
 
@@ -56,7 +55,7 @@ public class StepLifter extends Command {
   protected void execute() {
     genLift.UpdateLiftLocation();
 
-    int dPad = OI.zeroSlotController.getPOV();
+    int dPad = Robot.dPad;
     if (time > System.currentTimeMillis()) {
       time = System.currentTimeMillis() + 1000;
       if (dPad == 0) {
@@ -68,6 +67,9 @@ public class StepLifter extends Command {
 
     currentStep = Constants_And_Equations.Clamp(0, LV_3_CLIMB_STEPS.length - 1, currentStep);
 
+    SmartDashboard.putNumber("dpad", dPad);
+    SmartDashboard.putNumber("current step", currentStep);
+    
     if (currentStep != lastStep) 
     {
       newStep = true;
@@ -85,6 +87,7 @@ public class StepLifter extends Command {
         genLift.StepLift(currentSubsteps.get(i).liftID, currentSubsteps.get(i).lockPos, currentSubsteps.get(i).speed, currentSubsteps.get(i).distance);
       }
     }
+
     SmartDashboard.putString("liftID", currentSubsteps.get(0).liftID.toString());
     SmartDashboard.putBoolean("locPos", currentSubsteps.get(0).lockPos);
     SmartDashboard.putNumber("speed", currentSubsteps.get(0).speed);

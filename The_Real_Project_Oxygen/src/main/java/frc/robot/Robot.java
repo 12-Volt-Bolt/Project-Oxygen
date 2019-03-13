@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -25,9 +26,7 @@ import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.CollisionDetectionCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
-import frc.robot.commands.HatchDefaultPositionCommand;
-import frc.robot.commands.HatchObtainPositionCommand;
-import frc.robot.commands.HatchPlacementHeightCommand;
+import frc.robot.commands.HatchArmAlternate;
 import frc.robot.commands.lifter_commands.ManualLifterCommand;
 import frc.robot.commands.lifter_commands.ParseLifterData;
 import frc.robot.commands.lifter_commands.StepLifter;
@@ -42,7 +41,6 @@ import frc.robot.statics_and_classes.ControllerFunctions;
 import frc.robot.statics_and_classes.DataParser;
 import frc.robot.statics_and_classes.RobotMap;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.EncoderSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
 import frc.robot.subsystems.GenericLiftSubsystem;
 import frc.robot.subsystems.GenericTestFunctions;
@@ -58,7 +56,7 @@ import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
 import frc.robot.statics_and_classes.ClimbData;
 import frc.robot.statics_and_classes.ClimbSteps;
 import frc.robot.statics_and_classes.Constants_And_Equations;
-import frc.robot.statics_and_classes.DataParser;
+import frc.robot.commands.HatchArmAlternate;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -79,7 +77,6 @@ public class Robot extends TimedRobot {
   public static LifterSubsystem liftSub;
   public static GenericLiftSubsystem genericLiftSub;
   public static DiskUnitSubsystem DiskSub;
-  public static EncoderSubsystem encodeSub;
 
   public static ClimbStep[] climbSteps;
 
@@ -124,8 +121,6 @@ public class Robot extends TimedRobot {
     DiskSub = new DiskUnitSubsystem();
     genericLiftSub = new GenericLiftSubsystem();
     //climbSteps = new DataParser();
-    encodeSub = new EncoderSubsystem();
-
     // VERY IMPORTANT
     navXGyro.reset();
     // VERY IMPORTANT
@@ -185,10 +180,6 @@ public class Robot extends TimedRobot {
     }
 */
 
-
-Scheduler.getInstance().run();
-
-new StepLifter().start();
   }
 
   /**
@@ -257,29 +248,33 @@ new StepLifter().start();
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+      //m_autonomousCommand.cancel();
     }
+    //super.testInit();
+    genericLiftSub.ResetLift(LiftID.testLift);
 
-    DiskSub.stopThePresses();
+
+    //DiskSub.stopThePresses();
   }
 
-  private int x = 1;
+  public static int dPad;
 
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run();
+    dPad = OI.zeroSlotController.getPOV();
+    SmartDashboard.putNumber("robot dpad", dPad);
+    SmartDashboard.putBoolean("robot", OI.zeroSlotController.getAButton());
 
+    Scheduler.getInstance().run();
     new StepLifter().start();
   }
 
 
-    @Override
-    public void testInit() {
-    //super.testInit();
-    Scheduler.getInstance().run();
+  @Override
+  public void testInit() {
   }
 
   /**
@@ -287,20 +282,7 @@ new StepLifter().start();
    */
   @Override
   public void testPeriodic() {
-    
-    //new StepLifter().start();
-
-    //SmartDashboard.putNumber("all encoders", EncoderSubsystem.GetLiftPercetages()[3]);
-
-    /*
-    SmartDashboard.putString("liftID", climbchat.liftID.toString());
-    SmartDashboard.putBoolean("locPos", climbchat.lockPos);
-    SmartDashboard.putNumber("speed", climbchat.speed);
-    SmartDashboard.putNumber("distance", climbchat.distance);
-    */
-
-    //GenericLiftSubsystem.setMotor(0.5, LiftID.testLift);
-
-    //GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
+    genericLiftSub.setMotor(Constants_And_Equations.triggersAsJoy(OI.zeroSlotController), LiftID.testLift);
+  
   }
 }
