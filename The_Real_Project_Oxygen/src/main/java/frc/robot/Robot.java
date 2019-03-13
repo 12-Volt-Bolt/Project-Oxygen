@@ -133,6 +133,7 @@ public class Robot<topLiftSub> extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    /*
     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
     SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
     
@@ -140,7 +141,6 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("Controller Y", OI.zeroSlotController.getY(Hand.kLeft));
     SmartDashboard.putNumber("Controller Z", OI.zeroSlotController.getX(Hand.kRight));
  
-
     // SmartDashboard.putNumber("NewZero", driveSub.newZero);
     // SmartDashboard.putNumber("Rotation Speed", driveSub.rotationSpeed);
     // SmartDashboard.putNumber("Angle Off", driveSub.angleOff);
@@ -161,9 +161,9 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("PID ERROR", driveSub.turnController.getError());
     SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
     // SmartDashboard Data
-    SmartDashboard.putNumber("Distance From Target (ROBO PERI)", visionSub.distanceFromCamToTargetInCM() /* * (0.6)*/);
-    SmartDashboard.putNumber("lateral Offset To Target (ROBO PERI)", visionSub.lateralOffsetToTargetInCM());
-  
+    */
+    visionSub.updateVisionVariables();
+   
     if (OI.allButtonComboPressesd(OI.zeroSlotController)) {
       navXGyro.reset();
     }
@@ -224,7 +224,7 @@ public class Robot<topLiftSub> extends TimedRobot {
 
     if(OI.visionStartCombo()) {
       new CMDButtonCommand().start();
-    new DriveWithVisionCommand().start();
+    //new DriveWithVisionCommand().start();
     }
     else {
     new DriveFCDStrafeCommand().start();
@@ -260,11 +260,14 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();  
-  
+
+    SmartDashboard.putNumber("Distance From Target (ROBO TELE)", visionSub.distanceFromCamToTargetInCM() /* * (0.6)*/);
+    SmartDashboard.putNumber("lateral Offset To Target (ROBO TELE)", visionSub.lateralOffsetToTargetInCM());
+    SmartDashboard.putNumber("Motor Adjust for Vision y axis", -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()) );
   
     if(OI.visionStartCombo()) {
      new CMDButtonCommand().start();
-     new DriveWithVisionCommand().start();
+   // Robot.driveSub.updateDriveCartesian(0, -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()),0);// Robot.visionSub.distanceFromCamToTargetInCM(),// Robot.driveSub.rotateToAngleRate);
      //new DriveFCDStrafeCommand().cancel();;
     //new DriveMecanumPIDCommand().cancel();
     }

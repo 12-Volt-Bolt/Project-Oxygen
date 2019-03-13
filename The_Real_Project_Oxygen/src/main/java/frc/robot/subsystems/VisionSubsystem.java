@@ -130,7 +130,7 @@ public class VisionSubsystem extends Subsystem {
   private static double mecTwistSpeed;
 
   // cm
-  double FORWARD_DISTANCE_LIMIT = 25 * 2.54;
+  double FORWARD_DISTANCE_LIMIT = 20 * 2.54;
   // degrees
   float ROTATION_DEGREES_LIMIT = 70;
   // cm
@@ -173,12 +173,12 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public double distanceFromCamToTargetInCM() {
-    return ((caliVTSeparationInPixels) / (measSeparationPixels)) * (caliVTDistanceCm);
+  public int distanceFromCamToTargetInCM() {
+    return (int) (((caliVTSeparationInPixels) / (measSeparationPixels)) * (caliVTDistanceCm));
   }
 
   public double lateralOffsetToTargetInCM() {
-    return (int) ((caliVTCenterInPixels - targetCenterXInPixels) * (20.32 / vtSeparationInPixels));
+    return (int) (((caliVTCenterInPixels - targetCenterXInPixels) * (20.32 / vtSeparationInPixels)));
   }
 
   // If positive, strafe right
@@ -256,19 +256,26 @@ public class VisionSubsystem extends Subsystem {
 
   // distanceFromCamToTargetInCM();
   public double runForwardController(double forwardOffset) {
-    float distanceError = (float) -forwardOffset;
+    float distanceError = (float) forwardOffset;
     float forwardAdjust = 0.0f;
     
     if (forwardOffset > FORWARD_DISTANCE_LIMIT) {
       return 0;
     }
 
-    forwardAdjust /= FORWARD_DISTANCE_LIMIT;
+    if(forwardOffset < 15) {
+     return 0;
+    }
+    
+      return 0.3;
+    
 
-    forwardAdjust = StrafeP * forwardAdjust + MIN_FORWARD_VALUE;
+    //forwardAdjust /= FORWARD_DISTANCE_LIMIT;
+
+    //forwardAdjust = StrafeP * forwardAdjust + MIN_FORWARD_VALUE;
 
 
-    return forwardAdjust;
+   // return forwardAdjust;
   }
 
   public void driveWithVision(double lateralSpeed, double forwardSpeed) {
@@ -293,32 +300,20 @@ public class VisionSubsystem extends Subsystem {
 
   }
 
-  public static void motorControllerRampForVision(boolean trueOrFalse) {
+  public static void motorControllerRampForVisionOn(boolean trueOrFalse) {
    if(trueOrFalse){
-   Robot.driveSub.rearRight.configOpenloopRamp(0);
-   Robot.driveSub.rearLeft.configOpenloopRamp(0);
-   Robot.driveSub.frontRight.configOpenloopRamp(0);
-   Robot.driveSub.frontLeft.configOpenloopRamp(0);
+   Robot.driveSub.rearRight.configOpenloopRamp(0.5);
+   Robot.driveSub.rearLeft.configOpenloopRamp(0.5);
+   Robot.driveSub.frontRight.configOpenloopRamp(0.5);
+   Robot.driveSub.frontLeft.configOpenloopRamp(0.5);
    }
    else {
     Robot.driveSub.rearRight.configOpenloopRamp(0);
     Robot.driveSub.rearLeft.configOpenloopRamp(0);
     Robot.driveSub.frontRight.configOpenloopRamp(0);
     Robot.driveSub.frontLeft.configOpenloopRamp(0);
+    Robot.driveSub.setMotorsToDefault();
    }
   }
-  
-  public static void configDriveControllersForVision(boolean trueOrFalse) {
-    if(trueOrFalse) {
-    Robot.driveSub.mecDrive.setMaxOutput(0.75);
-    motorControllerRampForVision(true);
-    }
-    else {
-      if(trueOrFalse) {
-        Robot.driveSub.mecDrive.setMaxOutput(1);
-        motorControllerRampForVision(false);
-    }
-  }
-}
 
 }

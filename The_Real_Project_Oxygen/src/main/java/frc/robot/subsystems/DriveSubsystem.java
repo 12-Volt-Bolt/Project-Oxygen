@@ -99,17 +99,12 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     frontRight = new WPI_TalonSRX(RobotMap.FRONT_RIGHT_MOTOR_ID);
     rearLeft = new WPI_TalonSRX(RobotMap.REAR_LEFT_MOTOR_ID);
     rearRight = new WPI_TalonSRX(RobotMap.REAR_RIGHT_MOTOR_ID);
-
-    frontLeft.configFactoryDefault();
-    rearLeft.configFactoryDefault();
-    rearRight.configFactoryDefault();
-    frontRight.configFactoryDefault();
-
+    setMotorsToDefault();
     mecDrive = new MecanumDrive(frontLeft, rearRight, frontRight, rearLeft);
-
     correctMotorDirectionForMecanumDrive();
 
     turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
+  
     turnController.setInputRange(-180.0f, 180.0f);
     turnController.setOutputRange(-0.7, 0.7);
     // Please set output range to less than 80%, 0.8
@@ -125,18 +120,28 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     // setDefaultCommand(new DefaultDriveCommand());
   }
 
+  public void setMotorsToDefault() {
+    frontLeft.configFactoryDefault();
+    rearLeft.configFactoryDefault();
+    rearRight.configFactoryDefault();
+    frontRight.configFactoryDefault();
+  }
+
   public void updateDriveCartesian(double yValue, double xValue, double twist) {
     mecDrive.setSafetyEnabled(false);
     mecDrive.driveCartesian(
         Constants_And_Equations.deadzone(yValue, 0.1),
-        -Constants_And_Equations.deadzone(xValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1));
+        -Constants_And_Equations.deadzone(xValue, 0.1), 
+        Constants_And_Equations.deadzone(twist, 0.1));
   }
 
   public void updateDriveCartesian(double yValue, double xValue, double twist, double gyroAngle) {
     mecDrive.setSafetyEnabled(false);
     mecDrive.driveCartesian(
         Constants_And_Equations.deadzone(yValue, 0.1),
-        -Constants_And_Equations.deadzone(xValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1), gyroAngle);
+        -Constants_And_Equations.deadzone(xValue, 0.1), 
+        Constants_And_Equations.deadzone(twist, 0.1), 
+        -gyroAngle);
   }
 
   public void driveRampNonFCD(double yValue, double xValue, double twist) {
@@ -240,7 +245,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public double meanOfDriveMotorSpeeds() {
     double totalSpeed = 0;
-    ;
+    
     for (WPI_TalonSRX currentTalon : driveMotorArray) {
       totalSpeed += currentTalon.get();
     }
