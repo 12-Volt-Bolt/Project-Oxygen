@@ -31,7 +31,8 @@ public class DriveNonFCDDriveCommand extends Command {
   protected void execute() {
     Robot.driveSub.updateDriveLocalStrafe(
       ControllerFunctions.RollingAverage(AxisNames.leftY, OI.zeroSlotController.getY(Hand.kLeft)),
-      OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight));  }
+      OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), OI.zeroSlotController.getPOV()); 
+     }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override

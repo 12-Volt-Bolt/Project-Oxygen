@@ -23,6 +23,7 @@ import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.CMDButtonCommand;
 import frc.robot.commands.DriveFCDStrafeCommand;
 import frc.robot.commands.DriveMecanumPIDCommand;
+import frc.robot.commands.DriveNonFCDDriveCommand;
 import frc.robot.commands.DriveWithVisionCommand;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.FCDDriveCommand;
@@ -227,15 +228,9 @@ public class Robot<topLiftSub> extends TimedRobot {
     //new DriveWithVisionCommand().start();
     }
     else {
-    new DriveFCDStrafeCommand().start();
+   // new DriveFCDStrafeCommand().start();
+    new DriveNonFCDDriveCommand().start();
     }
-
-  
-
-  if(OI.zeroSlotController.getAButtonPressed()) {
-    driveSub.mecDrive.setSafetyEnabled(false);
-    Robot.driveSub.updateDriveCartesian(0.1, 0,0); // Robot.visionSub.distanceFromCamToTargetInCM(),
-  }
   }
 
   @Override
@@ -265,22 +260,15 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("lateral Offset To Target (ROBO TELE 1)", visionSub.lateralOffsetToTargetInCM());
     SmartDashboard.putNumber("Motor Adjust for Vision y axis", -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()) );
     SmartDashboard.putNumber("Lateral Motor speed", visionSub.runStrafeController(visionSub.lateralOffsetToTargetInCM()));
+    new DriveMecanumPIDCommand().start();
+    /*
     if(OI.visionStartCombo()) {
      new CMDButtonCommand().start();
     Robot.driveSub.updateDriveCartesian(visionSub.runStrafeController(visionSub.lateralOffsetToTargetInCM()),
-          -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()), 0);// Robot.visionSub.distanceFromCamToTargetInCM(),//
-                                                                                                   // Robot.driveSub.rotateToAngleRate);
-     //new DriveFCDStrafeCommand().cancel();;
-    //new DriveMecanumPIDCommand().cancel();
-    }
-    else {
-   // new CMDButtonCommand().cancel();;
-   // new DriveWithVisionCommand().cancel();
-   // new DriveFCDStrafeCommand().start();
-   // new DriveMecanumPIDCommand().start();
-    //new DriveMecanumPIDCommand().start();
-    }
+          -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()), 0);
 
+    }
+    */
 
     liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
@@ -298,11 +286,6 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("Meas Separation", visionSub.measSeparationPixels);
     SmartDashboard.putNumber("Meas AL Angle",visionSub.measAlAngleDegrees);
     SmartDashboard.putNumber("Meas AL Angle Center Pixels",visionSub.measAlCenterXPixels);
-
-    //DiskSub.hatchStepSpeed(OI.oneSlotController.getYButtonPressed(), OI.oneSlotController.getAButtonPressed(),
-    //    OI.oneSlotController.getBButtonPressed());
-
-
   }
 
   private double testValue;

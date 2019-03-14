@@ -104,7 +104,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     correctMotorDirectionForMecanumDrive();
 
     turnController = new PIDController(kP, kI, kD, kF, Robot.navXGyro, this);
-  
+
     turnController.setInputRange(-180.0f, 180.0f);
     turnController.setOutputRange(-0.7, 0.7);
     // Please set output range to less than 80%, 0.8
@@ -129,19 +129,14 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public void updateDriveCartesian(double yValue, double xValue, double twist) {
     mecDrive.setSafetyEnabled(false);
-    mecDrive.driveCartesian(
-        Constants_And_Equations.deadzone(yValue, 0.1),
-        -Constants_And_Equations.deadzone(xValue, 0.1), 
-        Constants_And_Equations.deadzone(twist, 0.1));
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yValue, 0.1),
+        -Constants_And_Equations.deadzone(xValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1));
   }
 
   public void updateDriveCartesian(double yValue, double xValue, double twist, double gyroAngle) {
     mecDrive.setSafetyEnabled(false);
-    mecDrive.driveCartesian(
-        Constants_And_Equations.deadzone(yValue, 0.1),
-        -Constants_And_Equations.deadzone(xValue, 0.1), 
-        Constants_And_Equations.deadzone(twist, 0.1), 
-        -gyroAngle);
+    mecDrive.driveCartesian(Constants_And_Equations.deadzone(yValue, 0.1),
+        -Constants_And_Equations.deadzone(xValue, 0.1), Constants_And_Equations.deadzone(twist, 0.1), -gyroAngle);
   }
 
   public void driveRampNonFCD(double yValue, double xValue, double twist) {
@@ -149,9 +144,9 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   }
 
   public void driveRampFCD(double yValue, double xValue, double twist, double gyroAngle) {
-   updateDriveCartesian(Constants_And_Equations.parabola(yValue), Constants_And_Equations.parabola(xValue), twist, gyroAngle);
+    updateDriveCartesian(Constants_And_Equations.parabola(yValue), Constants_And_Equations.parabola(xValue), twist,
+        gyroAngle);
   }
-
 
   public void updateDriveCartesianPID(double yValue, double xValue, double twist, double angle, Boolean locked) {
     mecDrive.setSafetyEnabled(false);
@@ -173,7 +168,6 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     updateDriveCartesian(yValue, xValue, currentRotationRate, Robot.navXGyro.getAngle());
   }
 
-  
   // "angle" is used to set a set point for the turn controller
   // The parameter should be 0 - 360 (inclusive)
   // Enables the turn controller
@@ -245,7 +239,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
 
   public double meanOfDriveMotorSpeeds() {
     double totalSpeed = 0;
-    
+
     for (WPI_TalonSRX currentTalon : driveMotorArray) {
       totalSpeed += currentTalon.get();
     }
@@ -311,12 +305,31 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
   // Strafe robot
   // Robot can still turn without inturupting movement
   // Relies on newZero to work
-  public void updateDriveLocalStrafe(double yValue, double xValue, double twist) {
+  public void updateDriveLocalStrafe(double yValue, double xValue, double twist, double angle) {
     mecDrive.setSafetyEnabled(false);
     // Resets local north if turning
+    if (angle != -1) {
+      setTurnControllerSetpointDeg(angle);
+    }
 
+    if (Math.abs(twist) > 0.2) {
+      enableTurnController(false);
+    }
+
+    if (!turnController.isEnabled()) {
+      rotationSpeed = locRotationLock(xValue, -twist);
+      enableTurnController(false);
+    } else {
+      currentRotationRate = rotateToAngleRate;
+    }
+
+    // newZero = Robot.navXGyro.getAngle();
+    updateDriveCartesian(yValue, xValue, twist);
+  }
+
+  public void updateDriveLocalStrafe(double yValue, double xValue, double twist) {
+    mecDrive.setSafetyEnabled(false);
     rotationSpeed = locRotationLock(xValue, -twist);
-
     // newZero = Robot.navXGyro.getAngle();
     updateDriveCartesian(yValue, xValue, twist);
   }
