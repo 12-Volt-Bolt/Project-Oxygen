@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -27,15 +28,24 @@ import frc.robot.commands.DriveNonFCDDriveCommand;
 import frc.robot.commands.DriveWithVisionCommand;
 import frc.robot.commands.CameraServerStartInstantCommand;
 import frc.robot.commands.FCDDriveCommand;
-import frc.robot.commands.HatchDefaultPositionCommand;
+import frc.robot.commands.HatchArmAlternate;
 import frc.robot.commands.HatchObtainPositionCommand;
 import frc.robot.commands.HatchPlacementHeightCommand;
 import frc.robot.commands.lifter_commands.ManualLifterCommand;
+import frc.robot.commands.lifter_commands.ParseLifterData;
+import frc.robot.commands.lifter_commands.StepLifter;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.lifter_commands.frontLifterCommand;
 import frc.robot.subsystems.DiskUnitSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FrontLiftSubsystem;
+import frc.robot.statics_and_classes.ControllerFunctions;
+import frc.robot.statics_and_classes.DataParser;
+import frc.robot.statics_and_classes.RobotMap;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FrontLiftSubsystem;
+import frc.robot.subsystems.GenericLiftSubsystem;
+import frc.robot.subsystems.GenericTestFunctions;
 import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.RearLiftSubsystem;
 import frc.robot.subsystems.TopRailSubsystem;
@@ -44,8 +54,11 @@ import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
 import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
 import frc.robot.OI;
 import frc.robot.statics_and_classes.VisionMath;
-import frc.robot.statics_and_classes.Constants_And_Equations;
-import frc.robot.statics_and_classes.ControllerFunctions;
+import frc.robot.statics_and_classes.ClimbSteps.ClimbStep;
+import frc.robot.statics_and_classes.ClimbData;
+import frc.robot.statics_and_classes.ClimbSteps;
+import frc.robot.statics_and_classes.Constants_And_Equations;import frc.robot.statics_and_classes.ControllerFunctions;
+import frc.robot.commands.HatchArmAlternate;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -64,6 +77,10 @@ public class Robot<topLiftSub> extends TimedRobot {
   public static TopRailSubsystem topLiftSub;
   public static LifterSubsystem liftSub;
   public static DiskUnitSubsystem DiskSub;
+  public static GenericLiftSubsystem genericLiftSub;
+
+
+  public static ClimbStep[] climbSteps;
 
   /**
    *
@@ -106,9 +123,13 @@ public class Robot<topLiftSub> extends TimedRobot {
    // rearLiftSub = new RearLiftSubsystem();
    // topLiftSub = new TopRailSubsystem();
    // DiskSub = new DiskUnitSubsystem();
-
-   
-
+    frontLiftSub = new FrontLiftSubsystem();
+    rearLiftSub = new RearLiftSubsystem();
+    //topLiftSub = new TopRailSubsystem();
+    //driveSub = new DriveSubsystem();
+    DiskSub = new DiskUnitSubsystem();
+    genericLiftSub = new GenericLiftSubsystem();
+    //climbSteps = new DataParser();
     // VERY IMPORTANT
     navXGyro.reset();
     // VERY IMPORTANT
@@ -135,6 +156,7 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void robotPeriodic() {
     /*
+    // SmartDashboard Data
     SmartDashboard.putNumber("Gyro angle", Robot.navXGyro.getAngle());
     SmartDashboard.putNumber("POV", OI.zeroSlotController.getPOV());
     
@@ -163,11 +185,6 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
     // SmartDashboard Data
     */
-    visionSub.updateVisionVariables();
-   
-    if (OI.allButtonComboPressesd(OI.zeroSlotController)) {
-      navXGyro.reset();
-    }
 
   }
 
@@ -207,6 +224,8 @@ public class Robot<topLiftSub> extends TimedRobot {
      * ExampleCommand(); break; }
      */
 
+    Scheduler.getInstance().run();
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
@@ -231,6 +250,11 @@ public class Robot<topLiftSub> extends TimedRobot {
    // new DriveFCDStrafeCommand().start();
     new DriveNonFCDDriveCommand().start();
     }
+    //new NonFCDDriveCommand().start();
+
+    GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
+
+    //new ManualLifterCommand().start();;
   }
 
   @Override
@@ -240,14 +264,14 @@ public class Robot<topLiftSub> extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+      //m_autonomousCommand.cancel();
     }
-
-    ///navXGyro.reset();
-
+    //super.testInit();
+    genericLiftSub.ResetLift(LiftID.testLift);
     driveSub.turnController.disable();
-
   }
+
+  public static int dPad;
 
   /**
    * This function is called periodically during operator control.
@@ -286,35 +310,34 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putNumber("Meas Separation", visionSub.measSeparationPixels);
     SmartDashboard.putNumber("Meas AL Angle",visionSub.measAlAngleDegrees);
     SmartDashboard.putNumber("Meas AL Angle Center Pixels",visionSub.measAlCenterXPixels);
+    dPad = OI.zeroSlotController.getPOV();
+    SmartDashboard.putNumber("robot dpad", dPad);
+    SmartDashboard.putBoolean("robot", OI.zeroSlotController.getAButton());
+
+    Scheduler.getInstance().run();
+    new StepLifter().start();
   }
 
-  private double testValue;
+
+  @Override
+  public void testInit() {
+  }
 
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-   
-   
-    if (OI.zeroSlotController.getBumper(Hand.kRight) == true) {
-      testValue = Constants_And_Equations.Clamp(-1, 1, testValue + 0.1);
-    }
-
-    else if (OI.zeroSlotController.getBumper(Hand.kLeft) == true) {
-      testValue = Constants_And_Equations.Clamp(-1, 1, testValue - 0.1);
-    }
-
-    driveSub.frontLeft.set(testValue);
-
+  
     SmartDashboard.putData(new CameraServerStartInstantCommand());
     SmartDashboard.putData(new CMDButtonCommand());
     SmartDashboard.putData(new FCDDriveCommand());
     SmartDashboard.putData(new frontLifterCommand());
-    SmartDashboard.putData(new HatchDefaultPositionCommand());
+    //SmartDashboard.putData(new HatchDefaultPositionCommand());
     SmartDashboard.putData(new HatchObtainPositionCommand());
     SmartDashboard.putData(new HatchPlacementHeightCommand());
     SmartDashboard.putData(new ManualLifterCommand());
+    genericLiftSub.setMotor(Constants_And_Equations.triggersAsJoy(OI.zeroSlotController), LiftID.testLift);
+  
   }
-
 }

@@ -14,6 +14,7 @@ import java.sql.Time;
 //import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
@@ -33,7 +34,26 @@ public class Constants_And_Equations {
     public static final int NT_Table_Constant = 999999;
     public static final int visionCaliConstant = 1;
 
+    public static Boolean WithinRange(double value1, double value2, double range) {
+        if (Math.abs(Math.abs(value1) - Math.abs(value2)) > range) {
+            if (value1 < 0 && value2 < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static double Clamp(double min, double max, double value) {
+        if (value > max) {
+            return max;
+        } else if (value < min) {
+            return min;
+        } else {
+            return value;
+        }
+    }
+
+    public static int Clamp(int min, int max, int value) {
         if (value > max) {
             return max;
         } else if (value < min) {
@@ -73,15 +93,15 @@ public class Constants_And_Equations {
         }
     }
 
-    public static double triggersAsJoy() {
-        double leftTrig = deadzone(OI.oneSlotController.getTriggerAxis(Hand.kLeft));
-        double rightTrig = deadzone(OI.oneSlotController.getTriggerAxis(Hand.kRight));
-        if (leftTrig != 0 && rightTrig != 0) {
+    public static double triggersAsJoy(XboxController controller) {
+        double leftTrig = deadzone(controller.getTriggerAxis(Hand.kLeft));
+        double rightTrig = deadzone(controller.getTriggerAxis(Hand.kRight));
+        if (leftTrig == 0 && rightTrig == 0) {
             return 0;
         } else if (leftTrig > 0) {
-            return leftTrig;
+            return -leftTrig;
         } else if (rightTrig > 0) {
-            return -rightTrig;
+            return rightTrig;
         } else {
             return 0;
         }

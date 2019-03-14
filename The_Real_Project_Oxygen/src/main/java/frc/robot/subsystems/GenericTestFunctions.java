@@ -7,60 +7,48 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import frc.robot.OI;
 import frc.robot.statics_and_classes.RobotMap;
 
 /**
  * Add your docs here.
  */
-public class DiskUnitSubsystem extends Subsystem {
+public class GenericTestFunctions extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public WPI_VictorSPX hatchMotor;
+  public static WPI_TalonSRX hatchMotor = new WPI_TalonSRX(1);
   public static double currentlimit = 25;
 
   public static int hatchLocationEnc;
   public static int hatchlocationTime;
+
+  public GenericTestFunctions() {
+    hatchMotor.set(0);
+  }
   
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    
   }
 
-  public DiskUnitSubsystem() {
-    hatchMotor = new WPI_VictorSPX(RobotMap.HATCH_MOTOR_ID);
-    hatchMotor.set(0);
-  }
-
-  public void hatchStepSpeed(boolean buttonPos, boolean buttonNeg, boolean offButton) {
-    if(buttonPos) {
-     changeMotorSpeedBy(0.1);
-    }
-
-    if(buttonNeg) {
-      changeMotorSpeedBy(-0.1);
-    }
-    
-    if(offButton) {
-      stopThePresses();
-    }
-  }
-
-  public void setSpeed(double speed) {
+  public static void SetSpeed(double speed) {
+    hatchMotor.setSafetyEnabled(false);
     hatchMotor.set(speed);
   }
 
 
-  public void changeMotorSpeedBy(double speedChange) {
+  public static void changeMotorSpeedBy(double speedChange) {
     hatchMotor.set(hatchMotor.get() + speedChange); 
   }
 
-  public void stopThePresses() {
+  public static void stopThePresses() {
     hatchMotor.set(0);
   }
   

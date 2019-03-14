@@ -7,62 +7,42 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.statics_and_classes.RobotMap;
 
 /**
  * Add your docs here.
  */
-public class DiskUnitSubsystem extends Subsystem {
+public class HatchArm extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public WPI_VictorSPX hatchMotor;
-  public static double currentlimit = 25;
-
-  public static int hatchLocationEnc;
-  public static int hatchlocationTime;
+  private static WPI_TalonSRX armMotor = new WPI_TalonSRX(RobotMap.HATCH_MOTOR_ID);
+  private static Encoder armEncoder = new Encoder(8, 9);
   
+  private static final int upPosition = 350;
+  private static final int downPosition = 0;
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    
   }
 
-  public DiskUnitSubsystem() {
-    hatchMotor = new WPI_VictorSPX(RobotMap.HATCH_MOTOR_ID);
-    hatchMotor.set(0);
-  }
-
-  public void hatchStepSpeed(boolean buttonPos, boolean buttonNeg, boolean offButton) {
-    if(buttonPos) {
-     changeMotorSpeedBy(0.1);
+  public static void ArmUp() {
+    while (armEncoder.get() < upPosition) {
+      armMotor.set(0.05);
     }
+    armMotor.set(0);
+  }
 
-    if(buttonNeg) {
-      changeMotorSpeedBy(-0.1);
+  public static void ArmDown() {
+    while (armEncoder.get() > downPosition) {
+      armMotor.set(-0.05);
     }
-    
-    if(offButton) {
-      stopThePresses();
-    }
+    armMotor.set(0);
   }
-
-  public void setSpeed(double speed) {
-    hatchMotor.set(speed);
-  }
-
-
-  public void changeMotorSpeedBy(double speedChange) {
-    hatchMotor.set(hatchMotor.get() + speedChange); 
-  }
-
-  public void stopThePresses() {
-    hatchMotor.set(0);
-  }
-  
-  
 }

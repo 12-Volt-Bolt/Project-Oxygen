@@ -8,11 +8,23 @@
 package frc.robot.statics_and_classes;
 
 import frc.robot.subsystems.GenericLiftSubsystem.LiftID;
+import frc.robot.statics_and_classes.DataParser;
 
 /**
  * Add your docs here.
  */
 public class ClimbSteps {
+
+    private static DataParser parser = new DataParser();
+
+    public static ClimbStep[] ParseSteps(String inputData) {
+        //LV_3_CLIMB_STEPS = DataParser.ParseObject(inputData, "ClimbDataInput[]");
+        return parser.ParseObject(inputData, "ClimbStep[]");
+    }
+
+    public static ClimbSubstep GetSubstep(int substep, ClimbStep step) {
+        return step.substeps[substep];
+    }
 
     public static class ClimbStep {
         public ClimbSubstep[] substeps;
@@ -26,9 +38,9 @@ public class ClimbSteps {
         public LiftID liftID;
         public Boolean lockPos;
         public double speed;
-        public double distance;
+        public int distance;
 
-        public ClimbSubstep(LiftID newLiftID, Boolean newLockPos, double newSpeed, double newDistance) {
+        public ClimbSubstep(LiftID newLiftID, Boolean newLockPos, double newSpeed, int newDistance) {
             liftID = newLiftID;
             lockPos = newLockPos;
             speed = newSpeed;

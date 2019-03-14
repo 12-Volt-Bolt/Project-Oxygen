@@ -8,25 +8,38 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.subsystems.HatchArm;
 
-public class HatchDefaultPositionCommand extends Command {
-  public HatchDefaultPositionCommand() {
+public class HatchArmAlternate extends Command {
+  private HatchArm hatchArm = new HatchArm();
+  private long time;
+
+  public HatchArmAlternate() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.DiskSub);
+    requires(hatchArm);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.DiskSub.setSpeed(-0.1);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     Robot.DiskSub.setSpeed(-0.1);
+
+    if (time > System.currentTimeMillis()) {
+      time = System.currentTimeMillis() + 1000;
+      if (OI.zeroSlotController.getAButton() == true) {
+        hatchArm.ArmUp();
+      } else if (OI.zeroSlotController.getBButton() == true) {
+        hatchArm.ArmDown();
+      }
+    }
   }
   // Make this return true when this Command no longer needs to run execute()
   @Override

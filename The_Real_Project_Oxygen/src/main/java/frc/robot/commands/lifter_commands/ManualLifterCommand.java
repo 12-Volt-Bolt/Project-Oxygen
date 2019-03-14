@@ -45,7 +45,7 @@ public class ManualLifterCommand extends Command {
 
     genLift.liftMethod(cAndE.deadzone(OI.oneSlotController.getY(Hand.kRight)), LiftID.frontLift);
     genLift.liftMethod(cAndE.deadzone(OI.oneSlotController.getY(Hand.kLeft)), LiftID.rearLift);
-    genLift.liftMethod(cAndE.deadzone(cAndE.triggersAsJoy()), LiftID.topLift);
+    genLift.liftMethod(cAndE.deadzone(cAndE.triggersAsJoy(OI.oneSlotController)), LiftID.topLift);
   }
 
   // Make this return true when this Command no longer needs to run execute()
