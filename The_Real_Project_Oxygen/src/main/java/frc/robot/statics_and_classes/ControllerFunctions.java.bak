@@ -8,12 +8,9 @@
 package frc.robot.statics_and_classes;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-<<<<<<< HEAD:The_Real_Project_Oxygen/src/main/java/frc/robot/subsystems/ControllerFunctions.java
 import frc.robot.Constants_And_Equations.AxisNames;
-=======
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.statics_and_classes.Constants_And_Equations.AxisNames;
->>>>>>> cd3607d859a32c25b73c7a566b4c47504ec1808a:The_Real_Project_Oxygen/src/main/java/frc/robot/statics_and_classes/ControllerFunctions.java
 
 /**
  * Add your docs here.

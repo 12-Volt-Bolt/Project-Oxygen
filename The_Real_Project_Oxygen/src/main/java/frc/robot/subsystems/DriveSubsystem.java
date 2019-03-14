@@ -76,7 +76,7 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
    * will attempt to get.
    */
 
-  final double kToleranceDegrees = 5.0f;
+  final double kToleranceDegrees = 3.0f;
 
   // Variables for collision detection
   double last_world_linear_accel_x;
@@ -147,6 +147,8 @@ public class DriveSubsystem extends Subsystem implements PIDOutput {
     updateDriveCartesian(Constants_And_Equations.parabola(yValue), Constants_And_Equations.parabola(xValue), twist,
         gyroAngle);
   }
+
+  public static double rotateTimer;
 
   public void updateDriveCartesianPID(double yValue, double xValue, double twist, double angle, Boolean locked) {
     mecDrive.setSafetyEnabled(false);

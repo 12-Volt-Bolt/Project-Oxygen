@@ -52,7 +52,7 @@ public class VisionSubsystem extends Subsystem {
   public static final String BOTTOM_CAM_NAME = "Bottom Camera";
 
   // Camera frame rate
-  public static final int TOP_CAM_FPS = 5;
+  public static final int TOP_CAM_FPS = 10;
   public static final int BOTTOM_CAM_FPS = 5;
 
   // Total number of pixel columns
@@ -148,11 +148,11 @@ public class VisionSubsystem extends Subsystem {
     topCam.setWhiteBalanceAuto();
     topCam.setExposureAuto();
 
-    bottomCam = CameraServer.getInstance().startAutomaticCapture(BOTTOM_CAM_NAME, RobotMap.CAMERA_ONE_ID);
-    bottomCam.setResolution(BOTTOM_CAM_ROW_PIXEL_NUM, BOTTOM_CAM_COL_PIXEL_NUM);
-    bottomCam.setFPS(BOTTOM_CAM_FPS);
+   // bottomCam = CameraServer.getInstance().startAutomaticCapture(BOTTOM_CAM_NAME, RobotMap.CAMERA_ONE_ID);
+   // bottomCam.setResolution(BOTTOM_CAM_ROW_PIXEL_NUM, BOTTOM_CAM_COL_PIXEL_NUM);
+   // bottomCam.setFPS(BOTTOM_CAM_FPS);
 
-    bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+   // bottomCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
     topCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
     
     
@@ -160,7 +160,7 @@ public class VisionSubsystem extends Subsystem {
     vtSeparationInPixels = NO_DATA;
     alCenterXinPixels = NO_DATA;
     alAngleInDegrees = NO_DATA;
-
+    
     // rotationController = new PIDController(Kp, Ki, Kd, source, output)
     // rotationController = new PIDController(Kp, Ki, Kd, source, output);
     // strafeController = new PIDController(Kp, Ki, Kd, source, output);

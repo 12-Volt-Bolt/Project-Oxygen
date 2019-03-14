@@ -27,12 +27,8 @@ public class DriveMecanumPIDCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveSub.updateDriveCartesianPID(
-      OI.zeroSlotController.getY(Hand.kLeft), 
-      OI.zeroSlotController.getX(Hand.kLeft),
-      OI.zeroSlotController.getX(Hand.kRight),
-      OI.zeroSlotController.getPOV(),
-       true);
+    Robot.driveSub.updateDriveCartesianPID(OI.zeroSlotController.getY(Hand.kLeft),
+        OI.zeroSlotController.getX(Hand.kLeft), OI.zeroSlotController.getX(Hand.kRight), OI.zeroSlotController.getPOV(), true);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -44,7 +40,7 @@ public class DriveMecanumPIDCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-  //  Robot.driveSub.StopThePresses();
+    // Robot.driveSub.StopThePresses();
   }
 
   // Called when another command which requires one or more of the same

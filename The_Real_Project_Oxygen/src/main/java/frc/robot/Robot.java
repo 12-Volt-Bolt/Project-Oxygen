@@ -119,10 +119,6 @@ public class Robot<topLiftSub> extends TimedRobot {
     driveSub = new DriveSubsystem();
     m_oi = new OI();
     visionSub = new VisionSubsystem();
-   // frontLiftSub = new FrontLiftSubsystem();
-   // rearLiftSub = new RearLiftSubsystem();
-   // topLiftSub = new TopRailSubsystem();
-   // DiskSub = new DiskUnitSubsystem();
     frontLiftSub = new FrontLiftSubsystem();
     rearLiftSub = new RearLiftSubsystem();
     //topLiftSub = new TopRailSubsystem();
@@ -242,17 +238,11 @@ public class Robot<topLiftSub> extends TimedRobot {
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
 
-    if(OI.visionStartCombo()) {
-      new CMDButtonCommand().start();
-    //new DriveWithVisionCommand().start();
-    }
-    else {
-   // new DriveFCDStrafeCommand().start();
     new DriveNonFCDDriveCommand().start();
-    }
+    
     //new NonFCDDriveCommand().start();
 
-    GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
+    //GenericTestFunctions.SetSpeed(Constants_And_Equations.deadzone(OI.zeroSlotController.getX(Hand.kLeft)));
 
     //new ManualLifterCommand().start();;
   }
@@ -313,6 +303,14 @@ public class Robot<topLiftSub> extends TimedRobot {
     dPad = OI.zeroSlotController.getPOV();
     SmartDashboard.putNumber("robot dpad", dPad);
     SmartDashboard.putBoolean("robot", OI.zeroSlotController.getAButton());
+    
+    if(Timer.getMatchTime() > 120 && Timer.getMatchTime() < 125) {
+    OI.doubleRumbleMethod(OI.zeroSlotController, 1, 1);
+    }
+    else {
+    OI.doubleRumbleMethod(OI.zeroSlotController, 0, 0);
+    }
+
 
     Scheduler.getInstance().run();
     new StepLifter().start();

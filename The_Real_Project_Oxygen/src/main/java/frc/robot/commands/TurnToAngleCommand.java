@@ -12,6 +12,7 @@ import frc.robot.Robot;
 
 public class TurnToAngleCommand extends Command {
   private double angle;
+
   public TurnToAngleCommand(double angle) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -33,7 +34,11 @@ public class TurnToAngleCommand extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    if (!Robot.driveSub.turnController.isEnabled()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Called once after isFinished returns true
