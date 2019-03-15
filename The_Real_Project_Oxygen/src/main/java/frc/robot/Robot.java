@@ -27,6 +27,7 @@ import frc.robot.commands.DriveMecanumPIDCommand;
 import frc.robot.commands.DriveNonFCDDriveCommand;
 import frc.robot.commands.DriveWithVisionCommand;
 import frc.robot.commands.CameraServerStartInstantCommand;
+import frc.robot.commands.DriveDefaultDriveCommand;
 import frc.robot.commands.FCDDriveCommand;
 import frc.robot.commands.HatchArmAlternate;
 import frc.robot.commands.HatchObtainPositionCommand;
@@ -116,15 +117,15 @@ public class Robot<topLiftSub> extends TimedRobot {
       DriverStation.reportError("Error instantiating NAV-X Gyro (MXP)", true);
     }
 
-    driveSub = new DriveSubsystem();
-    m_oi = new OI();
-    visionSub = new VisionSubsystem();
-    frontLiftSub = new FrontLiftSubsystem();
-    rearLiftSub = new RearLiftSubsystem();
+    //driveSub = new DriveSubsystem();
+    //m_oi = new OI();
+   // visionSub = new VisionSubsystem();
+   // frontLiftSub = new FrontLiftSubsystem();
+   // rearLiftSub = new RearLiftSubsystem();
     //topLiftSub = new TopRailSubsystem();
     //driveSub = new DriveSubsystem();
-    DiskSub = new DiskUnitSubsystem();
-    genericLiftSub = new GenericLiftSubsystem();
+   // DiskSub = new DiskUnitSubsystem();
+   // genericLiftSub = new GenericLiftSubsystem();
     //climbSteps = new DataParser();
     // VERY IMPORTANT
     navXGyro.reset();
@@ -181,6 +182,7 @@ public class Robot<topLiftSub> extends TimedRobot {
     SmartDashboard.putBoolean("is the drive turn controller on target", driveSub.turnController.onTarget());
     // SmartDashboard Data
     */
+  //  SmartDashboard.putData(driveSub.mecDrive);
 
   }
 
@@ -223,10 +225,8 @@ public class Robot<topLiftSub> extends TimedRobot {
     Scheduler.getInstance().run();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.start();
-    }
-  }
+   
+  } 
 
   /**
    * This function is called periodically during autonomous.
@@ -238,7 +238,8 @@ public class Robot<topLiftSub> extends TimedRobot {
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
 
-    new DriveNonFCDDriveCommand().start();
+    //new DriveNonFCDDriveCommand().start();
+   // new DriveDefaultDriveCommand().start();
     
     //new NonFCDDriveCommand().start();
 
@@ -257,7 +258,7 @@ public class Robot<topLiftSub> extends TimedRobot {
       //m_autonomousCommand.cancel();
     }
     //super.testInit();
-    genericLiftSub.ResetLift(LiftID.testLift);
+   // genericLiftSub.ResetLift(LiftID.testLift);
     driveSub.turnController.disable();
   }
 
@@ -270,11 +271,11 @@ public class Robot<topLiftSub> extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();  
 
-    SmartDashboard.putNumber("Distance From Target (ROBO TELE)", visionSub.distanceFromCamToTargetInCM() /* * (0.6)*/);
-    SmartDashboard.putNumber("lateral Offset To Target (ROBO TELE 1)", visionSub.lateralOffsetToTargetInCM());
-    SmartDashboard.putNumber("Motor Adjust for Vision y axis", -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()) );
-    SmartDashboard.putNumber("Lateral Motor speed", visionSub.runStrafeController(visionSub.lateralOffsetToTargetInCM()));
-    new DriveMecanumPIDCommand().start();
+    // SmartDashboard.putNumber("Distance From Target (ROBO TELE)", visionSub.distanceFromCamToTargetInCM() /* * (0.6)*/);
+    // SmartDashboard.putNumber("lateral Offset To Target (ROBO TELE 1)", visionSub.lateralOffsetToTargetInCM());
+    // SmartDashboard.putNumber("Motor Adjust for Vision y axis", -Robot.visionSub.runForwardController(Robot.visionSub.distanceFromCamToTargetInCM()) );
+   // SmartDashboard.putNumber("Lateral Motor speed", visionSub.runStrafeController(visionSub.lateralOffsetToTargetInCM()));
+  // new DriveMecanumPIDCommand().start();
     /*
     if(OI.visionStartCombo()) {
      new CMDButtonCommand().start();
@@ -284,18 +285,18 @@ public class Robot<topLiftSub> extends TimedRobot {
     }
     */
 
-    liftSafteyMode = LifterSubsystem.checkLiftSaftey();
+  ///  liftSafteyMode = LifterSubsystem.checkLiftSaftey();
 
-    switch (liftSafteyMode) {
-    case 1:
-      new ManualLifterCommand().start();
-      break;
+    //switch (liftSafteyMode) {
+    //case 1:
+    //  new ManualLifterCommand().start();
+      //break;
 
-    default:
-      break; // do nothing, saftey on break;
-    }
+    //default:
+    //  break; // do nothing, saftey on break;
+    //}
 
-  
+/*
     SmartDashboard.putNumber("measCenterXPixels", visionSub.measCenterXPixels);
     SmartDashboard.putNumber("Meas Separation", visionSub.measSeparationPixels);
     SmartDashboard.putNumber("Meas AL Angle",visionSub.measAlAngleDegrees);
@@ -312,8 +313,8 @@ public class Robot<topLiftSub> extends TimedRobot {
     }
 
 
-    Scheduler.getInstance().run();
-    new StepLifter().start();
+    //new StepLifter().start();
+    */
   }
 
 
@@ -327,15 +328,15 @@ public class Robot<topLiftSub> extends TimedRobot {
   @Override
   public void testPeriodic() {
   
-    SmartDashboard.putData(new CameraServerStartInstantCommand());
-    SmartDashboard.putData(new CMDButtonCommand());
-    SmartDashboard.putData(new FCDDriveCommand());
-    SmartDashboard.putData(new frontLifterCommand());
+   // SmartDashboard.putData(new CameraServerStartInstantCommand());
+   // SmartDashboard.putData(new CMDButtonCommand());
+   // SmartDashboard.putData(new FCDDriveCommand());
+   // SmartDashboard.putData(new frontLifterCommand());
     //SmartDashboard.putData(new HatchDefaultPositionCommand());
-    SmartDashboard.putData(new HatchObtainPositionCommand());
-    SmartDashboard.putData(new HatchPlacementHeightCommand());
-    SmartDashboard.putData(new ManualLifterCommand());
-    genericLiftSub.setMotor(Constants_And_Equations.triggersAsJoy(OI.zeroSlotController), LiftID.testLift);
+   // SmartDashboard.putData(new HatchObtainPositionCommand());
+    //SmartDashboard.putData(new HatchPlacementHeightCommand());
+    //SmartDashboard.putData(new ManualLifterCommand());
+   // genericLiftSub.setMotor(Constants_And_Equations.triggersAsJoy(OI.zeroSlotController), LiftID.testLift);
   
   }
 }

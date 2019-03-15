@@ -22,14 +22,14 @@ public class GenericTestFunctions extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public static WPI_TalonSRX hatchMotor = new WPI_TalonSRX(1);
+  // public static WPI_TalonSRX hatchMotor = new WPI_TalonSRX(1);
   public static double currentlimit = 25;
 
   public static int hatchLocationEnc;
   public static int hatchlocationTime;
 
   public GenericTestFunctions() {
-    hatchMotor.set(0);
+    // hatchMotor.set(0);
   }
   
   @Override
@@ -39,17 +39,17 @@ public class GenericTestFunctions extends Subsystem {
   }
 
   public static void SetSpeed(double speed) {
-    hatchMotor.setSafetyEnabled(false);
-    hatchMotor.set(speed);
+    // hatchMotor.setSafetyEnabled(false);
+    // hatchMotor.set(speed);
   }
 
 
   public static void changeMotorSpeedBy(double speedChange) {
-    hatchMotor.set(hatchMotor.get() + speedChange); 
+    // hatchMotor.set(hatchMotor.get() + speedChange); 
   }
 
   public static void stopThePresses() {
-    hatchMotor.set(0);
+    // hatchMotor.set(0);
   }
   
   

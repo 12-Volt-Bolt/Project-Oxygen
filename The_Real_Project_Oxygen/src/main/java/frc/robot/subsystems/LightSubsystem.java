@@ -18,11 +18,15 @@ public class LightSubsystem extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  static Spark lightCon = new Spark(0);
+  static Spark lightCon;
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
+  }
+
+  public LightSubsystem() {
+    lightCon =   new Spark(0);
   }
 
   public static void letThereBeLight() {
